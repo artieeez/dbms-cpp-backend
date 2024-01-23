@@ -1,0 +1,32 @@
+{
+  "env": {
+    "myIncludePath": [
+      "${workspaceFolder}/src",
+      "${workspaceFolder}/src/lib/imgui",
+      "${workspaceFolder}/src/lib/imgui/backends"
+    ]
+  },
+  "configurations": [
+    {
+      "name": "Win32",
+      "compilerPath": "C:/msys64/mingw64/bin/gcc.exe",
+      "includePath": [
+        "${myIncludePath}"
+      ],
+      "defines": [
+        "${myDefines}",
+        "_WINDOWS"
+      ],
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "windowsSdkVersion": "10.0.19041.0",
+      "browse": {
+        "path": [
+          "${myIncludePath}"
+        ]
+      }
+    }
+  ],
+  "enableConfigurationSquiggles": true,
+  "version": 4
+}
