@@ -2,8 +2,9 @@
   "env": {
     "myIncludePath": [
       "${workspaceFolder}/src",
-      "${workspaceFolder}/src/lib/imgui",
-      "${workspaceFolder}/src/lib/imgui/backends"
+      "${workspaceFolder}/include",
+      "${workspaceFolder}/include/imgui",
+      "${workspaceFolder}/include/imgui/backends"
     ]
   },
   "configurations": [

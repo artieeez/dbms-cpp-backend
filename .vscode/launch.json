@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch C++",
+      "name": "Windows - glfw opengl3",
       "type": "cppdbg",
       "request": "launch",
       "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
@@ -18,7 +18,7 @@
           "ignoreFailures": true
         }
       ],
-      "preLaunchTask": "Build C++"
+      "preLaunchTask": "glwf-opengl3"
     }
   ]
 }
