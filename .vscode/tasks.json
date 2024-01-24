@@ -7,15 +7,22 @@
       "args": [
         "-fdiagnostics-color=always",
         "-g",
-        "${file}",
+        "${workspaceFolder}/src/main.cpp",
+        "${workspaceFolder}/src/lib/imgui/*.cpp",
+        "${workspaceFolder}/src/lib/imgui/backends/imgui_impl_dx9.cpp",
+        "${workspaceFolder}/src/lib/imgui/backends/imgui_impl_win32.cpp",
+        "-ld3d9",
+        "-lgdi32",
+        "-ldwmapi",
+        "-I",
+        "${workspaceFolder}/src/lib/imgui",
+        "-I",
+        "${workspaceFolder}/src/lib/imgui/backends",
         "-o",
         "${fileDirname}\\${fileBasenameNoExtension}.exe"
       ],
       "options": {
-        "cwd": "${fileDirname}",
-        "includePath": [
-          "${workspaceFolder}/**"
-        ]
+        "cwd": "${fileDirname}"
       },
       "problemMatcher": [
         "$gcc"
