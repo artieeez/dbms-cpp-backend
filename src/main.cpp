@@ -3,9 +3,6 @@
 #include <string>
 #include <fstream>
 #include <cassert>
-#include "DBContext.hpp"
-#include "StockPrice.hpp"
-#include "Stock.hpp"
 
 /*
 Table 1 - Stocks listed on B3
@@ -34,7 +31,7 @@ volume:         unsigned int (4 bytes)
 */
 
 void test_open_file () {
-    constexpr char path_data_file [] = {"./data/bovespa_stocks.csv"};
+    constexpr char path_data_file [] = {"./../data/bovespa_stocks.csv"};
     std::ifstream data_file {path_data_file};
 
     assert(data_file.is_open());
@@ -45,14 +42,6 @@ void test_open_file () {
         std::cout << line << std::endl;
     }
 }
-
-
-template<typename T>
-std::vector<StockPrice> get_hist_price(T id, std::string date_initial, std::string date_final) {
-    // TODO:
-
-}
-
 
 int main(int argc, char* argv []) {
 
