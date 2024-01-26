@@ -1,24 +1,44 @@
 #include <iostream>
 #include "db_context.hpp"
+#include <vector>
+
+
+std::vector<int> v = {43, 5, 2, 1, 87};
 
 int main() {
     // Instantiate the DbContext with a file path
-    DatabaseManagementSystem::Database::DbContext<int> dbContext("database.bin");
+    DatabaseManagementSystem::Database::DbContext<int> dbContext("database");
 
-    // Example record
-    int record = 42;
+    // vector of positions
+    std::vector<std::streampos> positions;
 
-    // Write the record and get the stream position
-    std::streampos position = dbContext.write(record);
-    std::cout << "Record written at position: " << position << std::endl;
+    // write records to the database
+    for (int i = 0; i < v.size(); i++) {
+        std::streampos position = dbContext.write(v[i]);
+        positions.push_back(position);
+    }
 
-    // Read the record at the specified position
-    int retrievedRecord = dbContext.readByStreamPosition(position);
-    std::cout << "Retrieved record: " << retrievedRecord << std::endl;
+    // Log the positions
+    for (int i = 0; i < positions.size(); i++) {
+        std::cout << "Position: " << positions[i] << std::endl;
+    }
 
-    // Delete the record at the specified position
-    dbContext.deleteRecord(position);
-    std::cout << "Record at position " << position << " deleted." << std::endl;
+    // read records from the database
+    for (int i = 0; i < positions.size(); i++) {
+        int retrievedRecord = dbContext.read(positions[i]);
+        std::cout << "Retrieved record: " << retrievedRecord << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    // Delete an element using a postion
+    dbContext.remove(positions[0]);
+
+    // Log the records
+    for (int i = 0; i < positions.size(); i++) {
+        int retrievedRecord = dbContext.read(positions[i]);
+        std::cout << "Retrieved record: " << retrievedRecord << std::endl;
+    }
 
     return 0;
 }

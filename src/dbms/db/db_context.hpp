@@ -16,11 +16,15 @@ namespace Database {
     public:
         DbContext(const std::string& filePath);
 
-        T readByStreamPosition(std::streampos position);
+        T read(std::streampos position);
 
         std::streampos write(const T& record);
 
-        void deleteRecord(std::streampos position);
+        std::streampos remove(std::streampos position);
+
+        std::streampos getLastPosition();
+
+        void move(std::streampos position, std::streampos newPosition);
     };
 
 } // namespace Database
