@@ -22,6 +22,25 @@
         }
       ],
       "preLaunchTask": "Build C++"
+    },
+    {
+      "name": "Test - Db",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/test/dbms_db.exe",
+      "stopAtEntry": false,
+      "cwd": "C:\\msys64\\mingw64\\bin",
+      "environment": [],
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Habilitar a reformatação automática para gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true,
+        }
+      ],
+      "preLaunchTask": "Build dbms_db"
     }
   ]
 }

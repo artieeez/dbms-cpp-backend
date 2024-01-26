@@ -2,8 +2,10 @@
   "env": {
     "myIncludePath": [
       "${workspaceFolder}/src",
-      "${workspaceFolder}/src/lib/imgui",
-      "${workspaceFolder}/src/lib/imgui/backends"
+      "${workspaceFolder}/src/test",
+      "${workspaceFolder}/src/dbms/controller",
+      "${workspaceFolder}/src/dbms/db",
+      "${workspaceFolder}/src/dbms/models"
     ]
   },
   "configurations": [
