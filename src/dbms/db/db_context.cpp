@@ -1,4 +1,6 @@
-#include "dbms/db/db_context.hpp"
+#include "db_context.hpp"
+
+template class DatabaseManagementSystem::Database::DbContext<int>;
 
 namespace DatabaseManagementSystem {
 namespace Database {
