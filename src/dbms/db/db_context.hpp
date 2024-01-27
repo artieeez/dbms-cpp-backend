@@ -21,7 +21,9 @@ class DbContext {
 
     T read(std::streampos position);
 
-    std::streampos write(const T& record);
+    std::streampos append(const T& record);
+
+    void write(const T& record, std::streampos position);
 
     std::streampos remove(std::streampos position);
 

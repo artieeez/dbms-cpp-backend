@@ -31,7 +31,7 @@ T DbContext<T>::read(std::streampos position) {
 }
 
 template <typename T>
-std::streampos DbContext<T>::write(const T& record) {
+std::streampos DbContext<T>::append(const T& record) {
     _file.seekp(0, std::ios::end);
 
     std::streampos position = _file.tellp();
@@ -39,6 +39,13 @@ std::streampos DbContext<T>::write(const T& record) {
     _file.write(reinterpret_cast<const char*>(&record), sizeof(T));
 
     return position;
+}
+
+template <typename T>
+void DbContext<T>::write(const T& record, std::streampos position) {
+    _file.seekp(position);
+
+    _file.write(reinterpret_cast<const char*>(&record), sizeof(T));
 }
 
 template <typename T>
