@@ -11,11 +11,11 @@ int main() {
     DatabaseManagementSystem::Database::DbContext<int> dbContext("intDb.db");
 
     // -------- append records to the database
-    for (int i = 0; i < v.size(); i++) {
-        dbContext.append(v[i]);
-    }
+    // for (int i = 0; i < v.size(); i++) {
+    //     dbContext.append(v[i]);
+    // }
 
-    // dbContext.write(77);
+    // dbContext.append(77);
     // dbContext.remove(0);
     // dbContext.move(0, 4);
 

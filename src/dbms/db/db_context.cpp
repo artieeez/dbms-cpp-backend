@@ -21,6 +21,11 @@ DbContext<T>::DbContext(const std::string& filePath) {
     }
 }
 
+// template <typename T>
+// DbContext<T>::~DbContext() {
+//     _file.close();
+// }
+
 template <typename T>
 T DbContext<T>::read(std::streampos position) {
     _file.seekg(position);

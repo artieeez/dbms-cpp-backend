@@ -19,6 +19,8 @@ class DbContext {
 
     DbContext(const std::string& filePath);
 
+    // DbContext<T>::~DbContext();
+
     T read(std::streampos position);
 
     std::streampos append(const T& record);
