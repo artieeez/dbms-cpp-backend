@@ -101,6 +101,30 @@ void DbContext<T>::move(std::streampos position, std::streampos newPosition) {
     _file.write(reinterpret_cast<const char*>(&record), sizeof(T));
 }
 
+// Iterator
+template <typename T>
+bool DbContext<T>::next() {
+    _currPos = _currPos < 0
+                   ? static_cast<std::streampos>(0)
+                   : _currPos + sizeof(T);
+
+    bool positionIsValid = _currPos <= getLastPosition();
+
+    curr = read(_currPos);
+
+    return _currPos <= getLastPosition();
+}
+
+template <typename T>
+void DbContext<T>::clearIterator() {
+    _currPos = -1;
+}
+
+template <typename T>
+std::streampos DbContext<T>::getCurrPosition() {
+    return _currPos;
+}
+
 }  // namespace Database
 }  // namespace DatabaseManagementSystem
 

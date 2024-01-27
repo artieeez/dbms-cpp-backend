@@ -19,14 +19,12 @@ int main() {
     // dbContext.remove(positions[0]);
     // dbContext.move(0, 4);
 
-    // log the records and positions formatted
-    int pos = 0;
-    int lastPosition = dbContext.getLastPosition();
-    while (pos <= lastPosition) {
-        std::cout << "Pos: " << std::setw(2) << std::right << pos
-                  << " Val: " << std::setw(2) << std::right << dbContext.read(pos) << std::endl;
-        pos += sizeof(int);
-    }
+    // log the records and positions formatted using dbContext iterator
+    dbContext.clearIterator();
+    while (dbContext.next()) {
+        std::cout << "Pos: " << std::setw(2) << std::right << dbContext.getCurrPosition()
+                  << " Val: " << std::setw(2) << std::right << dbContext.curr << std::endl;
+    };
 
     return 0;
 }

@@ -1,33 +1,42 @@
 #ifndef DB_CONTEXT_HPP
 #define DB_CONTEXT_HPP
 
-#include <iostream>
 #include <fstream>
 #include <ios>
+#include <iostream>
 
 namespace DatabaseManagementSystem {
 namespace Database {
 
-    template <typename T>
-    class DbContext {
-    private:
-        std::fstream _file;
+template <typename T>
+class DbContext {
+   private:
+    std::fstream _file;
+    std::streampos _currPos = -1;
 
-    public:
-        DbContext(const std::string& filePath);
+   public:
+    T curr;
 
-        T read(std::streampos position);
+    DbContext(const std::string& filePath);
 
-        std::streampos write(const T& record);
+    T read(std::streampos position);
 
-        std::streampos remove(std::streampos position);
+    std::streampos write(const T& record);
 
-        std::streampos getLastPosition();
+    std::streampos remove(std::streampos position);
 
-        void move(std::streampos position, std::streampos newPosition);
-    };
+    std::streampos getLastPosition();
 
-} // namespace Database
-} // namespace DatabaseManagementSystem
+    void move(std::streampos position, std::streampos newPosition);
 
-#endif // DB_CONTEXT_HPP
+    bool next();
+
+    void clearIterator();
+
+    std::streampos getCurrPosition();
+};
+
+}  // namespace Database
+}  // namespace DatabaseManagementSystem
+
+#endif  // DB_CONTEXT_HPP
