@@ -11,7 +11,7 @@ namespace Database {
     template <typename T>
     class DbContext {
     private:
-        std::string filePath;
+        std::fstream _file;
 
     public:
         DbContext(const std::string& filePath);

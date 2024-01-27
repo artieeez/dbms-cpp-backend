@@ -1,43 +1,31 @@
+#include <iomanip>  // std::setw
 #include <iostream>
-#include "db_context.hpp"
 #include <vector>
 
+#include "db_context.hpp"
 
 std::vector<int> v = {43, 5, 2, 1, 87};
 
 int main() {
     // Instantiate the DbContext with a file path
-    DatabaseManagementSystem::Database::DbContext<int> dbContext("database");
-
-    // vector of positions
-    std::vector<std::streampos> positions;
+    DatabaseManagementSystem::Database::DbContext<int> dbContext("intDb.db");
 
     // write records to the database
-    for (int i = 0; i < v.size(); i++) {
-        std::streampos position = dbContext.write(v[i]);
-        positions.push_back(position);
-    }
+    // for (int i = 0; i < v.size(); i++) {
+    //     dbContext.write(v[i]);
+    // }
 
-    // Log the positions
-    for (int i = 0; i < positions.size(); i++) {
-        std::cout << "Position: " << positions[i] << std::endl;
-    }
+    // dbContext.write(77);
+    // dbContext.remove(positions[0]);
+    // dbContext.move(0, 4);
 
-    // read records from the database
-    for (int i = 0; i < positions.size(); i++) {
-        int retrievedRecord = dbContext.read(positions[i]);
-        std::cout << "Retrieved record: " << retrievedRecord << std::endl;
-    }
-
-    std::cout << std::endl;
-
-    // Delete an element using a postion
-    dbContext.remove(positions[0]);
-
-    // Log the records
-    for (int i = 0; i < positions.size(); i++) {
-        int retrievedRecord = dbContext.read(positions[i]);
-        std::cout << "Retrieved record: " << retrievedRecord << std::endl;
+    // log the records and positions formatted
+    int pos = 0;
+    int lastPosition = dbContext.getLastPosition();
+    while (pos <= lastPosition) {
+        std::cout << "Pos: " << std::setw(2) << std::right << pos
+                  << " Val: " << std::setw(2) << std::right << dbContext.read(pos) << std::endl;
+        pos += sizeof(int);
     }
 
     return 0;
