@@ -2,13 +2,13 @@
 #include <iostream>
 #include <vector>
 
-#include "db_context.hpp"
+#include "context.hpp"
 
 std::vector<int> v = {43, 5, 2, 1, 87};
 
 int main() {
-    // -------- Instantiate the DbContext with a file path
-    DatabaseManagementSystem::Database::DbContext<int> dbContext("intDb.db");
+    // -------- Instantiate the Context with a file path
+    Database::Context<int> dbContext("intDb.db");
 
     // -------- append records to the database
     // for (int i = 0; i < v.size(); i++) {

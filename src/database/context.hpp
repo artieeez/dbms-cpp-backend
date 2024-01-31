@@ -5,11 +5,10 @@
 #include <ios>
 #include <iostream>
 
-namespace DatabaseManagementSystem {
 namespace Database {
 
 template <typename T>
-class DbContext {
+class Context {
    private:
     std::fstream _file;
     std::streampos _currPos = -1;
@@ -17,9 +16,9 @@ class DbContext {
    public:
     T curr;
 
-    DbContext(const std::string& filePath);
+    Context(const std::string& filePath);
 
-    // DbContext<T>::~DbContext();
+    // Context<T>::~Context();
 
     T read(std::streampos position);
 
@@ -41,6 +40,5 @@ class DbContext {
 };
 
 }  // namespace Database
-}  // namespace DatabaseManagementSystem
 
 #endif  // DB_CONTEXT_HPP

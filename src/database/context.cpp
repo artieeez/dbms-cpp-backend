@@ -1,12 +1,11 @@
-#include "db_context.hpp"
+#include "context.hpp"
 
 #include <filesystem>
 
-namespace DatabaseManagementSystem {
 namespace Database {
 
 template <typename T>
-DbContext<T>::DbContext(const std::string& filePath) {
+Context<T>::Context(const std::string& filePath) {
     // check if file exists
     if (std::filesystem::exists(filePath)) {
         _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::binary);
@@ -22,12 +21,12 @@ DbContext<T>::DbContext(const std::string& filePath) {
 }
 
 // template <typename T>
-// DbContext<T>::~DbContext() {
+// Context<T>::~Context() {
 //     _file.close();
 // }
 
 template <typename T>
-T DbContext<T>::read(std::streampos position) {
+T Context<T>::read(std::streampos position) {
     _file.seekg(position);
     T record;
     _file.read(reinterpret_cast<char*>(&record), sizeof(T));
@@ -36,7 +35,7 @@ T DbContext<T>::read(std::streampos position) {
 }
 
 template <typename T>
-std::streampos DbContext<T>::append(const T& record) {
+std::streampos Context<T>::append(const T& record) {
     _file.seekp(0, std::ios::end);
 
     std::streampos position = _file.tellp();
@@ -47,14 +46,14 @@ std::streampos DbContext<T>::append(const T& record) {
 }
 
 template <typename T>
-void DbContext<T>::write(const T& record, std::streampos position) {
+void Context<T>::write(const T& record, std::streampos position) {
     _file.seekp(position);
 
     _file.write(reinterpret_cast<const char*>(&record), sizeof(T));
 }
 
 template <typename T>
-std::streampos DbContext<T>::remove(std::streampos position) {
+std::streampos Context<T>::remove(std::streampos position) {
     // call get last pos and then move the last record to the position of the deleted record
 
     std::streampos lastRecordPosition = getLastPosition();
@@ -67,7 +66,7 @@ std::streampos DbContext<T>::remove(std::streampos position) {
 }
 
 template <typename T>
-std::streampos DbContext<T>::getLastPosition() {
+std::streampos Context<T>::getLastPosition() {
     _file.seekg(0, std::ios::end);
     std::streampos endPosition = _file.tellg();
 
@@ -83,7 +82,7 @@ std::streampos DbContext<T>::getLastPosition() {
 }
 
 template <typename T>
-void DbContext<T>::move(std::streampos position, std::streampos newPosition) {
+void Context<T>::move(std::streampos position, std::streampos newPosition) {
     // Check if the positions are valid
     if (position < 0 || newPosition < 0) {
         std::cerr << "Invalid positions for record relocation." << std::endl;
@@ -115,7 +114,7 @@ void DbContext<T>::move(std::streampos position, std::streampos newPosition) {
 
 // Iterator
 template <typename T>
-bool DbContext<T>::next() {
+bool Context<T>::next() {
     _currPos = _currPos < 0
                    ? static_cast<std::streampos>(0)
                    : _currPos + sizeof(T);
@@ -128,16 +127,15 @@ bool DbContext<T>::next() {
 }
 
 template <typename T>
-void DbContext<T>::clearIterator() {
+void Context<T>::clearIterator() {
     _currPos = -1;
 }
 
 template <typename T>
-std::streampos DbContext<T>::getCurrPosition() {
+std::streampos Context<T>::getCurrPosition() {
     return _currPos;
 }
 
 }  // namespace Database
-}  // namespace DatabaseManagementSystem
 
-template class DatabaseManagementSystem::Database::DbContext<int>;
+template class Database::Context<int>;
