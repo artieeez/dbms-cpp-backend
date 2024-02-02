@@ -78,7 +78,7 @@ std::streampos Context<T>::getLastPosition() {
     }
 
     // Calculate the position of the last record
-    return endPosition - sizeof(T);
+    return (int)endPosition - (int)sizeof(T);
 }
 
 template <typename T>
@@ -93,7 +93,7 @@ void Context<T>::move(std::streampos position, std::streampos newPosition) {
     _file.seekg(0, std::ios::end);
     std::streampos endPosition = _file.tellg();
 
-    if (endPosition < std::max(position, newPosition) + sizeof(T)) {
+    if (endPosition < (int)std::max(position, newPosition) + sizeof(T)) {
         std::cerr << "File is too small to contain records at the specified positions." << std::endl;
         return;
     }
@@ -115,9 +115,9 @@ void Context<T>::move(std::streampos position, std::streampos newPosition) {
 // Iterator
 template <typename T>
 bool Context<T>::next() {
-    _currPos = _currPos < 0
-                   ? static_cast<std::streampos>(0)
-                   : _currPos + sizeof(T);
+    _currPos = (int)_currPos < 0
+                   ? (int)static_cast<std::streampos>(0)
+                   : (int)_currPos + (int)sizeof(T);
 
     bool positionIsValid = _currPos <= getLastPosition();
 

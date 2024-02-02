@@ -1,4 +1,4 @@
-#include <iomanip>  // std::setw
+#include <iomanip> // std::setw
 #include <iostream>
 #include <vector>
 
@@ -11,9 +11,9 @@ int main() {
     Database::Context<int> dbContext("intDb.db");
 
     // -------- append records to the database
-    // for (int i = 0; i < v.size(); i++) {
-    //     dbContext.append(v[i]);
-    // }
+    for (int i = 0; i < v.size(); i++) {
+        dbContext.append(v[i]);
+    }
 
     // dbContext.append(77);
     // dbContext.remove(0);
