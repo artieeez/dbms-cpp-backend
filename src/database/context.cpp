@@ -26,43 +26,43 @@ Context<T>::Context(const std::string& filePath) {
 // }
 
 template <typename T>
-T Context<T>::read(std::streampos position) {
+Record<T> Context<T>::read(std::streampos position) {
     _file.seekg(position);
-    T record;
+    Record<T> record;
     _file.read(reinterpret_cast<char*>(&record), sizeof(T));
 
     return record;
 }
 
 template <typename T>
-std::streampos Context<T>::append(const T& record) {
+std::streampos Context<T>::append(const T& value) {
     _file.seekp(0, std::ios::end);
 
     std::streampos position = _file.tellp();
 
-    _file.write(reinterpret_cast<const char*>(&record), sizeof(T));
+    Record<T> record;
+    record.value = value;
+    record.position = position;
+    record.deleted = false;
+
+    _file.write(reinterpret_cast<const char*>(&record), sizeof(Record<T>));
 
     return position;
 }
 
 template <typename T>
-void Context<T>::write(const T& record, std::streampos position) {
-    _file.seekp(position);
+void Context<T>::save(const Record<T>& record) {
+    _file.seekp(record.position);
 
-    _file.write(reinterpret_cast<const char*>(&record), sizeof(T));
+    _file.write(reinterpret_cast<const char*>(&record), sizeof(Record<T>));
 }
 
 template <typename T>
-std::streampos Context<T>::remove(std::streampos position) {
-    // call get last pos and then move the last record to the position of the deleted record
-
-    std::streampos lastRecordPosition = getLastPosition();
-
-    if (lastRecordPosition > sizeof(T) && position != lastRecordPosition) {
-        move(lastRecordPosition, position);
-    }
-
-    return lastRecordPosition;
+void Context<T>::remove(std::streampos position) {
+    
+    Record<T> record = read(position);
+    record.deleted = true;
+    save(record);
 }
 
 template <typename T>
@@ -72,13 +72,13 @@ std::streampos Context<T>::getLastPosition() {
 
     if (endPosition == 0) {
         return 0;
-    } else if (endPosition < sizeof(T)) {
+    } else if (endPosition < sizeof(Record<T>)) {
         std::cerr << "File is empty or too small to contain a record." << std::endl;
         return 0;  // Return an invalid position to indicate an error
     }
 
     // Calculate the position of the last record
-    return (int)endPosition - (int)sizeof(T);
+    return (int)endPosition - (int)sizeof(Record<T>);
 }
 
 template <typename T>
@@ -93,7 +93,7 @@ void Context<T>::move(std::streampos position, std::streampos newPosition) {
     _file.seekg(0, std::ios::end);
     std::streampos endPosition = _file.tellg();
 
-    if (endPosition < (int)std::max(position, newPosition) + sizeof(T)) {
+    if (endPosition < (int)std::max(position, newPosition) + sizeof(Record<T>)) {
         std::cerr << "File is too small to contain records at the specified positions." << std::endl;
         return;
     }
@@ -102,14 +102,14 @@ void Context<T>::move(std::streampos position, std::streampos newPosition) {
     _file.seekg(position);
 
     // Read the record from the original position
-    T record;
-    _file.read(reinterpret_cast<char*>(&record), sizeof(T));
+    Record<T> record;
+    _file.read(reinterpret_cast<char*>(&record), sizeof(Record<T>));
 
     // Move the put pointer to the new position
     _file.seekp(newPosition);
 
     // Write the record to the new position
-    _file.write(reinterpret_cast<const char*>(&record), sizeof(T));
+    _file.write(reinterpret_cast<const char*>(&record), sizeof(Record<T>));
 }
 
 // Iterator
@@ -117,7 +117,7 @@ template <typename T>
 bool Context<T>::next() {
     _currPos = (int)_currPos < 0
                    ? (int)static_cast<std::streampos>(0)
-                   : (int)_currPos + (int)sizeof(T);
+                   : (int)_currPos + (int)sizeof(Record<T>);
 
     bool positionIsValid = _currPos <= getLastPosition();
 

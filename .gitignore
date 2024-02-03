@@ -37,6 +37,8 @@
 # VsCode configs
 .vscode
 
+*.pdb
+
 env
 
 build

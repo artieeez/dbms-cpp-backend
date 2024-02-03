@@ -37,7 +37,7 @@ int main() {
     dbContext.clearIterator();
     while (dbContext.next()) {
         std::cout << "Pos: " << std::setw(2) << std::right << dbContext.getCurrPosition()
-                  << " Val: " << std::setw(2) << std::right << dbContext.curr << std::endl;
+                  << " Val: " << std::setw(2) << std::right << dbContext.curr.value << std::endl;
     };
 
     return 0;

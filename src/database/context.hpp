@@ -8,25 +8,32 @@
 namespace Database {
 
 template <typename T>
+struct Record {
+    T value;
+    std::streampos position;
+    bool deleted;
+};
+
+template <typename T>
 class Context {
    private:
     std::fstream _file;
     std::streampos _currPos = -1;
 
    public:
-    T curr;
+    Record<T> curr;
 
     Context(const std::string& filePath);
 
     // Context<T>::~Context();
 
-    T read(std::streampos position);
+    Record<T> read(std::streampos position);
 
-    std::streampos append(const T& record);
+    std::streampos append(const T& value);
 
-    void write(const T& record, std::streampos position);
+    void save(const Record<T>& record);
 
-    std::streampos remove(std::streampos position);
+    void remove(std::streampos position);
 
     std::streampos getLastPosition();
 
