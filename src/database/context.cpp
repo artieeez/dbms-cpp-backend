@@ -6,7 +6,9 @@ namespace Database {
 
 template <typename T>
 Context<T>::Context(const std::string &filePath) {
-    // check if file exists
+    
+    _filePath = filePath;
+
     if (std::filesystem::exists(filePath)) {
         _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::binary);
     } else {
@@ -46,9 +48,15 @@ Record<T> Context<T>::read(std::streampos position) {
 
 template <typename T>
 std::streampos Context<T>::append(const T &value) {
-    _file.seekp(0, std::ios::end);
-
-    std::streampos position = _empty.size() > 0 ? _empty.back() : _file.tellp();
+    // position file pointer either at an empty position or at end of file
+    std::streampos position;
+    if (_empty.size() > 0) {
+        position = _empty.back();
+        _empty.pop_back();
+        _file.seekp(position);
+    } else {
+        position = (int)getLastPosition() + (int)sizeof(Record<T>);
+    }
 
     Record<T> record;
     record.value = value;
@@ -121,6 +129,16 @@ void Context<T>::move(std::streampos position, std::streampos newPosition) {
 
     // Write the record to the new position
     _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));
+}
+
+template <typename T>
+void Context<T>::reset() {
+    _file.close();
+    _file.open(_filePath, std::ios::out | std::ios::trunc);
+    _file.close();
+    _file.open(_filePath, std::ios::in | std::ios::out | std::ios::app | std::ios::binary);
+    _empty.clear();
+    _currPos = -1;
 }
 
 // Iterator

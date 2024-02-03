@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 
+
 namespace Database {
 
 template <typename T>
@@ -20,6 +21,7 @@ class Context {
    private:
     #include <vector>
 
+    std::string _filePath;
     std::fstream _file;
     std::streampos _currPos = -1;
     std::vector<std::streampos> _empty;
@@ -42,6 +44,8 @@ class Context {
     std::streampos getLastPosition();
 
     void move(std::streampos position, std::streampos newPosition);
+
+    void reset();
 
     bool next();
 

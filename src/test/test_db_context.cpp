@@ -26,10 +26,10 @@ int main() {
     dbContext.save(record);
 
     // Delete Record
-    dbContext.remove(40); // pos 40 is the second record when using Record<int>
+    // dbContext.remove(40); // pos 40 is the second record when using Record<int>
 
     // append record (should be at position 40)
-    dbContext.append(1000);
+    // dbContext.append(1000);
 
     // -------- Log the records and positions using the dbContext iterator
     dbContext.clearIterator();
@@ -37,6 +37,10 @@ int main() {
         std::cout << "Pos: " << std::setw(2) << std::right << dbContext.getCurrPosition()
                   << " Val: " << std::setw(2) << std::right << dbContext.curr.value << std::endl;
     };
+
+
+    // -------- Reset the dbContext
+    dbContext.reset();
 
     return 0;
 }
