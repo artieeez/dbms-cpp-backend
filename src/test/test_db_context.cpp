@@ -16,13 +16,20 @@ int main() {
     }
 
     // Read a record from the database
-    Database::Record<int> record = dbContext.read(0);
+    std::streampos position = dbContext.getLastPosition();
+    Database::Record<int> record = dbContext.read(position);
 
     // Update Record
     record.value = 100;
 
     // save the updated record to the database
     dbContext.save(record);
+
+    // Delete Record
+    dbContext.remove(40); // pos 40 is the second record when using Record<int>
+
+    // append record (should be at position 40)
+    dbContext.append(1000);
 
     // -------- Log the records and positions using the dbContext iterator
     dbContext.clearIterator();

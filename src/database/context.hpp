@@ -4,6 +4,7 @@
 #include <fstream>
 #include <ios>
 #include <iostream>
+#include <vector>
 
 namespace Database {
 
@@ -17,19 +18,22 @@ struct Record {
 template <typename T>
 class Context {
    private:
+    #include <vector>
+
     std::fstream _file;
     std::streampos _currPos = -1;
+    std::vector<std::streampos> _empty;
 
-   public:
-    Record<T> curr;
+    public:
+        Record<T> curr;
 
-    Context(const std::string& filePath);
+        Context(const std::string& filePath);
 
-    // Context<T>::~Context();
+        // Context<T>::~Context();
 
-    Record<T> read(std::streampos position);
+        Record<T> read(std::streampos position);
 
-    std::streampos append(const T& value);
+        std::streampos append(const T& value);
 
     void save(const Record<T>& record);
 

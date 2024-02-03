@@ -5,7 +5,7 @@
 namespace Database {
 
 template <typename T>
-Context<T>::Context(const std::string& filePath) {
+Context<T>::Context(const std::string &filePath) {
     // check if file exists
     if (std::filesystem::exists(filePath)) {
         _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::binary);
@@ -18,6 +18,16 @@ Context<T>::Context(const std::string& filePath) {
         std::cerr << "Error opening or creating file: " << filePath << std::endl;
         // Handle the error as needed
     }
+
+    _empty = std::vector<std::streampos>();
+    // // Linear search file for empty records
+    // clearIterator();
+    // while (next()) {
+    //     if (curr.deleted) {
+    //         _empty.push_back(_currPos);
+    //         // _empty.push_back(curr.position);
+    //     }
+    // };
 }
 
 // template <typename T>
@@ -29,40 +39,41 @@ template <typename T>
 Record<T> Context<T>::read(std::streampos position) {
     _file.seekg(position);
     Record<T> record;
-    _file.read(reinterpret_cast<char*>(&record), sizeof(Record<T>));
+    _file.read(reinterpret_cast<char *>(&record), sizeof(Record<T>));
 
     return record;
 }
 
 template <typename T>
-std::streampos Context<T>::append(const T& value) {
+std::streampos Context<T>::append(const T &value) {
     _file.seekp(0, std::ios::end);
 
-    std::streampos position = _file.tellp();
+    std::streampos position = _empty.size() > 0 ? _empty.back() : _file.tellp();
 
     Record<T> record;
     record.value = value;
     record.position = position;
     record.deleted = false;
 
-    _file.write(reinterpret_cast<const char*>(&record), sizeof(Record<T>));
+    _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));
 
     return position;
 }
 
 template <typename T>
-void Context<T>::save(const Record<T>& record) {
+void Context<T>::save(const Record<T> &record) {
     _file.seekp(record.position);
 
-    _file.write(reinterpret_cast<const char*>(&record), sizeof(Record<T>));
+    _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));
 }
 
 template <typename T>
 void Context<T>::remove(std::streampos position) {
-    
+
     Record<T> record = read(position);
     record.deleted = true;
     save(record);
+    _empty.push_back(position);
 }
 
 template <typename T>
@@ -74,7 +85,7 @@ std::streampos Context<T>::getLastPosition() {
         return 0;
     } else if (endPosition < sizeof(Record<T>)) {
         std::cerr << "File is empty or too small to contain a record." << std::endl;
-        return 0;  // Return an invalid position to indicate an error
+        return 0; // Return an invalid position to indicate an error
     }
 
     // Calculate the position of the last record
@@ -103,13 +114,13 @@ void Context<T>::move(std::streampos position, std::streampos newPosition) {
 
     // Read the record from the original position
     Record<T> record;
-    _file.read(reinterpret_cast<char*>(&record), sizeof(Record<T>));
+    _file.read(reinterpret_cast<char *>(&record), sizeof(Record<T>));
 
     // Move the put pointer to the new position
     _file.seekp(newPosition);
 
     // Write the record to the new position
-    _file.write(reinterpret_cast<const char*>(&record), sizeof(Record<T>));
+    _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));
 }
 
 // Iterator
@@ -136,6 +147,6 @@ std::streampos Context<T>::getCurrPosition() {
     return _currPos;
 }
 
-}  // namespace Database
+} // namespace Database
 
 template class Database::Context<int>;
