@@ -47,7 +47,7 @@ class Context {
 
     void reset();
 
-    bool next();
+    bool next(bool skipDeleted = true);
 
     void clearIterator();
 

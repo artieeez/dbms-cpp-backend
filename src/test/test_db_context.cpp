@@ -20,16 +20,16 @@ int main() {
     Database::Record<int> record = dbContext.read(position);
 
     // Update Record
-    record.value = 100;
+    record.value = 2332;
 
     // save the updated record to the database
     dbContext.save(record);
 
     // Delete Record
-    // dbContext.remove(40); // pos 40 is the second record when using Record<int>
+    dbContext.remove(40); // pos 40 is the second record (5) when using Record<int>
 
-    // append record (should be at position 40)
-    // dbContext.append(1000);
+    // append record (should be at position 40, after value 43)
+    dbContext.append(5000);
 
     // -------- Log the records and positions using the dbContext iterator
     dbContext.clearIterator();

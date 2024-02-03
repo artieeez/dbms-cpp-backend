@@ -143,19 +143,25 @@ void Context<T>::reset() {
 
 // Iterator
 template <typename T>
-bool Context<T>::next() {
-    _currPos = (int)_currPos < 0
-                   ? (int)static_cast<std::streampos>(0)
-                   : (int)_currPos + (int)sizeof(Record<T>);
+bool Context<T>::next(bool skipDeleted) {
+    std::streampos lastPos = getLastPosition();
 
-    bool positionIsValid = _currPos <= getLastPosition();
+    bool positionIsValid = false;
 
-    if (positionIsValid) {
-        curr = read(_currPos);
-        return true;
-    } else {
-        return false;
-    }
+    do {
+        _currPos = ((int)_currPos < 0)
+                       ? (int)static_cast<std::streampos>(0)
+                       : (int)_currPos + (int)sizeof(Record<T>);
+
+        positionIsValid = _currPos <= getLastPosition();
+
+        if (positionIsValid) {
+            curr = read(_currPos);
+        }
+
+    } while (positionIsValid && (curr.deleted && skipDeleted));
+
+    return positionIsValid;
 }
 
 template <typename T>
