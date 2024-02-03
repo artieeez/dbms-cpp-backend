@@ -6,7 +6,7 @@ namespace Database {
 
 template <typename T>
 Context<T>::Context(const std::string &filePath) {
-    
+
     _filePath = filePath;
 
     if (std::filesystem::exists(filePath)) {
@@ -150,9 +150,12 @@ bool Context<T>::next() {
 
     bool positionIsValid = _currPos <= getLastPosition();
 
-    curr = read(_currPos);
-
-    return _currPos <= getLastPosition();
+    if (positionIsValid) {
+        curr = read(_currPos);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 template <typename T>
