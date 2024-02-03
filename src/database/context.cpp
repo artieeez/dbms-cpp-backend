@@ -29,7 +29,7 @@ template <typename T>
 Record<T> Context<T>::read(std::streampos position) {
     _file.seekg(position);
     Record<T> record;
-    _file.read(reinterpret_cast<char*>(&record), sizeof(T));
+    _file.read(reinterpret_cast<char*>(&record), sizeof(Record<T>));
 
     return record;
 }

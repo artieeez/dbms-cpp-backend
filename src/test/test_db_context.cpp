@@ -15,23 +15,14 @@ int main() {
         dbContext.append(v[i]);
     }
 
-    // dbContext.append(77);
-    // dbContext.remove(0);
-    // dbContext.move(0, 4);
+    // Read a record from the database
+    Database::Record<int> record = dbContext.read(0);
 
-    // -------- Invert the order of the records
-    // dbContext.clearIterator();
-    // while (dbContext.next() && dbContext.getCurrPosition() < (dbContext.getLastPosition() / 2)){
-    //     std::streampos computedPosition = dbContext.getLastPosition() - dbContext.getCurrPosition();
-    //     dbContext.move(computedPosition, dbContext.getCurrPosition());
-    //     dbContext.write(dbContext.curr, computedPosition);
-    // };
+    // Update Record
+    record.value = 100;
 
-    // -------- Remove all records
-    // dbContext.clearIterator();
-    // while (dbContext.next()) {
-    //     dbContext.remove(dbContext.getCurrPosition());
-    // };
+    // save the updated record to the database
+    dbContext.save(record);
 
     // -------- Log the records and positions using the dbContext iterator
     dbContext.clearIterator();
