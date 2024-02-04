@@ -29,6 +29,7 @@ namespace Index
 
   public:
     Trie(const std::string &filePath);
+    ~Trie();
     void insertString(std::string companyName, std::string address);
     std::vector<std::string> searchString(std::string companyName);
     void deleteString(std::string companyName);

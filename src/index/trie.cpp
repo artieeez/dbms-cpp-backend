@@ -19,6 +19,12 @@ namespace Index
     printTrieNode(dbContext.read(first));
   }
 
+  Trie::~Trie()
+  {
+    Database::Context<TrieNode> dbContext(filename);
+    dbContext.reset();
+  }
+
   void Trie::insertString(std::string companyName, std::string address)
   {
     int stringCounter = 1;
@@ -29,27 +35,34 @@ namespace Index
     {
       int childIndex = ch - 'a';
       Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
+
       if (currentNode.value.children[childIndex] == -1)
       {
         TrieNode node;
         std::streampos newPosition = dbContext.append(node);
         currentNode.value.children[childIndex] = newPosition;
-        currentNode.value.parentAdress = currentPosition;
+        dbContext.save(currentNode);
+
+        Database::Record<Index::TrieNode> createdNode = dbContext.read(newPosition);
+        createdNode.value.parentAdress = currentPosition;
         currentPosition = newPosition;
 
         if (stringCounter == companyName.size())
         {
           std::clog << ch << " is the last character\n";
-          currentNode.value.address = address;
+          createdNode.value.address = address;
         }
-        dbContext.save(currentNode);
+
+        dbContext.save(createdNode);
+        std::clog << ch << " "
+                  << "Nodo filho==================================================\n";
+        printTrieNode(createdNode);
       }
       else
       {
         currentPosition = currentNode.value.children[childIndex];
       }
-      
-      printTrieNode(currentNode);
+
       stringCounter++;
     }
   }
@@ -117,9 +130,7 @@ namespace Index
 
   void Trie::printTrieNode(Database::Record<Index::TrieNode> currentNode)
   {
-    std::clog << "================Print do nodo salvo========================"
-              << "\n";
-    std::clog << "Node position: " << currentNode.position << "\n";
+
     std::clog << "Node address: " << currentNode.value.address << "\n";
     std::clog << "Node parent: " << currentNode.value.parentAdress << "\n";
     for (int i = 0; i < MAX_CHILDREN; ++i)
@@ -127,7 +138,7 @@ namespace Index
       if (currentNode.value.children[i] != -1)
         std::clog << "\nChild " << i << ": " << currentNode.value.children[i] << "\n";
     }
-    std::clog << "========================================"
+    std::clog << "=============================================================="
               << "\n";
   }
 
