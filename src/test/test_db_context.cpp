@@ -6,7 +6,12 @@
 
 std::vector<int> v = {43, 5, 2, 1, 87};
 
-int main() {
+int main()
+{
+    std::ofstream logFile("log.txt");
+    std::streambuf *oldClog = std::clog.rdbuf(logFile.rdbuf());
+    std::clog << "Testando o log\n";
+    
     // -------- Instantiate the Context with a file path
     Database::Context<int> dbContext("intDb.db");
 
@@ -42,5 +47,7 @@ int main() {
     // -------- Reset the dbContext
     // dbContext.reset();
 
+    // // Restaura std::clog para seu buffer original quando terminar
+    std::clog.rdbuf(oldClog);
     return 0;
 }
