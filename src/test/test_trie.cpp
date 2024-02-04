@@ -13,17 +13,32 @@ int main()
     std::clog << "Testando o log\n";
     
     Index::Trie trie("disk_trie.bin");
-    trie.insertString("ape", "000");
-    std::string search = "ape";
-    std::vector<std::string> addresses = trie.searchString(search);
+     std::clog << "insert: abc\n";
+    trie.insertString("abc", "000");
+    std::clog << "insert: abd\n";
+    trie.insertString("abd", "001");
+    std::clog << "insert: abcd\n";
+    trie.insertString("abcd", "002");
+    std::clog << "insert: ab\n";
+    trie.insertString("ab", "003");
 
-    std::clog << "address"
-              << "\n";
+    std::clog << "search: ab\n";
+    std::vector<std::string> addresses = trie.searchString("ab");
     for (std::string a : addresses)
     {
         std::clog << a << "\n";
     }
 
+    // std::clog << "delete abc 000\n";
+    // trie.deleteString("abc");
+
+    // std::clog << "search: abcde\n";
+    // addresses = trie.searchString("abcde");
+    // for (std::string a : addresses)
+    // {
+    //     std::clog << a << "\n";
+    // }
+    
     std::clog.rdbuf(oldClog);
     return 0;
 }
