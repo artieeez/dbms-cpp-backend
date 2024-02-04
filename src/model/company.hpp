@@ -1,8 +1,8 @@
-
+#include <string>;
 
 namespace Model {
   struct Company {
-    char companyId[20];
-    char name[20];
+    std::string companyId;
+    std::string name;
   }
 } // namespace Model

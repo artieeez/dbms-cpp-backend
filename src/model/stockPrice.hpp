@@ -1,10 +1,12 @@
 
+#include <string>
+
 namespace Model {
 
 struct StockPrice {
-    char stockPriceId[20];
-    char stockId[20];
-    char date [9];
+    std::string stockPriceId[20];
+    std::string stockId[20];
+    std::string date [9];
     float adj;
     float close;
     float high;
