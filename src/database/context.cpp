@@ -1,8 +1,7 @@
-#include <filesystem>
 #include "context.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
-
+#include <filesystem>
 
 namespace Database {
 
@@ -69,7 +68,12 @@ std::streampos Context<T>::append(const T &value) {
         _empty.pop_back();
         _file.seekp(position);
     } else {
-        position = (int)getLastPosition() + (int)sizeof(Record<T>);
+        int lastPos = (int)getLastPosition();
+        if (lastPos < 0) {
+            position = 0;
+        } else {
+            position = (int)getLastPosition() + (int)sizeof(Record<T>);
+        }
     }
 
     Record<T> record;
@@ -103,11 +107,9 @@ std::streampos Context<T>::getLastPosition() {
     _file.seekg(0, std::ios::end);
     std::streampos endPosition = _file.tellg();
 
-    if (endPosition == 0) {
-        return 0;
-    } else if (endPosition < sizeof(Record<T>)) {
+    if (endPosition == 0 || endPosition < sizeof(Record<T>)) {
         std::cerr << "File is empty or too small to contain a record." << std::endl;
-        return 0; // Return an invalid position to indicate an error
+        return -1; // Return an invalid position to indicate an error
     }
 
     // Calculate the position of the last record
@@ -158,10 +160,7 @@ void Context<T>::reset() {
 // Iterator
 template <typename T>
 bool Context<T>::next(bool skipDeleted) {
-    std::streampos lastPos = getLastPosition();
-
     bool positionIsValid = false;
-
     do {
         _currPos = ((int)_currPos < 0)
                        ? (int)static_cast<std::streampos>(0)

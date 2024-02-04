@@ -11,9 +11,9 @@ int main() {
     Database::Context<int> dbContext("intDb.db");
 
     // -------- append records to the database
-    for (int i = 0; i < v.size(); i++) {
-        dbContext.append(v[i]);
-    }
+    // for (int i = 0; i < v.size(); i++) {
+    //     dbContext.append(v[i]);
+    // }
 
     // Read a record from the database
     std::streampos position = dbContext.getLastPosition();
@@ -35,12 +35,12 @@ int main() {
     dbContext.clearIterator();
     while (dbContext.next()) {
         std::cout << "Pos: " << std::setw(2) << std::right << dbContext.getCurrPosition()
+                  << "Node .position: " << std::setw(2) << std::right << dbContext.curr.position
                   << " Val: " << std::setw(2) << std::right << dbContext.curr.value << std::endl;
     };
 
-
     // -------- Reset the dbContext
-    dbContext.reset();
+    // dbContext.reset();
 
     return 0;
 }
