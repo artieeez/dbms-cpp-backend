@@ -31,7 +31,7 @@ class Context {
 
         Context(const std::string& filePath);
 
-        // Context<T>::~Context();
+        ~Context();
 
         Record<T> read(std::streampos position);
 

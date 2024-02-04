@@ -32,10 +32,10 @@ Context<T>::Context(const std::string &filePath) {
     // };
 }
 
-// template <typename T>
-// Context<T>::~Context() {
-//     _file.close();
-// }
+template <typename T>
+Context<T>::~Context() {
+    _file.close();
+}
 
 template <typename T>
 Record<T> Context<T>::read(std::streampos position) {
