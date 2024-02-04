@@ -5,6 +5,7 @@
 #include <ios>
 #include <iostream>
 #include <vector>
+#include <functional>
 
 namespace Database {
 
@@ -34,7 +35,7 @@ public:
 
     Record<T> read(std::streampos position);
 
-    std::vector<Record<T>> find(bool (*callback)(Record<T>));
+    std::vector<Record<T>> find(std::function<bool(Record<T>)> predicate);
 
     std::streampos append(const T &value);
 

@@ -47,17 +47,15 @@ Record<T> Context<T>::read(std::streampos position) {
 }
 
 template <typename T>
-std::vector<Record<T>> Context<T>::find(bool (*callback)(Record<T>)) {
-    std::vector<Record<T>> records;
-
+std::vector<Record<T>> Context<T>::find(std::function<bool(Record<T>)> predicate) {
     clearIterator();
+    std::vector<Record<T>> results;
     while (next()) {
-        if (callback(curr)) {
-            records.push_back(curr);
+        if (predicate(curr)) {
+            results.push_back(curr);
         }
     }
-
-    return records;
+    return results;
 }
 
 template <typename T>
