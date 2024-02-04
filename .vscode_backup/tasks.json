@@ -1,0 +1,110 @@
+{
+  "version": "2.0.0",
+  "windows": {
+    "options": {
+      "shell": {
+        "executable": "cmd.exe",
+        "args": [
+          "/C",
+          "\"C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/Common7/Tools/VsDevCmd.bat\"",
+          "&&"
+        ]
+      }
+    }
+  },
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "build test_db_context",
+      "command": "cl.exe",
+      "args": [
+        "/Zi",
+        "/EHsc",
+        "/std:c++20",
+        "/I",
+        "${workspaceFolder}\\src\\model",
+        "/I",
+        "${workspaceFolder}\\src\\database",
+        "${workspaceFolder}\\src\\database\\context.cpp",
+        "${workspaceFolder}\\src\\test\\test_db_context.cpp",
+        "/Fo:${workspaceFolder}\\build\\obj\\",
+        "/Fd:${workspaceFolder}\\build\\obj\\",
+        "/Fe:${workspaceFolder}\\build\\test_db_context.exe",
+      ],
+      "problemMatcher": ["$msCompile"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "build test_controller_linear",
+      "command": "cl.exe",
+      "args": [
+        "/Zi",
+        "/EHsc",
+        "/std:c++20",
+        "/I",
+        "${workspaceFolder}\\src\\model",
+        "/I",
+        "${workspaceFolder}\\src\\database",
+        "/I",
+        "${workspaceFolder}\\src\\controller",
+        "${workspaceFolder}\\src\\database\\context.cpp",
+        "${workspaceFolder}\\src\\controller\\linearSearchController.cpp",
+        "${workspaceFolder}\\src\\test\\test_controller_linear.cpp",
+        "/Fo:${workspaceFolder}\\build\\obj\\",
+        "/Fd:${workspaceFolder}\\build\\obj\\",
+        "/Fe:${workspaceFolder}\\build\\test_controller_linear.exe",
+      ],
+      "problemMatcher": ["$msCompile"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "build test_trie",
+      "command": "cl.exe",
+      "args": [
+        "/Zi",
+        "/EHsc",
+        "/std:c++20",
+        "/I",
+        "${workspaceFolder}\\src\\model",
+        "/I",
+        "${workspaceFolder}\\src\\database",
+        "/I",
+        "${workspaceFolder}\\src\\index",
+        "${workspaceFolder}\\src\\database\\context.cpp",
+        "${workspaceFolder}\\src\\index\\trie.cpp",
+        "${workspaceFolder}\\src\\test\\test_trie.cpp",
+        "/Fo:${workspaceFolder}\\build\\obj\\",
+        "/Fd:${workspaceFolder}\\build\\obj\\",
+        "/Fe:${workspaceFolder}\\build\\test_trie.exe",
+      ],
+      "problemMatcher": ["$msCompile"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    }
+  ]
+}
