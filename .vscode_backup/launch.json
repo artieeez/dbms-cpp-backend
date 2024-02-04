@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "debug - Database::Context",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test_db_context.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "build test_db_context"
+    },
+    {
+      "name": "debug - Controller::LinearSearchController",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test_controller_linear.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "build test_controller_linear"
+    },
+    {
+      "name": "debug - Index::Trie",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test_trie.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "build test_trie"
+    }
+  ]
+}
