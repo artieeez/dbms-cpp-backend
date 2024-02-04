@@ -1,7 +1,7 @@
 #include <iomanip> // std::setw
 #include <iostream>
 #include <vector>
-
+//#include "trie.hpp"
 #include "context.hpp"
 
 std::vector<int> v = {43, 5, 2, 1, 87};
@@ -46,6 +46,21 @@ int main()
 
     // -------- Reset the dbContext
     // dbContext.reset();
+
+
+    ///////////TESTING TRIE//////////////////
+    // Index::Trie trie("disk_trie.bin");
+    // trie.insertString("ape", "000");
+    // std::string search = "ape";
+    // std::vector<std::string> addresses = trie.searchString(search);
+
+    // std::clog << "address"
+    //           << "\n";
+    // for (std::string a : addresses)
+    // {
+    //     std::clog << a << "\n";
+    // }
+
 
     // // Restaura std::clog para seu buffer original quando terminar
     std::clog.rdbuf(oldClog);
