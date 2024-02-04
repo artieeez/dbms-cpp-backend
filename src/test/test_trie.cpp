@@ -1,8 +1,8 @@
 #include <iomanip> // std::setw
 #include <iostream>
 #include <vector>
+#include "context.hpp"
 #include "trie.hpp"
-
 
 std::vector<int> v = {43, 5, 2, 1, 87};
 
@@ -13,27 +13,19 @@ int main()
     std::clog << "Testando o log\n";
     
     Index::Trie trie("disk_trie.bin");
-     std::clog << "insert: abc\n";
     trie.insertString("abc", "000");
-    std::clog << "insert: abd\n";
     trie.insertString("abd", "001");
-    std::clog << "insert: abcd\n";
+    trie.insertString("abc", "003");
     trie.insertString("abcd", "002");
-    std::clog << "insert: ab\n";
-    trie.insertString("ab", "003");
 
-    std::clog << "search: ab\n";
-    std::vector<std::string> addresses = trie.searchString("ab");
+    std::vector<std::string> addresses = trie.searchString("abc");
     for (std::string a : addresses)
     {
         std::clog << a << "\n";
     }
 
-    // std::clog << "delete abc 000\n";
     // trie.deleteString("abc");
-
-    // std::clog << "search: abcde\n";
-    // addresses = trie.searchString("abcde");
+    // addresses = trie.searchString("abc");
     // for (std::string a : addresses)
     // {
     //     std::clog << a << "\n";

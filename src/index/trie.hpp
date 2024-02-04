@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <string>
+#include "context.hpp"
+
 constexpr int MAX_CHILDREN = 26;
 
 namespace Index

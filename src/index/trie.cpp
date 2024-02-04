@@ -27,6 +27,7 @@ namespace Index
 
   void Trie::insertString(std::string companyName, std::string address)
   {
+    std::clog << "insert: " << companyName << "\n";
     int stringCounter = 1;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
@@ -49,7 +50,6 @@ namespace Index
 
         if (stringCounter == companyName.size())
         {
-          std::clog << ch << " is the last character\n";
           createdNode.value.address = address;
         }
 
@@ -60,21 +60,21 @@ namespace Index
         currentPosition = currentNode.value.children[childIndex];
         if (stringCounter == companyName.size())
         {
-          std::clog << ch << " is the last character\n";
-          currentNode.value.address = address;
+          Database::Record<Index::TrieNode> childNode = dbContext.read(currentPosition);
+          childNode.value.address = address;
+          dbContext.save(childNode);
         }
       }
 
       dbContext.save(currentNode);
       stringCounter++;
-      std::clog << ch << " "
-                << "Nodo pai==================================================\n";
-      printTrieNode(currentNode);
     }
   }
 
   std::vector<std::string> Trie::searchString(std::string companyName)
   {
+    std::clog << "search: " << companyName << "\n";
+    int stringCounter = 1;
     std::vector<std::string> addresses;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
@@ -86,8 +86,11 @@ namespace Index
 
       if (currentNode.value.children[childIndex] != -1)
       {
-        if (currentNode.value.address != "")
-          addresses.push_back(currentNode.value.address);
+        if (stringCounter == companyName.size())
+        {
+          if (currentNode.value.address != "")
+            addresses.push_back(currentNode.value.address);
+        }
         currentPosition = currentNode.value.children[childIndex];
       }
       else
@@ -95,8 +98,8 @@ namespace Index
         std::clog << "String not found" << std::endl;
         return addresses;
       }
+      stringCounter++;
     }
-
     recursiveSearch(currentPosition, &addresses);
     return addresses;
   }
@@ -121,6 +124,7 @@ namespace Index
 
   void Trie::deleteString(std::string companyName)
   {
+    std::clog << "delete: " << companyName << "\n";
     int stringCounter = 1;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
