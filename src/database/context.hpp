@@ -6,7 +6,6 @@
 #include <iostream>
 #include <vector>
 
-
 namespace Database {
 
 template <typename T>
@@ -18,26 +17,28 @@ struct Record {
 
 template <typename T>
 class Context {
-   private:
-    #include <vector>
+private:
+#include <vector>
 
     std::string _filePath;
     std::fstream _file;
     std::streampos _currPos = -1;
     std::vector<std::streampos> _empty;
 
-    public:
-        Record<T> curr;
+public:
+    Record<T> curr;
 
-        Context(const std::string& filePath);
+    Context(const std::string &filePath);
 
-        ~Context();
+    ~Context();
 
-        Record<T> read(std::streampos position);
+    Record<T> read(std::streampos position);
 
-        std::streampos append(const T& value);
+    std::vector<Record<T>> find(bool (*callback)(Record<T>));
 
-    void save(const Record<T>& record);
+    std::streampos append(const T &value);
+
+    void save(const Record<T> &record);
 
     void remove(std::streampos position);
 
@@ -54,6 +55,6 @@ class Context {
     std::streampos getCurrPosition();
 };
 
-}  // namespace Database
+} // namespace Database
 
-#endif  // DB_CONTEXT_HPP
+#endif // DB_CONTEXT_HPP

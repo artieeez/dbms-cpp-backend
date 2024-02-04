@@ -47,6 +47,20 @@ Record<T> Context<T>::read(std::streampos position) {
 }
 
 template <typename T>
+std::vector<Record<T>> Context<T>::find(bool (*callback)(Record<T>)) {
+    std::vector<Record<T>> records;
+
+    clearIterator();
+    while (next()) {
+        if (callback(curr)) {
+            records.push_back(curr);
+        }
+    }
+
+    return records;
+}
+
+template <typename T>
 std::streampos Context<T>::append(const T &value) {
     // position file pointer either at an empty position or at end of file
     std::streampos position;
