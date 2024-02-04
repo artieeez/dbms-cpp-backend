@@ -47,21 +47,6 @@ int main()
     // -------- Reset the dbContext
     // dbContext.reset();
 
-
-    ///////////TESTING TRIE//////////////////
-    // Index::Trie trie("disk_trie.bin");
-    // trie.insertString("ape", "000");
-    // std::string search = "ape";
-    // std::vector<std::string> addresses = trie.searchString(search);
-
-    // std::clog << "address"
-    //           << "\n";
-    // for (std::string a : addresses)
-    // {
-    //     std::clog << a << "\n";
-    // }
-
-
     // // Restaura std::clog para seu buffer original quando terminar
     std::clog.rdbuf(oldClog);
     return 0;
