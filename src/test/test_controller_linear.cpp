@@ -1,11 +1,11 @@
 #include <iomanip> // std::setw
 #include <iostream>
-#include <string>;
-#include <vector>;
-#include "linearSearchController.hpp";
-#include "context.hpp";
-#include "stock.hpp";
-#include "stockPrice.hpp";
+#include <string>
+#include <vector>
+#include "linearSearchController.hpp"
+#include "context.hpp"
+#include "stock.hpp"
+#include "stockPrice.hpp"
 
 int main() {
     // Test addStock
