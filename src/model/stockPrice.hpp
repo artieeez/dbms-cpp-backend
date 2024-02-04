@@ -4,9 +4,9 @@
 namespace Model {
 
 struct StockPrice {
-    std::string stockPriceId[20];
-    std::string stockId[20];
-    std::string date [9];
+    std::string stockPriceId;
+    std::string stockId;
+    std::string date;
     float adj;
     float close;
     float high;
