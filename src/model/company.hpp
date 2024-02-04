@@ -1,4 +1,4 @@
-#include <string>;
+#include <string>
 
 namespace Model {
   struct Company {

@@ -1,3 +1,5 @@
+#ifndef STOCKPRICE_HPP
+#define STOCKPRICE_HPP
 
 #include <string>
 
@@ -16,3 +18,5 @@ struct StockPrice {
 };
 
 } // namespace Model
+
+#endif // STOCKPRICE_HPP

@@ -19,8 +19,6 @@ struct Record {
 template <typename T>
 class Context {
 private:
-#include <vector>
-
     std::string _filePath;
     std::fstream _file;
     std::streampos _currPos = -1;

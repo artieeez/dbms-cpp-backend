@@ -1,6 +1,8 @@
-#include "context.hpp"
-
 #include <filesystem>
+#include "context.hpp"
+#include "stock.hpp"
+#include "stockPrice.hpp"
+
 
 namespace Database {
 
@@ -188,4 +190,6 @@ std::streampos Context<T>::getCurrPosition() {
 
 } // namespace Database
 
-template class Database::Context<int>;
+// template class Database::Context<int>;
+// template class Database::Context<Model::Stock>;
+// template class Database::Context<Model::StockPrice>;

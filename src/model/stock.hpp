@@ -1,3 +1,6 @@
+#ifndef STOCK_HPP
+#define STOCK_HPP
+
 #include <string>
 
 namespace Model {
@@ -11,3 +14,5 @@ struct Stock
 };
 
 }  // namespace Model
+
+#endif  // STOCK_HPP
