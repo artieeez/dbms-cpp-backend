@@ -12,8 +12,9 @@ namespace Index
     std::streampos children[MAX_CHILDREN];
     std::string address;
     std::streampos parentAdress;
+    bool isLeave;
 
-    TrieNode() : address(""), parentAdress(-1)
+    TrieNode() : address(""), parentAdress(-1), isLeave(true)
     {
       for (int i = 0; i < MAX_CHILDREN; ++i)
       {
@@ -34,6 +35,7 @@ namespace Index
     std::vector<std::string> searchString(std::string companyName);
     void deleteString(std::string companyName);
     void printTrieNode(Database::Record<Index::TrieNode> currentNode);
+    void recursiveSearch(std::streampos currentPosition, std::vector<std::string> *addressList);
   };
 
 } // namespace Index

@@ -41,7 +41,7 @@ namespace Index
         TrieNode node;
         std::streampos newPosition = dbContext.append(node);
         currentNode.value.children[childIndex] = newPosition;
-        dbContext.save(currentNode);
+        currentNode.value.isLeave = false;
 
         Database::Record<Index::TrieNode> createdNode = dbContext.read(newPosition);
         createdNode.value.parentAdress = currentPosition;
@@ -54,16 +54,22 @@ namespace Index
         }
 
         dbContext.save(createdNode);
-        std::clog << ch << " "
-                  << "Nodo filho==================================================\n";
-        printTrieNode(createdNode);
       }
       else
       {
         currentPosition = currentNode.value.children[childIndex];
+        if (stringCounter == companyName.size())
+        {
+          std::clog << ch << " is the last character\n";
+          currentNode.value.address = address;
+        }
       }
 
+      dbContext.save(currentNode);
       stringCounter++;
+      std::clog << ch << " "
+                << "Nodo pai==================================================\n";
+      printTrieNode(currentNode);
     }
   }
 
@@ -91,7 +97,26 @@ namespace Index
       }
     }
 
+    recursiveSearch(currentPosition, &addresses);
     return addresses;
+  }
+
+  void Trie::recursiveSearch(std::streampos currentPosition, std::vector<std::string> *addressList)
+  {
+    Database::Context<TrieNode> dbContext(filename);
+    Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
+    if (currentNode.value.address != "")
+      addressList->push_back(currentNode.value.address);
+    if (currentNode.value.isLeave == false)
+    {
+      for (int i = 0; i < MAX_CHILDREN; ++i)
+      {
+        if (currentNode.value.children[i] != -1)
+        {
+          recursiveSearch(currentNode.value.children[i], addressList);
+        }
+      }
+    }
   }
 
   void Trie::deleteString(std::string companyName)
@@ -141,5 +166,4 @@ namespace Index
     std::clog << "=============================================================="
               << "\n";
   }
-
 };
