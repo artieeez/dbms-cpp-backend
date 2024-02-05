@@ -1,0 +1,11 @@
+Testando o log
+Node address: -1
+Node parent: -1
+==============================================================
+insert: abc
+insert: abd
+insert: abc
+insert: abcd
+search: abc
+3
+4
