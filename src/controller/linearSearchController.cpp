@@ -4,6 +4,7 @@
 #include "stockPrice.hpp"
 #include <string>
 #include <vector>
+#include <queue>
 
 namespace Controller {
 
@@ -121,7 +122,52 @@ void resetDb() {
 }
 
 void sortStockPriceList(std::vector<Model::StockPrice> stockPriceList) {
-    // TODO:
+    std::array<std::queue<Model::StockPrice>, 10> buckets;
+
+    // sort by day
+    for (int i = 0; i < 2; i++) {
+        for (auto sPrice : stockPriceList)
+            buckets.at(sPrice.date.at(9 - i) - '0').push(sPrice);
+
+        int p = 0;
+        for (int j = 0; j < 10; j++) {
+            while (!buckets.at(j).empty()) {
+                stockPriceList.at(p) = buckets.at(j).front();
+                buckets.at(j).pop();
+                p++;
+            }
+        }
+    }
+
+    // sort by month
+    for (int i = 0; i < 2; i++) {
+        for (auto sPrice : stockPriceList)
+            buckets.at(sPrice.date.at(6 - i) - '0').push(sPrice);
+
+        int p = 0; // position in vector
+        for (int j = 0; j < 10; j++) {
+            while (!buckets.at(j).empty()) {
+                stockPriceList.at(p) = buckets.at(j).front();
+                buckets.at(j).pop();
+                p++;
+            }
+        }
+    }
+
+    // sort by year
+    for (int i = 0; i < 4; i++) {
+        for (auto sPrice : stockPriceList)
+            buckets.at(sPrice.date.at(3 - i) - '0').push(sPrice);
+
+        int p = 0; // position in vector
+        for (int j = 0; j < 10; j++) {
+            while (!buckets.at(j).empty()) {
+                stockPriceList.at(p) = buckets.at(j).front();
+                buckets.at(j).pop();
+                p++;
+            }
+        }
+    }
 }
 
 } // namespace LinearSearch
