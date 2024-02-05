@@ -1,12 +1,13 @@
-#include <string>
-#include <vector>
 #include "linearSearchController.hpp"
 #include "context.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
-
+#include <string>
+#include <vector>
 
 namespace Controller {
+
+namespace LinearSearch {
 
 void addStock(Model::Stock payload) {
     Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
@@ -56,7 +57,7 @@ std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSiz
         return record.value.stockId.find(prefix) != std::string::npos;
     });
 
-    //map records to stocks
+    // map records to stocks
     std::vector<Model::Stock> result;
     for (Database::Record<Model::Stock> record : records) {
         result.push_back(record.value);
@@ -100,7 +101,7 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::strin
         return record.value.stockId == stockId;
     });
 
-    //map records to stock prices
+    // map records to stock prices
     std::vector<Model::StockPrice> result;
     for (Database::Record<Model::StockPrice> record : records) {
         result.push_back(record.value);
@@ -115,5 +116,7 @@ void resetDb() {
     stockDbContext.reset();
     stockPriceDbContext.reset();
 }
+
+} // namespace LinearSearch
 
 } // namespace Controller
