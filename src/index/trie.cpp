@@ -1,12 +1,22 @@
 
 
 #include <cstring>
+#include <algorithm>
+#include <cctype>
+#include <string>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include "context.hpp"
 #include "trie.hpp"
 
+std::string toLowercase(std::string str)
+{
+  std::transform(str.begin(), str.end(), str.begin(),
+                 [](unsigned char c)
+                 { return std::tolower(c); });
+  return str;
+}
 namespace Index
 {
   /////////////////////////////////////////////////////////////////////
@@ -25,14 +35,15 @@ namespace Index
     dbContext.reset();
   }
 
-  void Trie::insertString(std::string companyName, std::string address)
+  void Trie::insertString(std::string companyName, std::streampos address)
   {
     std::clog << "insert: " << companyName << "\n";
+    std::string companyNameLower = toLowercase(companyName);
     int stringCounter = 1;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
 
-    for (char ch : companyName)
+    for (char ch : companyNameLower)
     {
       int childIndex = ch - 'a';
       Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
@@ -48,7 +59,7 @@ namespace Index
         createdNode.value.parentAdress = currentPosition;
         currentPosition = newPosition;
 
-        if (stringCounter == companyName.size())
+        if (stringCounter == companyNameLower.size())
         {
           createdNode.value.address = address;
         }
@@ -58,7 +69,7 @@ namespace Index
       else
       {
         currentPosition = currentNode.value.children[childIndex];
-        if (stringCounter == companyName.size())
+        if (stringCounter == companyNameLower.size())
         {
           Database::Record<Index::TrieNode> childNode = dbContext.read(currentPosition);
           childNode.value.address = address;
@@ -71,11 +82,11 @@ namespace Index
     }
   }
 
-  std::vector<std::string> Trie::searchString(std::string companyName)
+  std::vector<std::streampos> Trie::searchString(std::string companyName)
   {
     std::clog << "search: " << companyName << "\n";
     int stringCounter = 1;
-    std::vector<std::string> addresses;
+    std::vector<std::streampos> addresses;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
 
@@ -88,7 +99,7 @@ namespace Index
       {
         if (stringCounter == companyName.size())
         {
-          if (currentNode.value.address != "")
+          if (currentNode.value.address != -1)
             addresses.push_back(currentNode.value.address);
         }
         currentPosition = currentNode.value.children[childIndex];
@@ -104,11 +115,11 @@ namespace Index
     return addresses;
   }
 
-  void Trie::recursiveSearch(std::streampos currentPosition, std::vector<std::string> *addressList)
+  void Trie::recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList)
   {
     Database::Context<TrieNode> dbContext(filename);
     Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
-    if (currentNode.value.address != "")
+    if (currentNode.value.address != -1)
       addressList->push_back(currentNode.value.address);
     if (currentNode.value.isLeave == false)
     {
@@ -138,7 +149,7 @@ namespace Index
       {
         if (stringCounter == companyName.size())
         {
-          currentNode.value.address = "";
+          currentNode.value.address = -1;
           currentNode.deleted = true;
           dbContext.save(currentNode);
           return;

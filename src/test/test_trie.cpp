@@ -13,13 +13,13 @@ int main()
     std::clog << "Testando o log\n";
     
     Index::Trie trie("disk_trie.bin");
-    trie.insertString("abc", "000");
-    trie.insertString("abd", "001");
-    trie.insertString("abc", "003");
-    trie.insertString("abcd", "002");
+    trie.insertString("abc", 0);
+    trie.insertString("abd", 1);
+    trie.insertString("abc", 3);
+    trie.insertString("abcd", 4);
 
-    std::vector<std::string> addresses = trie.searchString("abc");
-    for (std::string a : addresses)
+    std::vector<std::streampos> addresses = trie.searchString("abc");
+    for (std::streampos  a : addresses)
     {
         std::clog << a << "\n";
     }

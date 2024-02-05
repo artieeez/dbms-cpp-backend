@@ -12,11 +12,11 @@ namespace Index
   struct TrieNode
   {
     std::streampos children[MAX_CHILDREN];
-    std::string address;
+    std::streampos  address;
     std::streampos parentAdress;
     bool isLeave;
 
-    TrieNode() : address(""), parentAdress(-1), isLeave(true)
+    TrieNode() : address(-1), parentAdress(-1), isLeave(true)
     {
       for (int i = 0; i < MAX_CHILDREN; ++i)
       {
@@ -33,11 +33,11 @@ namespace Index
   public:
     Trie(const std::string &filePath);
     ~Trie();
-    void insertString(std::string companyName, std::string address);
-    std::vector<std::string> searchString(std::string companyName);
+    void insertString(std::string companyName, std::streampos  address);
+    std::vector<std::streampos> searchString(std::string companyName);
     void deleteString(std::string companyName);
     void printTrieNode(Database::Record<Index::TrieNode> currentNode);
-    void recursiveSearch(std::streampos currentPosition, std::vector<std::string> *addressList);
+    void recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList);
   };
 
 } // namespace Index
