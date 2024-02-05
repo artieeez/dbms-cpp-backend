@@ -36,6 +36,18 @@
       "environment": [],
       "console": "integratedTerminal",
       "preLaunchTask": "build test_trie"
+    },
+    {
+      "name": "debug - Main",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test_main.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "build test_main"
     }
   ]
 }
