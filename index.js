@@ -31,3 +31,7 @@ dbms.linearSearch.deleteStock("AAPL");
 // get stock list
 const stockList = dbms.linearSearch.getStockList("A", 1, 10, "name_asc");
 console.log("\nstockList", stockList)
+
+// reset db
+  // console.log("\nreset db")
+  // dbms.linearSearch.resetDatabase();

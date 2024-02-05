@@ -142,6 +142,13 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
     return result;
 }
 
+// reset the database
+Napi::Value resetDatabase(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+    Controller::LinearSearch::resetDb();
+    return Napi::String::New(env, "success");
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
     // Register linearSearchController methods
@@ -151,6 +158,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     linearSearchController.Set(Napi::String::New(env, "updateStock"), Napi::Function::New(env, updateStock));
     linearSearchController.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, getStock));
     linearSearchController.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, getStockList));
+    linearSearchController.Set(Napi::String::New(env, "resetDatabase"), Napi::Function::New(env, resetDatabase));
 
     // Register linearSearchController
     exports.Set(Napi::String::New(env, "linearSearch"), linearSearchController);
