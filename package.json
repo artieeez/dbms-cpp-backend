@@ -1,0 +1,8 @@
+{
+  "name": "dbms-napi",
+  "version": "1.0.0",
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "node-addon-api": "*"
+  }
+}
