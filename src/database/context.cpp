@@ -117,37 +117,6 @@ std::streampos Context<T>::getLastPosition() {
 }
 
 template <typename T>
-void Context<T>::move(std::streampos position, std::streampos newPosition) {
-    // Check if the positions are valid
-    if (position < 0 || newPosition < 0) {
-        std::cerr << "Invalid positions for record relocation." << std::endl;
-        return;
-    }
-
-    // Check if the file is large enough to contain records at the specified positions
-    _file.seekg(0, std::ios::end);
-    std::streampos endPosition = _file.tellg();
-
-    if (endPosition < (int)std::max(position, newPosition) + sizeof(Record<T>)) {
-        std::cerr << "File is too small to contain records at the specified positions." << std::endl;
-        return;
-    }
-
-    // Move the get pointer to the position of the record to be relocated
-    _file.seekg(position);
-
-    // Read the record from the original position
-    Record<T> record;
-    _file.read(reinterpret_cast<char *>(&record), sizeof(Record<T>));
-
-    // Move the put pointer to the new position
-    _file.seekp(newPosition);
-
-    // Write the record to the new position
-    _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));
-}
-
-template <typename T>
 void Context<T>::reset() {
     _file.close();
     _file.open(_filePath, std::ios::out | std::ios::trunc);

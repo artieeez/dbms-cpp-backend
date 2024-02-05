@@ -43,8 +43,6 @@ public:
 
     std::streampos getLastPosition();
 
-    void move(std::streampos position, std::streampos newPosition);
-
     void reset();
 
     bool next(bool skipDeleted = true);
