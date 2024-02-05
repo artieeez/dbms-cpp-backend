@@ -17,6 +17,20 @@ std::string toLowercase(std::string str)
                  { return std::tolower(c); });
   return str;
 }
+
+bool hasChildren(std::streampos positions[MAX_CHILDREN])
+{
+  int count = 0;
+  for (int i = 0; i < MAX_CHILDREN; ++i)
+  {
+    if (positions[i] >= 0)
+    { // Considerando que um valor válido é um streampos não-negativo
+      ++count;
+    }
+  }
+  return count > 0;
+}
+
 namespace Index
 {
   /////////////////////////////////////////////////////////////////////
@@ -26,7 +40,6 @@ namespace Index
     Database::Context<TrieNode> dbContext(filename);
     TrieNode parentNode;
     std::streampos first = dbContext.append(parentNode);
-    printTrieNode(dbContext.read(first));
   }
 
   Trie::~Trie()
@@ -112,6 +125,11 @@ namespace Index
       stringCounter++;
     }
     recursiveSearch(currentPosition, &addresses);
+    std::clog << "Address list:" << "\n";
+    for (std::streampos a : addresses)
+    {
+      std::clog << a << "\n";
+    }
     return addresses;
   }
 
@@ -149,9 +167,19 @@ namespace Index
       {
         if (stringCounter == companyName.size())
         {
-          currentNode.value.address = -1;
-          currentNode.deleted = true;
-          dbContext.save(currentNode);
+          currentPosition = currentNode.value.children[childIndex];
+          Database::Record<Index::TrieNode> nextNode = dbContext.read(currentPosition);
+
+          nextNode.value.address = -1;
+          nextNode.deleted = true;
+          dbContext.save(nextNode);
+          if (nextNode.value.isLeave == true)
+          {
+            currentNode.value.children[childIndex] = -1;
+            if (hasChildren(currentNode.value.children) == false)
+              currentNode.value.isLeave = true;
+            dbContext.save(currentNode);
+          }
           return;
         }
         else
@@ -161,7 +189,7 @@ namespace Index
       }
       else
       {
-        std::cout << "String not found" << std::endl;
+        std::clog << companyName << " not found" << std::endl;
         return;
       }
       stringCounter++;
@@ -173,6 +201,7 @@ namespace Index
 
     std::clog << "Node address: " << currentNode.value.address << "\n";
     std::clog << "Node parent: " << currentNode.value.parentAdress << "\n";
+    std::clog << "Node is leave: " << currentNode.value.isLeave << "\n";
     for (int i = 0; i < MAX_CHILDREN; ++i)
     {
       if (currentNode.value.children[i] != -1)
