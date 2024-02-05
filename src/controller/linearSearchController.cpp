@@ -95,7 +95,8 @@ void updateStockPrice(Model::StockPrice payload) {
     }
 }
 
-std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::string minDate, std::string maxDate) {
+std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::string minDate, std::string maxDate, std::string orderBy) {
+
     Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
     std::vector<Database::Record<Model::StockPrice>> records = dbContext.find([stockId](Database::Record<Model::StockPrice> record) {
         return record.value.stockId == stockId;
@@ -107,6 +108,8 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::strin
         result.push_back(record.value);
     }
 
+    sortStockPriceList(result);
+
     return result;
 }
 
@@ -115,6 +118,10 @@ void resetDb() {
     Database::Context<Model::Stock> stockPriceDbContext(STOCK_PRICE_DB_FILE);
     stockDbContext.reset();
     stockPriceDbContext.reset();
+}
+
+void sortStockPriceList(std::vector<Model::StockPrice> stockPriceList) {
+    // TODO:
 }
 
 } // namespace LinearSearch

@@ -18,10 +18,11 @@ std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSiz
 void addStockPrice(Model::StockPrice payload);
 void deleteStockPrice(std::string stockPriceId);
 void updateStockPrice(Model::StockPrice payload);
-std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::string minDate, std::string maxDate);
+std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::string minDate, std::string maxDate, std::string orderBy);
 
 void resetDb();
-
+// TODO: add sorting options to this function (ex: increasing, decreasing, etc)
+void sortStockPriceList(std::vector<Model::StockPrice> stockPriceList);
 } // namespace LinearSearch
 
 } // namespace Controller
