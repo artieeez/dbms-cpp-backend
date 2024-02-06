@@ -8,7 +8,7 @@
 #include "context.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
-#include "indexController.cpp"
+
 
 namespace Controller {
 
@@ -199,15 +199,15 @@ int loadDb(int pageSize) {
 
         sPrice = getStockPriceFromLine(line);
 
-        std::vector<Model::Stock> sList = Controller::IndexSearch::getStockList(sPrice.stockId, 1, 1);
+        std::vector<Model::Stock> sList = Controller::LinearSearch::getStockList(sPrice.stockId, 1, 1);
 
         if (sList.size() == 0) {
             Model::Stock s;
             s.stockId = sPrice.stockId;
-            Controller::IndexSearch::addStock(s);
+            Controller::LinearSearch::addStock(s);
         }
 
-        Controller::IndexSearch::addStockPrice(sPrice);
+        Controller::LinearSearch::addStockPrice(sPrice);
     }
 
     recPos.value = fileStockPrice.tellg();

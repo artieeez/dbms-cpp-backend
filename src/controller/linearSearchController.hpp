@@ -15,7 +15,7 @@ void addStock(Model::Stock payload);
 void deleteStock(std::string stockId);
 void updateStock(Model::Stock payload);
 Model::Stock getStock(std::string stockId);
-std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSize, std::string orderBy);
+std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSize, std::string orderBy = "name_asc");
 
 void addStockPrice(Model::StockPrice payload);
 void deleteStockPrice(std::string stockPriceId);

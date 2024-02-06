@@ -1,9 +1,9 @@
+#include <filesystem>
 #include "context.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
 #include "blockStorage.hpp"
 #include "trie.hpp"
-#include <filesystem>
 
 namespace Database {
 
@@ -48,6 +48,7 @@ Record<T> Context<T>::read(std::streampos position) {
     try {
         _file.read(reinterpret_cast<char *>(&record), sizeof(Record<T>));
     } catch (std::exception &e) {
+        std::cerr << "Error reading file: " << e.what() << std::endl;
         record.error = true;
     }
 
@@ -165,6 +166,7 @@ std::streampos Context<T>::getCurrPosition() {
 } // namespace Database
 
 template class Database::Context<int>;
+template class Database::Context<std::streampos>;
 template class Database::Context<Model::Stock>;
 template class Database::Context<Model::StockPrice>;
 template class Database::Context<Index::TrieNode>;
