@@ -7,6 +7,10 @@
 namespace Controller {
 namespace LinearSearch {
 
+const std::string STOCK_DB_FILE = "stockDb.db";
+const std::string STOCK_PRICE_DB_FILE = "stockPriceDb.db";
+const std::string LOADER_DB_FILE_PATH = "loader.db";
+
 void addStock(Model::Stock payload);
 void deleteStock(std::string stockId);
 void updateStock(Model::Stock payload);
@@ -19,8 +23,16 @@ void updateStockPrice(Model::StockPrice payload);
 std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::string minDate, std::string maxDate, std::string orderBy);
 
 void resetDb();
+
 // TODO: add sorting options to this function (ex: increasing, decreasing, etc)
 void sortStockPriceList(std::vector<Model::StockPrice> stockPriceList);
+
+int loadDb(int pageSize);
+
+inline std::string getSymbolFromLine(std::string line);
+inline std::string getDateFromLine(std::string line);
+Model::StockPrice getStockPriceFromLine(std::string line);
+
 } // namespace LinearSearch
 
 } // namespace Controller

@@ -2,6 +2,8 @@
 #include <vector>
 #include <queue>
 #include <array>
+#include <fstream>
+#include <cassert>
 #include "linearSearchController.hpp"
 #include "context.hpp"
 #include "stock.hpp"
@@ -170,6 +172,102 @@ void sortStockPriceList(std::vector<Model::StockPrice> stockPriceList) {
         }
     }
 }
+
+int loadDb(int pageSize) {
+    std::ifstream fileStockPrice {"./../raw_data/bovespa_stocks.csv"};
+    assert(fileStockPrice.is_open());
+
+    Database::Context<std::streampos> loaderDb (Controller::LinearSearch::LOADER_DB_FILE_PATH);
+
+    auto recPos = loaderDb.read(0);
+
+    fileStockPrice.seekg(recPos.value);
+    for (int i = 0; i < pageSize; i++) {
+        Model::StockPrice sPrice;
+        std::string line;
+
+        std::getline(fileStockPrice, line);
+
+        sPrice = getStockPriceFromLine(line);
+        // TODO:
+    }
+
+    recPos.value = fileStockPrice.tellg();
+
+    loaderDb.save(recPos);
+}
+
+inline std::string getSymbolFromLine(std::string line) {
+    int i {11};
+    int j {i};
+    while (line.at(j) != ',')
+        j++;
+
+    return line.substr(i, j - i);
+}
+
+inline std::string getDateFromLine(std::string line) {
+    return line.substr(0, 10);
+}
+
+Model::StockPrice getStockPriceFromLine(std::string line) {
+    // string position starts in 11 to skip date
+    int begin {11};
+    int end = {begin};
+    Model::StockPrice sPrice;
+
+    sPrice.date = getDateFromLine(line);
+    sPrice.stockPriceId = getSymbolFromLine(line);
+
+    // skip symbol
+    while (line.at(end) != ',')
+        end++;
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.adj = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.close = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.high = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.low = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.open = std::stof(line.substr(begin, end - begin));
+
+    sPrice.volume = std::stof(line.substr(end + 1, line.size() - end - 1));
+
+    /*
+    std::cout << "symbol: " << sPrice.stockId << std::endl;
+    std::cout << "adj: " << sPrice.adj << std::endl;
+    std::cout << "close: " << sPrice.close << std::endl;
+    std::cout << "high: " << sPrice.high << std::endl;
+    std::cout << "low: " << sPrice.low << std::endl;
+    std::cout << "open: " << sPrice.open << std::endl;
+    std::cout << "volume: " << sPrice.volume << std::endl;
+    */
+
+    return sPrice;
+}
+
 
 } // namespace LinearSearch
 

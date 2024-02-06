@@ -48,11 +48,13 @@ inline std::string getDateFromLine(std::string line) {
     return line.substr(0, 10);
 }
 
-Model::StockPrice getStockPriceInfoFromLine(std::string line) {
-    // string position starts in 11 to skip date
-    int begin {11};
+Model::StockPrice getStockPriceFromLine(std::string line) {
+ int begin {11};
     int end = {begin};
     Model::StockPrice sPrice;
+
+    sPrice.date = getDateFromLine(line);
+    sPrice.stockPriceId = getSymbolFromLine(line);
 
     // skip symbol
     while (line.at(end) != ',')
@@ -91,6 +93,7 @@ Model::StockPrice getStockPriceInfoFromLine(std::string line) {
     sPrice.volume = std::stof(line.substr(end + 1, line.size() - end - 1));
 
 
+    std::cout << "symbol: " << sPrice.stockPriceId << std::endl;
     std::cout << "adj: " << sPrice.adj << std::endl;
     std::cout << "close: " << sPrice.close << std::endl;
     std::cout << "high: " << sPrice.high << std::endl;
@@ -111,9 +114,10 @@ void test_open_file () {
 
     std::string lastStockName;
     std::getline(data_file, lastStockName);
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 100; i++) {
         getline(data_file, line);
-        getStockPriceInfoFromLine(line);
+        std::cout << line << std::endl;
+        getStockPriceFromLine(line);
     }
 
     data_file.close();
