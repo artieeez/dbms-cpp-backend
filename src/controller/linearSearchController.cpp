@@ -1,10 +1,11 @@
+#include <string>
+#include <vector>
+#include <queue>
+#include <array>
 #include "linearSearchController.hpp"
 #include "context.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
-#include <string>
-#include <vector>
-#include <queue>
 
 namespace Controller {
 

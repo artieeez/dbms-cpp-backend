@@ -110,9 +110,6 @@ Model::StockPrice getStockPriceInfoFromLine(std::string line) {
 
 void test_open_file () {
     std::ifstream data_file {path_data_file};
-    std::ofstream out_file {"./raw_data/test_file.csv"};
-
-    assert(data_file.is_open());
 
     std::string line;
 
@@ -127,7 +124,6 @@ void test_open_file () {
     }
 
     data_file.close();
-    out_file.close();
 }
 
 int main() {

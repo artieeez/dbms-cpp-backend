@@ -1,7 +1,8 @@
+#include <string>
+#include <queue>
+#include <vector>
 #include "stock.hpp"
 #include "stockPrice.hpp"
-#include <string>
-#include <vector>
 
 namespace Controller {
 namespace LinearSearch {
