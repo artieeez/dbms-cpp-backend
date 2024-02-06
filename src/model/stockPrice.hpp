@@ -3,6 +3,7 @@
 
 #include <string>
 
+const std::string STOCK_PRICE_DB_FILE = "stockPriceDb.db";
 namespace Model {
 
 struct StockPrice {
