@@ -55,12 +55,11 @@ namespace Index
   Trie::~Trie()
   {
     Database::Context<TrieNode> dbContext(filename);
-    dbContext.reset();
   }
 
   void Trie::insertString(std::string companyName, std::streampos address)
   {
-    std::clog << "insert: " << companyName << "\n";
+    std::clog << "insert: " << companyName << " " << filename << "\n";
     std::string companyNameLower = toLowercase(companyName);
     int stringCounter = 1;
     std::streampos currentPosition = 0;
@@ -111,7 +110,7 @@ namespace Index
     int endIndex = startIndex + pageSize;
     int counterPointer = 0;
 
-    std::clog << "search: " << companyName << "\n";
+    std::clog << "search: " << companyName << " " << filename << "\n";
     int stringCounter = 1;
     std::vector<std::streampos> addresses;
     std::streampos currentPosition = 0;
@@ -185,7 +184,7 @@ namespace Index
 
   void Trie::deleteString(std::string companyName)
   {
-    std::clog << "delete: " << companyName << "\n";
+    std::clog << "delete: " << companyName << " " << filename << "\n";
     int stringCounter = 1;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
