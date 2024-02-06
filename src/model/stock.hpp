@@ -3,16 +3,18 @@
 
 #include <string>
 
-namespace Model {
-
-struct Stock
+const std::string STOCK_DB_FILE = "stockDb.db";
+namespace Model
 {
-    std::string stockId;
-    std::string companyId;
-    std::string min_date;
-    std::string max_date;
-};
 
-}  // namespace Model
+    struct Stock
+    {
+        std::string stockId;
+        std::string companyId;
+        std::string min_date;
+        std::string max_date;
+    };
 
-#endif  // STOCK_HPP
+} // namespace Model
+
+#endif // STOCK_HPP
