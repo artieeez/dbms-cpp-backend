@@ -41,6 +41,6 @@
 
 env
 
-/build/
+# CMakeFiles
 
 node_modules
