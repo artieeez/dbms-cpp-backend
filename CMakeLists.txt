@@ -7,16 +7,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/database/context.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/controller/linearSearchController.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/index/trie.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/index/blockStorage.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/controller/linearSearchController.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/controller/indexController.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/test/test_loader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/test/test_controller_index.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/model)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/database)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/controller)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/index)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/controller)
 
 add_executable(dbms_cpp_backend ${SOURCES})
 
