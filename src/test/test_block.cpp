@@ -17,23 +17,52 @@ int main() {
     std::streampos pos = context.append(40);
     std::streampos blockStart = blockStorage.startChain(pos);
     blockStorage.insertBlock(blockStart, context.append(360));
+    context.append(50);
     blockStorage.insertBlock(blockStart, context.append(900));
+    context.append(51);
     blockStorage.insertBlock(blockStart, context.append(940));
+    context.append(52);
 
     for (int i = 10; i < 20; i++) {
         context.append(i);
     }
 
     // interate over block and print values
+    std::cout << "\nBefore remove" << std::endl;
     std::vector<std::streampos> block = blockStorage.retrieveBlock(blockStart);
     for (std::streampos pos : block) {
-        std::cout << context.read(pos).value << std::endl;
+        std::cout << "Value: " << context.read(pos).value << " - Address: " << pos << std::endl;
     }
 
-    // iterate over block
+    // remove third block
+    blockStorage.removeBlockItem(blockStart, block[2]);
+
+    // interate over block and print values
+    std::cout << "\nAfter remove" << std::endl;
+    block = blockStorage.retrieveBlock(blockStart);
+    for (std::streampos pos : block) {
+        std::cout << "Value: " << context.read(pos).value << " - Address: " << pos << std::endl;
+    }
+
+    // remove first block
+    blockStart = blockStorage.removeBlockItem(blockStart, block[0]);
+
+    // interate over block and print values
+    std::cout << "\nAfter remove" << std::endl;
+    block = blockStorage.retrieveBlock(blockStart);
+    for (std::streampos pos : block) {
+        std::cout << "Value: " << context.read(pos).value << " - Address: " << pos << std::endl;
+    }
+
+    // remove block
+    blockStorage.removeBlock(blockStart);
+
+    // iterate over context and print values
+    std::cout << "\nAfter removeBlock" << std::endl;
     blockContext.clearIterator();
     while (blockContext.next()) {
-        int value = context.read(blockContext.curr.value.address).value;
+        int val = context.read(blockContext.curr.value.address).value;
+        std::cout << "Adress: " << blockContext.curr.value.address << " - Value: " << val << std::endl;
     }
 
     context.reset();

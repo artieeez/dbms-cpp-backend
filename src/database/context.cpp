@@ -97,11 +97,6 @@ template <typename T>
 void Context<T>::save(const Record<T> &record) {
     _file.seekp(record.position);
 
-    std::cout << "save -> record.position: " << record.position << std::endl;
-    std::cout << "save -> record.error: " << record.error << std::endl;
-    std::cout << "save -> record.deleted: " << record.deleted << std::endl;
-    std::cout << "save -> _file.tellp(): " << _file.tellp() << std::endl;
-
     _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));
 }
 
