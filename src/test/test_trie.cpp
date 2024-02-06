@@ -16,15 +16,25 @@ int main()
     trie.insertString("abc", 100);
     trie.insertString("abcd", 101);
     trie.insertString("ab", 102);
+    trie.insertString("abcde", 103);
+    trie.insertString("abcdef", 104);
+    trie.insertString("abcdg", 105);
 
-    // Esse exemplo busca ab, que deve retornar 100, 101 e 102
-    // Depois tenta deletar abd que não existe
-    // Depois deleta abc, e busca ab novamente, que deve retornar 101 e 102
-    std::vector<std::streampos> addresses = trie.searchString("ab");
+    std::clog << "========================\n";
+    // deve mostrar 102 100 101
+    std::vector<std::streampos> addresses = trie.searchString("ab", 3, 1);
+    // deve mostrar 103 104 105
+    addresses = trie.searchString("ab", 3, 2);
+    std::clog << "========================\n";
     trie.deleteString("abd");
-    trie.deleteString("abc");
-    addresses = trie.searchString("ab");
-    
+    trie.deleteString("abc"); //100
+    trie.deleteString("abcdef"); //104
+    std::clog << "========================\n";
+    // deve mostrar 102 101 103
+    addresses = trie.searchString("ab", 3, 1);
+    // deve mostrar 105
+    addresses = trie.searchString("ab", 3, 2);
+
     std::clog.rdbuf(oldClog);
     return 0;
 }

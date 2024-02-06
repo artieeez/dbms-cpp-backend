@@ -31,6 +31,16 @@ bool hasChildren(std::streampos positions[MAX_CHILDREN])
   return count > 0;
 }
 
+void printStringList(std::vector<std::streampos> addresses)
+{
+  std::clog << "Address list:"
+            << "\n";
+  for (std::streampos a : addresses)
+  {
+    std::clog << a << "\n";
+  }
+}
+
 namespace Index
 {
   /////////////////////////////////////////////////////////////////////
@@ -95,8 +105,12 @@ namespace Index
     }
   }
 
-  std::vector<std::streampos> Trie::searchString(std::string companyName)
+  std::vector<std::streampos> Trie::searchString(std::string companyName, int pageSize, int page)
   {
+    int startIndex = page <= 0 ? page : (page - 1) * pageSize;
+    int endIndex = startIndex + pageSize;
+    int counterPointer = 0;
+
     std::clog << "search: " << companyName << "\n";
     int stringCounter = 1;
     std::vector<std::streampos> addresses;
@@ -113,7 +127,17 @@ namespace Index
         if (stringCounter == companyName.size())
         {
           if (currentNode.value.address != -1)
-            addresses.push_back(currentNode.value.address);
+          {
+            if (startIndex <= counterPointer && counterPointer < endIndex)
+            {
+              addresses.push_back(currentNode.value.address);
+            }
+            else if (counterPointer == endIndex)
+            {
+              return addresses;
+            }
+            counterPointer++;
+          }
         }
         currentPosition = currentNode.value.children[childIndex];
       }
@@ -124,28 +148,36 @@ namespace Index
       }
       stringCounter++;
     }
-    recursiveSearch(currentPosition, &addresses);
-    std::clog << "Address list:" << "\n";
-    for (std::streampos a : addresses)
-    {
-      std::clog << a << "\n";
-    }
+
+    recursiveSearch(currentPosition, &addresses, startIndex, endIndex, &counterPointer);
+    printStringList(addresses);
     return addresses;
   }
 
-  void Trie::recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList)
+  void Trie::recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList, int startIndex, int endIndex, int *counterPointer)
   {
     Database::Context<TrieNode> dbContext(filename);
     Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
     if (currentNode.value.address != -1)
-      addressList->push_back(currentNode.value.address);
+    {
+      if (startIndex <= *counterPointer && *counterPointer < endIndex)
+      {
+        addressList->push_back(currentNode.value.address);
+      }
+      else if (*counterPointer == endIndex)
+      {
+        return;
+      }
+      (*counterPointer)++;
+    }
+
     if (currentNode.value.isLeave == false)
     {
       for (int i = 0; i < MAX_CHILDREN; ++i)
       {
         if (currentNode.value.children[i] != -1)
         {
-          recursiveSearch(currentNode.value.children[i], addressList);
+          recursiveSearch(currentNode.value.children[i], addressList, startIndex, endIndex, counterPointer);
         }
       }
     }

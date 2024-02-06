@@ -34,10 +34,10 @@ namespace Index
     Trie(const std::string &filePath);
     ~Trie();
     void insertString(std::string companyName, std::streampos  address);
-    std::vector<std::streampos> searchString(std::string companyName);
+    std::vector<std::streampos> searchString(std::string companyName, int pageSize, int page);
     void deleteString(std::string companyName);
     void printTrieNode(Database::Record<Index::TrieNode> currentNode);
-    void recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList);
+    void recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList,  int startIndex, int endIndex, int* counterPointer);
   };
 
 } // namespace Index
