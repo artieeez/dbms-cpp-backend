@@ -174,6 +174,7 @@ void sortStockPriceList(std::vector<Model::StockPrice> stockPriceList) {
     }
 }
 
+// return the number of lines read.
 int loadDb(int pageSize) {
     std::ifstream fileStockPrice {"./../raw_data/bovespa_stocks.csv"};
     assert(fileStockPrice.is_open());
@@ -187,11 +188,16 @@ int loadDb(int pageSize) {
         Model::StockPrice sPrice;
         std::string line;
 
+        // finished to read the file
+        if (fileStockPrice.eof()) {
+            recPos.value = fileStockPrice.tellg();
+            loaderDb.save(recPos);
+            return i;
+        }
+
         std::getline(fileStockPrice, line);
 
         sPrice = getStockPriceFromLine(line);
-
-        sPrice.stockPriceId = sPrice.stockId + sPrice.date;
 
         std::vector<Model::Stock> sList = Controller::IndexSearch::getStockList(sPrice.stockId, 1, 1);
 
@@ -207,6 +213,8 @@ int loadDb(int pageSize) {
     recPos.value = fileStockPrice.tellg();
 
     loaderDb.save(recPos);
+
+    return pageSize;
 }
 
 inline std::string getSymbolFromLine(std::string line) {
@@ -229,7 +237,8 @@ Model::StockPrice getStockPriceFromLine(std::string line) {
     Model::StockPrice sPrice;
 
     sPrice.date = getDateFromLine(line);
-    sPrice.stockPriceId = getSymbolFromLine(line);
+    sPrice.stockId = getSymbolFromLine(line);
+    sPrice.stockPriceId = sPrice.stockId + sPrice.date;
 
     // skip symbol
     while (line.at(end) != ',')
