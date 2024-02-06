@@ -46,3 +46,10 @@ int main() {
 
     return 0;
 }
+
+// StockPrice Controller example
+
+// Add stock price
+// verificar se trie já foi indexada com o stockId desta stockPricePayload
+//  se não foi, criar um novo block e adicionar o stockId + blockStartPos na trie
+//  se foi, adicionar o stockPricePayload no bloco já existente
