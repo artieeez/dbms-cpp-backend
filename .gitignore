@@ -41,6 +41,6 @@
 
 env
 
-build
+/build/
 
 node_modules
