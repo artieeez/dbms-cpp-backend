@@ -14,6 +14,7 @@ struct Record {
     T value;
     std::streampos position;
     bool deleted;
+    bool error = false;
 };
 
 template <typename T>
