@@ -107,9 +107,12 @@ namespace Controller
       else
       {
         std::streampos blockPosition = blockStorage.startChain(dbPosition);
+        std::cout << "addStockPrice - block position - " << blockPosition << std::endl;
         trieStockBlock.insertString(payload.stockId, blockPosition);
       }
       trieStockPrices.insertString(payload.stockPriceId, dbPosition);
+      std::vector<std::streampos> addresses = trieStockBlock.searchString(payload.stockId, 1, 1);
+      
     }
 
     void deleteStockPrice(std::string stockPriceId, std::string stockId)
@@ -198,7 +201,7 @@ namespace Controller
       Database::Context<Model::Stock> dbContextStockBlock(STOCK_PRICE_BLOCK_FILE);
       Database::Context<Model::Stock> dbContextStockPriceTrie(STOCK_PRICE_TRIE_FILE);
       Database::Context<Model::Stock> dbContextStockPriceTrieBlock(STOCK_BLOCK_TRIE_FILE);
-      
+
       dbContextStock.reset();
       dbContextStockPrice.reset();
       dbContextStockBlock.reset();

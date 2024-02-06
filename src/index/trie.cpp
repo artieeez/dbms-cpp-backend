@@ -110,7 +110,7 @@ namespace Index
     int endIndex = startIndex + pageSize;
     int counterPointer = 0;
 
-    std::clog << "search: " << companyName << " " << filename << "\n";
+    std::clog << "search: " << companyName << " " << filename << " " << pageSize << " " << page << "\n";
     int stringCounter = 1;
     std::vector<std::streampos> addresses;
     std::streampos currentPosition = 0;
