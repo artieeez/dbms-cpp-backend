@@ -48,62 +48,55 @@ inline std::string getDateFromLine(std::string line) {
     return line.substr(0, 10);
 }
 
-// get start of next string and its size by reference
-void getNextString(std::string line, int &begin, int &size) {
-    int i = begin;
-    while (line.at(i) != ',' && line.at(i) != '\0' && line.at(i) != '\n') {
-        // std::cout << line.at(i) << std::endl;
-        i++;
-    }
-    size = i - begin;
-    begin = i;
-    std::cout << "\n" << std::endl;
-}
-
 Model::StockPrice getStockPriceInfoFromLine(std::string line) {
-
-    // 2010-01-04,MMXM3,1599.1749267578125,1599.1749267578125,1599.1749267578125,1555.1378173828125,1556.39599609375,20984.0
-
     // string position starts in 11 to skip date
     int begin {11};
-    int end = 0;
-    int size = 0;
+    int end = {begin};
     Model::StockPrice sPrice;
 
     // skip symbol
-    getNextString(line, begin, size);
-    std::cout << "begin: " << begin << " size: " << size << std::endl;
-
-    getNextString(line, begin, size);
-
-    std::cout << line.substr(begin - size, size);
-
-    sPrice.close = std::stof(line.substr(begin - size, size - 1));
-
-    return sPrice;
+    while (line.at(end) != ',')
+        end++;
 
     end++;
     begin = end;
     while (line.at(end) != ',')
         end++;
+    sPrice.adj = std::stof(line.substr(begin, end - begin));
 
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.close = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
     sPrice.high = std::stof(line.substr(begin, end - begin));
 
     end++;
     begin = end;
     while (line.at(end) != ',')
         end++;
-
     sPrice.low = std::stof(line.substr(begin, end - begin));
 
     end++;
     begin = end;
     while (line.at(end) != ',')
         end++;
-
     sPrice.open = std::stof(line.substr(begin, end - begin));
 
     sPrice.volume = std::stof(line.substr(end + 1, line.size() - end - 1));
+
+
+    std::cout << "adj: " << sPrice.adj << std::endl;
+    std::cout << "close: " << sPrice.close << std::endl;
+    std::cout << "high: " << sPrice.high << std::endl;
+    std::cout << "low: " << sPrice.low << std::endl;
+    std::cout << "open: " << sPrice.open << std::endl;
+    std::cout << "volume: " << sPrice.volume << std::endl;
 
     return sPrice;
 }
