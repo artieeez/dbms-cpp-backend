@@ -16,17 +16,16 @@ int main() {
 
     std::streampos pos = context.append(40);
     std::streampos blockStart = blockStorage.startChain(pos);
-    std::cout << "\nblockStart: " << blockStart << std::endl;
     blockStorage.insertBlock(blockStart, context.append(360));
+    blockStorage.insertBlock(blockStart, context.append(900));
+    blockStorage.insertBlock(blockStart, context.append(940));
 
     for (int i = 10; i < 20; i++) {
         context.append(i);
     }
 
     // interate over block and print values
-    std::cout << "\nblockStart: " << blockStart << std::endl;
     std::vector<std::streampos> block = blockStorage.retrieveBlock(blockStart);
-    std::cout << "\nblock.size(): " << block.size() << std::endl;
     for (std::streampos pos : block) {
         std::cout << context.read(pos).value << std::endl;
     }
@@ -35,10 +34,6 @@ int main() {
     blockContext.clearIterator();
     while (blockContext.next()) {
         int value = context.read(blockContext.curr.value.address).value;
-        std::cout << "\nvalue: " << value << std::endl;
-        std::cout << "blockContext.curr.value.address: " << blockContext.curr.value.address << std::endl;
-        std::cout << "blockContext.curr.value.nextBlock: " << blockContext.curr.value.nextBlock << std::endl;
-        std::cout << "blockContext.curr.position: " << blockContext.curr.position << std::endl;
     }
 
     context.reset();

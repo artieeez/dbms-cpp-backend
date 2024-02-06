@@ -13,11 +13,7 @@ std::vector<std::streampos> BlockStorage::retrieveBlock(std::streampos blockStar
     std::vector<std::streampos> block;
     Database::Record<Block> currRecord = _context.read(blockStart);
 
-    std::cout << "retrieve -> currRecord.error: " << currRecord.error << std::endl;
-    std::cout << "retrieve -> currRecord.value.address: " << currRecord.value.address << std::endl;
-    std::cout << "retrieve -> currRecord.value.nextBlock: " << currRecord.value.nextBlock << std::endl;
-
-    while (currRecord.error && currRecord.value.nextBlock != -1) {
+    while (!currRecord.error && currRecord.value.nextBlock != -1) {
         block.push_back(currRecord.value.address);
         currRecord = _context.read(currRecord.value.nextBlock);
     }
@@ -40,12 +36,6 @@ void BlockStorage::insertBlock(std::streampos blockStart, std::streampos address
         newBlock.nextBlock = -1;
         std::streampos newBlockPosition = _context.append(newBlock);
         currRecord.value.nextBlock = newBlockPosition;
-
-        std::cout << "\ninsert -> newBlockPosition: " << newBlockPosition << std::endl;
-        std::cout << "insert -> currRecord.position: " << currRecord.position << std::endl;
-        std::cout << "insert -> currRecord.error: " << currRecord.error << std::endl;
-        std::cout << "insert -> currRecord.value.address: " << currRecord.value.address << std::endl;
-        std::cout << "insert -> currRecord.value.nextBlock: " << currRecord.value.nextBlock << std::endl;
 
         _context.save(currRecord);
     }
