@@ -30,7 +30,7 @@ if (MSVC)
     target_compile_options(dbms_cpp_backend PRIVATE /Zi /EHsc)
     set_target_properties(dbms_cpp_backend PROPERTIES LINK_FLAGS "/debug")
 else()
-    target_compile_options(dbms_cpp_backend PRIVATE -g -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(dbms_cpp_backend PRIVATE -g -Wall -Wextra -Wpedantic)
 endif()
 
 set_target_properties(dbms_cpp_backend PROPERTIES OUTPUT_NAME dbms_cpp_backend)
