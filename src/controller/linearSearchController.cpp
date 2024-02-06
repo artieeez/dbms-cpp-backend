@@ -125,7 +125,7 @@ void resetDb() {
     stockPriceDbContext.reset();
 }
 
-void sortStockPriceList(std::vector<Model::StockPrice> stockPriceList) {
+void sortStockPriceList(std::vector<Model::StockPrice>& stockPriceList) {
     std::array<std::queue<Model::StockPrice>, 10> buckets;
 
     // sort by day
