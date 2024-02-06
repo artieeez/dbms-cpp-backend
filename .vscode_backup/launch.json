@@ -41,13 +41,25 @@
       "name": "debug - Main",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/test_main.exe",
+      "program": "${workspaceFolder}/test_main.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "build test_main"
+    },
+    {
+      "name": "debug - Block",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test_block.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build",
       "environment": [],
       "console": "integratedTerminal",
-      "preLaunchTask": "build test_main"
+      "preLaunchTask": "build test_block"
     }
   ]
 }
