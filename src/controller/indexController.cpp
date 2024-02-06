@@ -103,7 +103,7 @@ namespace Controller
         trie.insertString(payload.stockId, blockPosition);
       }
     }
-    
+
     void resetDb()
     {
       Database::Context<Model::Stock> companyDbContext(STOCK_DB_FILE);

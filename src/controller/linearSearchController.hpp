@@ -24,7 +24,7 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::strin
 
 void resetDb();
 
-// TODO: add sorting options to this function (ex: increasing, decreasing, etc)
+// sort a stockPrice list by date
 void sortStockPriceList(std::vector<Model::StockPrice> stockPriceList);
 
 int loadDb(int pageSize);
