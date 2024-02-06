@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "Context.hpp"
+#include "context.hpp"
 
 namespace Index {
 
