@@ -19,11 +19,11 @@ namespace Controller
     void deleteStock(std::string stockId);
     void updateStock(Model::Stock payload);
     Model::Stock getStock(std::string stockId);
-    std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSize);
+    std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int page);
 
     void addStockPrice(Model::StockPrice payload);
     void deleteStockPrice(std::string stockPriceId, std::string stockId);
-    std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int page, int pageSize);
+    std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSize, int page);
     Model::StockPrice getStockPrice(std::string stockPriceId);
 
     void resetDb();

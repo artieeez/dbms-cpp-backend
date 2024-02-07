@@ -106,6 +106,7 @@ namespace Index
 
   std::vector<std::streampos> Trie::searchString(std::string companyName, int pageSize, int page)
   {
+    
     int startIndex = page <= 0 ? page : (page - 1) * pageSize;
     int endIndex = startIndex + pageSize;
     int counterPointer = 0;
@@ -127,14 +128,14 @@ namespace Index
         {
           if (currentNode.value.address != -1)
           {
-            // if (startIndex <= counterPointer && counterPointer < endIndex)
-            // {
-            addresses.push_back(currentNode.value.address);
-            // }
-            // else if (counterPointer == endIndex)
-            // {
-            //   return addresses;
-            // }
+            if (startIndex <= counterPointer && counterPointer < endIndex)
+            {
+              addresses.push_back(currentNode.value.address);
+            }
+            else if (counterPointer == endIndex)
+            {
+              return addresses;
+            }
             counterPointer++;
           }
         }
@@ -149,7 +150,6 @@ namespace Index
     }
 
     recursiveSearch(currentPosition, &addresses, startIndex, endIndex, &counterPointer);
-    printStringList(addresses);
     return addresses;
   }
 
@@ -159,14 +159,14 @@ namespace Index
     Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
     if (currentNode.value.address != -1)
     {
-      // if (startIndex <= *counterPointer && *counterPointer < endIndex)
-      // {
-      addressList->push_back(currentNode.value.address);
-      // }
-      // else if (*counterPointer == endIndex)
-      // {
-      //   return;
-      // }
+      if (startIndex <= *counterPointer && *counterPointer < endIndex)
+      {
+        addressList->push_back(currentNode.value.address);
+      }
+      else if (*counterPointer == endIndex)
+      {
+        return;
+      }
       (*counterPointer)++;
     }
 
