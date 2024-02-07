@@ -181,6 +181,7 @@ int loadDb(int pageSize) {
 
     Database::Context<std::streampos> loaderDb (Controller::LinearSearch::LOADER_DB_FILE_PATH);
 
+    loaderDb.append(0);
     auto recPos = loaderDb.read(0);
 
     std::cout << recPos.value << std::endl;

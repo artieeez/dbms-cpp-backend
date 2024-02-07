@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <array>
+#include <cassert>
 #include "context.hpp"
 #include "trie.hpp"
 #include "stock.hpp"
@@ -206,6 +207,175 @@ namespace Controller
       dbContextStockPriceTrieBlock.reset();
       dbContextStockTrie.reset();
     }
+
+    void sortStockPriceList(std::vector<Model::StockPrice>& stockPriceList) {
+    std::array<std::queue<Model::StockPrice>, 10> buckets;
+
+    // sort by day
+    for (int i = 0; i < 2; i++) {
+        for (auto sPrice : stockPriceList)
+            buckets.at(sPrice.date.at(9 - i) - '0').push(sPrice);
+
+        int p = 0;
+        for (int j = 0; j < 10; j++) {
+            while (!buckets.at(j).empty()) {
+                stockPriceList.at(p) = buckets.at(j).front();
+                buckets.at(j).pop();
+                p++;
+            }
+        }
+    }
+
+    // sort by month
+    for (int i = 0; i < 2; i++) {
+        for (auto sPrice : stockPriceList)
+            buckets.at(sPrice.date.at(6 - i) - '0').push(sPrice);
+
+        int p = 0; // position in vector
+        for (int j = 0; j < 10; j++) {
+            while (!buckets.at(j).empty()) {
+                stockPriceList.at(p) = buckets.at(j).front();
+                buckets.at(j).pop();
+                p++;
+            }
+        }
+    }
+
+    // sort by year
+    for (int i = 0; i < 4; i++) {
+        for (auto sPrice : stockPriceList)
+            buckets.at(sPrice.date.at(3 - i) - '0').push(sPrice);
+
+        int p = 0; // position in vector
+        for (int j = 0; j < 10; j++) {
+            while (!buckets.at(j).empty()) {
+                stockPriceList.at(p) = buckets.at(j).front();
+                buckets.at(j).pop();
+                p++;
+            }
+        }
+    }
+}
+
+// return the number of lines read.
+int loadDb(int pageSize) {
+    std::ifstream fileStockPrice {"./../raw_data/bovespa_stocks.csv"};
+    assert(fileStockPrice.is_open());
+
+    Database::Context<std::streampos> loaderDb (Controller::IndexSearch::LOADER_DB_FILE_PATH);
+
+    loaderDb.append(0);
+    auto recPos = loaderDb.read(0);
+
+    std::cout << recPos.value << std::endl;
+
+    fileStockPrice.seekg(recPos.value);
+    for (int i = 0; i < pageSize; i++) {
+        Model::StockPrice sPrice;
+        std::string line;
+
+        // finished to read the file
+        if (fileStockPrice.eof()) {
+            recPos.value = fileStockPrice.tellg();
+            loaderDb.save(recPos);
+            return i;
+        }
+
+        std::getline(fileStockPrice, line);
+
+        sPrice = getStockPriceFromLine(line);
+
+        std::vector<Model::Stock> sList = Controller::IndexSearch::getStockList(sPrice.stockId, 1, 1);
+
+        if (sList.size() == 0) {
+            Model::Stock s;
+            s.stockId = sPrice.stockId;
+            Controller::IndexSearch::addStock(s);
+        }
+
+        Controller::IndexSearch::addStockPrice(sPrice);
+    }
+
+    recPos.value = fileStockPrice.tellg();
+
+    std::cout << recPos.value << std::endl;
+
+    loaderDb.save(recPos);
+
+    return pageSize;
+}
+
+inline std::string getSymbolFromLine(std::string line) {
+    int i {11};
+    int j {i};
+    while (line.at(j) != ',')
+        j++;
+
+    return line.substr(i, j - i);
+}
+
+inline std::string getDateFromLine(std::string line) {
+    return line.substr(0, 10);
+}
+
+Model::StockPrice getStockPriceFromLine(std::string line) {
+    // string position starts in 11 to skip date
+    int begin {11};
+    int end = {begin};
+    Model::StockPrice sPrice;
+
+    sPrice.date = getDateFromLine(line);
+    sPrice.stockId = getSymbolFromLine(line);
+    sPrice.stockPriceId = sPrice.stockId + sPrice.date;
+
+    // skip symbol
+    while (line.at(end) != ',')
+        end++;
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.adj = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.close = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.high = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.low = std::stof(line.substr(begin, end - begin));
+
+    end++;
+    begin = end;
+    while (line.at(end) != ',')
+        end++;
+    sPrice.open = std::stof(line.substr(begin, end - begin));
+
+    sPrice.volume = std::stof(line.substr(end + 1, line.size() - end - 1));
+
+    /*
+    std::cout << "symbol: " << sPrice.stockId << std::endl;
+    std::cout << "adj: " << sPrice.adj << std::endl;
+    std::cout << "close: " << sPrice.close << std::endl;
+    std::cout << "high: " << sPrice.high << std::endl;
+    std::cout << "low: " << sPrice.low << std::endl;
+    std::cout << "open: " << sPrice.open << std::endl;
+    std::cout << "volume: " << sPrice.volume << std::endl;
+    */
+
+    return sPrice;
+}
 
   }
 }
