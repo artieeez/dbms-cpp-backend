@@ -5,7 +5,7 @@
 #include <string>
 #include "context.hpp"
 
-constexpr int MAX_CHILDREN = 26;
+constexpr int MAX_CHILDREN = 36;
 
 namespace Index
 {

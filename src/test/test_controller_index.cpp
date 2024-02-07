@@ -9,7 +9,8 @@
 
 using namespace Controller::IndexSearch;
 
-void test_controller_index()
+// void test_controller_index()
+int main()
 {
 
   // Test addStock
@@ -37,7 +38,7 @@ void test_controller_index()
 
   // Test getStockList
   std::cout << "\n==============getStockList==============" << std::endl;
-  std::vector<Model::Stock> stocks = getStockList("a", 0, 10);
+  std::vector<Model::Stock> stocks = getStockList("a", 10, 0);
   for (Model::Stock s : stocks)
   {
     std::cout << "Stock: " << s.stockId << " " << std::endl;
@@ -60,7 +61,7 @@ void test_controller_index()
   deleteStock("apple");
   std::cout << "stock deleted." << std::endl;
   std::cout << "getStockList " << std::endl;
-  stocks = getStockList("a", 0, 10);
+  stocks = getStockList("a", 10, 0);
   for (Model::Stock s : stocks)
   {
     std::cout << "Stock: " << s.stockId << " " << std::endl;
@@ -78,32 +79,57 @@ void test_controller_index()
   stockPrice.close = 105;
   stockPrice.volume = 1000000;
   addStockPrice(stockPrice);
+  std::cout << "stock price added." << std::endl;
 
-  // Test getStockPriceList
-  std::cout << "\n============getStockPriceList==========" << std::endl;
-  std::vector<Model::StockPrice> stockPrices = getStockPriceList("aapl", 0, 10);
+  // Test addStockPrice
+  Model::StockPrice stockPrice2;
+  stockPrice2.stockPriceId = "isaac";
+  stockPrice2.stockId = "aapl";
+  stockPrice2.date = "2020-01-01";
+  stockPrice2.open = 100;
+  stockPrice2.high = 110;
+  stockPrice2.low = 90;
+  stockPrice2.close = 105;
+  stockPrice2.volume = 1000000;
+  addStockPrice(stockPrice2);
+  std::cout << "stock price added." << std::endl;
+
+  // Test addStockPrice
+  Model::StockPrice stockPrice9;
+  stockPrice9.stockPriceId = "oie";
+  stockPrice9.stockId = "aapl";
+  stockPrice9.date = "2020-01-01";
+  stockPrice9.open = 100;
+  stockPrice9.high = 110;
+  stockPrice9.low = 90;
+  stockPrice9.close = 105;
+  stockPrice9.volume = 1000000;
+  addStockPrice(stockPrice9);
+  std::cout << "stock price added." << std::endl;
+
+  std::cout << "\n=============get stock prices ========== " << std::endl;
+  std::vector<Model::StockPrice> stockPrices = getStockPriceList("aapl", 10, 0);
   for (Model::StockPrice stockPrice : stockPrices)
   {
     std::cout << "StockPrice: " << stockPrice.stockPriceId << " " << stockPrice.date << " " << stockPrice.open << " " << stockPrice.high << " " << stockPrice.low << " " << stockPrice.close << " " << stockPrice.volume << std::endl;
   }
 
-  // stockPrices = getStockPriceList("aapl", 0, 10);
-  // for (Model::StockPrice stockPrice : stockPrices)
-  // {
-  //   std::cout << "StockPrice: " << stockPrice.stockPriceId << " " << stockPrice.date << " " << stockPrice.open << " " << stockPrice.high << " " << stockPrice.low << " " << stockPrice.close << " " << stockPrice.volume << std::endl;
-  // }
-
-  // // Test deleteStockPrice
-  // std::cout << "\ndeleteStockPrice " << std::endl;
-  // deleteStockPrice("qwerty", "aapl");
-  // std::cout << "stockPrice deleted." << std::endl;
-  // std::cout << "getStockPriceList " << std::endl;
-  // stockPrices = getStockPriceList("aapl", 0, 10);
-  // for (Model::StockPrice stockPrice : stockPrices)
-  // {
-  //   std::cout << "StockPrice: " << stockPrice.stockPriceId << " " << stockPrice.date << " " << stockPrice.open << " " << stockPrice.high << " " << stockPrice.low << " " << stockPrice.close << " " << stockPrice.volume << std::endl;
-  // }
+  std::cout << "\n=============get stock price========== " << std::endl;
+  Model::StockPrice stockPrice4 = getStockPrice("qwerty");
+  std::cout << "get stock price: " << stockPrice4.stockPriceId << " " << stockPrice4.date << " " << stockPrice4.open << " " << stockPrice4.high << " " << stockPrice4.low << " " << stockPrice4.close << " " << stockPrice4.volume << std::endl;
+  // Test deleteStockPrice
+  std::cout
+      << "\n==========deleteStockPrice==============" << std::endl;
+  deleteStockPrice("qwerty", "aapl");
+  std::cout << "stockPrice deleted." << std::endl;
+  std::cout << "getStockPriceList " << std::endl;
+  stockPrices = getStockPriceList("aapl", 0, 10);
+  for (Model::StockPrice s : stockPrices)
+  {
+    std::cout << "StockPrice: " << s.stockPriceId << " " << s.date << " " << s.open << " " << s.high << " " << s.low << " " << s.close << " " << s.volume << std::endl;
+  }
 
   // Test resetDb
   resetDb();
+  return 0;
 }

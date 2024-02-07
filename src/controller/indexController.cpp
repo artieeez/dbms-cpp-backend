@@ -71,7 +71,7 @@ namespace Controller
       return Model::Stock();
     }
 
-    std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSize)
+    std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int page)
     {
       Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
       Index::Trie trie(STOCK_TRIE_FILE);
@@ -107,11 +107,9 @@ namespace Controller
       else
       {
         std::streampos blockPosition = blockStorage.startChain(dbPosition);
-        std::cout << "addStockPrice - block position - " << blockPosition << std::endl;
         trieStockBlock.insertString(payload.stockId, blockPosition);
       }
       trieStockPrices.insertString(payload.stockPriceId, dbPosition);
-      std::vector<std::streampos> addresses = trieStockBlock.searchString(payload.stockId, 1, 1);
     }
 
     void deleteStockPrice(std::string stockPriceId, std::string stockId)
@@ -148,14 +146,14 @@ namespace Controller
       }
     }
 
-    std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int page, int pageSize)
+    std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSize, int page)
     {
       Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
       Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
       Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
 
       // Busca na trie de stockBlock o endereço do bloco que contém o item
-      std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, page, pageSize);
+      std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, pageSize, page);
       if (trieStockBlockAddress.size() > 0)
       {
         std::streampos blockAddress = trieStockBlockAddress[0];
