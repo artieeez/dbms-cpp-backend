@@ -69,3 +69,28 @@ cmake --build .
 ```
 
 O código compilado faz uso da nossa API e serve de demonstração das implementações.
+
+## Considerações Finais
+
+Este projeto representou não apenas a conclusão de um desafio acadêmico, mas também um período valioso de aprendizado para toda a equipe. Abaixo estão os principais aprendizados obtidos durante o desenvolvimento:
+
+- **CMake e Compilação em C++:** Adquirimos conhecimento prático no uso do CMake, uma ferramenta essencial para a compilação e construção de projetos em C++. Compreendemos os intricados detalhes do processo de compilação de código nativo.
+- **Domínio em C++:** Para alguns membros da equipe, este projeto marcou o primeiro contato com a linguagem C++. Aprendemos os conceitos fundamentais da linguagem, desde a sintaxe até estruturas mais avançadas.
+- **Modularização em C++:** Experimentamos a complexidade e importância da modularização de projetos em C++, entendendo como organizar e dividir o código de maneira eficiente para facilitar a manutenção e expansão.
+- **Estruturas de Dados em Memória Secundária:** Exploramos o uso de estruturas de dados em memória secundária, como tries e listas ligadas, compreendendo suas aplicações e impactos no desempenho do sistema.
+- **Métodos de Persistência de Dados:** Ganhamos experiência prática na implementação de métodos de persistência de dados, essenciais para garantir a integridade e durabilidade das informações armazenadas.
+- **Uso Avançado do Visual Studio Code com C++:** Aprendemos a otimizar o uso das ferramentas fornecidas pelo Visual Studio Code para o desenvolvimento em C++, aumentando a eficiência e facilitando a depuração e análise de código.
+- **Compilação de C++ em Addons para Node.js:** Desenvolvemos habilidades na compilação de código C++ como addons nativos para Node.js, proporcionando integração eficiente entre o backend em C++ e a aplicação em Electron.js.
+- **Electron.js:** Adquirimos conhecimento prático na utilização do Electron.js para o desenvolvimento de interfaces gráficas, compreendendo como integrar efetivamente o frontend com o backend em C++.
+
+### Dificuldades
+
+A principal dificuldade enfrentada foi o aprendizado e implementação em C++. Para alguns membros do grupo, esta foi a primeira experiência com a linguagem, e o processo de modularização do projeto revelou-se desafiador. O tempo foi dedicado não apenas ao desenvolvimento do projeto, mas também à assimilação das ferramentas de compilação necessárias.
+
+### Limitações
+
+A limitação mais significativa foi o fator temporal. O projeto demandou uma gestão cuidadosa do tempo, resultando na necessidade de cortar diversas features inicialmente planejadas para uma versão mais robusta da aplicação.
+
+### Faltou Fazer
+
+Infelizmente, não conseguimos implementar a importação de mais dados para a aplicação. Além disso, a inclusão da entidade "Company" não foi possível dentro do prazo estabelecido. Esses são pontos que identificamos como melhorias desejadas para uma versão futura do projeto.
