@@ -1,5 +1,5 @@
 #include "context.hpp"
-#include "linearSearchController.hpp"
+#include "indexController.hpp"
 #include "napi.h"
 #include "stock.hpp"
 #include <fstream>
@@ -8,6 +8,7 @@
 #include <node_api.h>
 #include <vector>
 
+namespace TC {
 
 Napi::Value addStock(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
@@ -30,7 +31,7 @@ Napi::Value addStock(const Napi::CallbackInfo &info) {
     stock.min_date = info[2].As<Napi::String>().Utf8Value();
     stock.max_date = info[3].As<Napi::String>().Utf8Value();
 
-    Controller::LinearSearch::addStock(stock);
+    Controller::IndexSearch::addStock(stock);
 
     return Napi::String::New(env, "success");
 }
@@ -50,7 +51,7 @@ Napi::Value deleteStock(const Napi::CallbackInfo &info) {
     }
 
     std::string stockId = info[0].As<Napi::String>().Utf8Value();
-    Controller::LinearSearch::deleteStock(stockId);
+    Controller::IndexSearch::deleteStock(stockId);
 
     return Napi::String::New(env, "success");
 }
@@ -76,7 +77,7 @@ Napi::Value updateStock(const Napi::CallbackInfo &info) {
     stock.min_date = info[2].As<Napi::String>().Utf8Value();
     stock.max_date = info[3].As<Napi::String>().Utf8Value();
 
-    Controller::LinearSearch::updateStock(stock);
+    Controller::IndexSearch::updateStock(stock);
 
     return Napi::String::New(env, "success");
 }
@@ -96,7 +97,7 @@ Napi::Value getStock(const Napi::CallbackInfo &info) {
     }
 
     std::string stockId = info[0].As<Napi::String>().Utf8Value();
-    Model::Stock stock = Controller::LinearSearch::getStock(stockId);
+    Model::Stock stock = Controller::IndexSearch::getStock(stockId);
 
     Napi::Object result = Napi::Object::New(env);
     result.Set(Napi::String::New(env, "stockId"), Napi::String::New(env, stock.stockId));
@@ -127,7 +128,7 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
     int pageSize = info[2].As<Napi::Number>().Int32Value();
     std::string orderBy = info[3].As<Napi::String>().Utf8Value();
 
-    std::vector<Model::Stock> stocks = Controller::LinearSearch::getStockList(prefix, page, pageSize, orderBy);
+    std::vector<Model::Stock> stocks = Controller::IndexSearch::getStockList(prefix, page, pageSize);
 
     Napi::Array result = Napi::Array::New(env, stocks.size());
     for (int i = 0; i < stocks.size(); i++) {
@@ -145,25 +146,8 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
 // reset the database
 Napi::Value resetDatabase(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
-    Controller::LinearSearch::resetDb();
+    Controller::IndexSearch::resetDb();
     return Napi::String::New(env, "success");
 }
 
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
-
-    // Register linearSearchController methods
-    Napi::Object linearSearchController = Napi::Object::New(env);
-    linearSearchController.Set(Napi::String::New(env, "addStock"), Napi::Function::New(env, addStock));
-    linearSearchController.Set(Napi::String::New(env, "deleteStock"), Napi::Function::New(env, deleteStock));
-    linearSearchController.Set(Napi::String::New(env, "updateStock"), Napi::Function::New(env, updateStock));
-    linearSearchController.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, getStock));
-    linearSearchController.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, getStockList));
-    linearSearchController.Set(Napi::String::New(env, "resetDatabase"), Napi::Function::New(env, resetDatabase));
-
-    // Register linearSearchController
-    exports.Set(Napi::String::New(env, "linearSearch"), linearSearchController);
-
-    return exports;
-}
-
-NODE_API_MODULE(hello, Init)
+} // namespace LC
