@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cassert>
 #include "linearSearchController.hpp"
 #include "stockPrice.hpp"
 
@@ -30,12 +31,25 @@ open:           float
 volume:         unsigned int (4 bytes)
 */
 
-constexpr char path_data_file [] = {"./raw_data/bovespa_stocks.csv"};
+constexpr char path_data_file [] = {"../raw_data/bovespa_stocks.csv"};
+
+void printStockPrice(Model::StockPrice sPrice) {
+    std::cout << "sPriceID:\t" << sPrice.stockPriceId << std::endl;
+    std::cout << "sId:\t" << sPrice.stockId << std::endl;
+    std::cout << "date:\t" << sPrice.date << std::endl;
+    std::cout << "adj:\t" << sPrice.adj << std::endl;
+    std::cout << "close:\t" << sPrice.close << std::endl;
+    std::cout << "high:\t" << sPrice.high << std::endl;
+    std::cout << "low:\t" << sPrice.low << std::endl;
+    std::cout << "open:\t" << sPrice.open << std::endl;
+    std::cout << "volume:\t" << sPrice.volume << std::endl;
+}
 
 
 void test_loader() {
-    std::fstream fRawData {path_data_file};
+    std::ifstream fRawData {path_data_file};
     std::vector<std::string> vecLines (10);
+    assert(fRawData.is_open());
 
     for (auto& i : vecLines) {
         std::string line;
@@ -43,21 +57,17 @@ void test_loader() {
         i = line;
     }
 
-
-    for (auto s : vecLines)
-        std::cout << s << std::endl;
-
     std::vector<Model::StockPrice> vecStockPrice (vecLines.size());
 
-    for (int i = 0; i < vecStockPrice.size(); i++) {
+    for (int i = 0; i < vecStockPrice.size(); i++)
         vecStockPrice.at(i) = Controller::LinearSearch::getStockPriceFromLine(vecLines.at(i));
-        std::cout << "symbol:\t" << vecStockPrice.at(i).stockPriceId << std::endl;
-        std::cout << "date:\t" << vecStockPrice.at(i).date << std::endl;
-        std::cout << "adj:\t" << vecStockPrice.at(i).adj << std::endl;
-        std::cout << "close:\t" << vecStockPrice.at(i).close << std::endl;
-        std::cout << "high:\t" << vecStockPrice.at(i).high << std::endl;
-        std::cout << "low:\t" << vecStockPrice.at(i).low << std::endl;
-        std::cout << "open:\t" << vecStockPrice.at(i).open << std::endl;
-        std::cout << "volume:\t" << vecStockPrice.at(i).volume << std::endl;
-    }
+
+    Controller::LinearSearch::loadDb(10);
+
+    std::vector<Model::StockPrice> sPriceList = Controller::LinearSearch::getStockPriceList(vecStockPrice.at(1).stockId, "null", "null", "null");
+
+    /*
+    for (auto i : sPriceList)
+        printStockPrice(i);
+        */
 }
