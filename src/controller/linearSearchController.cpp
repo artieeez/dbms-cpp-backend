@@ -183,6 +183,8 @@ int loadDb(int pageSize) {
 
     auto recPos = loaderDb.read(0);
 
+    std::cout << recPos.value << std::endl;
+
     fileStockPrice.seekg(recPos.value);
     for (int i = 0; i < pageSize; i++) {
         Model::StockPrice sPrice;
@@ -211,6 +213,8 @@ int loadDb(int pageSize) {
     }
 
     recPos.value = fileStockPrice.tellg();
+
+    std::cout << recPos.value << std::endl;
 
     loaderDb.save(recPos);
 
