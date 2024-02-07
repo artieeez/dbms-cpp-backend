@@ -31,7 +31,9 @@
         "/Fd:${workspaceFolder}\\build\\obj\\",
         "/Fe:${workspaceFolder}\\build\\test_db_context.exe",
       ],
-      "problemMatcher": ["$msCompile"],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -65,7 +67,9 @@
         "/Fd:${workspaceFolder}\\build\\obj\\",
         "/Fe:${workspaceFolder}\\build\\test_controller_linear.exe",
       ],
-      "problemMatcher": ["$msCompile"],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -97,7 +101,9 @@
         "/Fd:${workspaceFolder}\\build\\obj\\",
         "/Fe:${workspaceFolder}\\build\\test_trie.exe",
       ],
-      "problemMatcher": ["$msCompile"],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -123,7 +129,9 @@
         "/Fd:${workspaceFolder}\\build\\obj\\",
         "/Fe:${workspaceFolder}\\test_main.exe",
       ],
-      "problemMatcher": ["$msCompile"],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -155,7 +163,9 @@
         "/Fd:${workspaceFolder}\\build\\obj\\",
         "/Fe:${workspaceFolder}\\build\\test_block.exe",
       ],
-      "problemMatcher": ["$msCompile"],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -165,6 +175,19 @@
         "panel": "shared",
         "clear": true
       }
-    }
+    },
+    {
+      "label": "cmake-build",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "${workspaceFolder}/build",
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
   ]
 }

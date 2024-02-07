@@ -9,7 +9,7 @@
 
 using namespace Controller::IndexSearch;
 
-int main()
+void test_controller_index()
 {
 
   // Test addStock

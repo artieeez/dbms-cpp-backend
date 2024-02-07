@@ -2,6 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Main",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Debug/dbms_cpp_backend.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "cmake-build"
+    },
+    {
       "name": "debug - Database::Context",
       "type": "cppvsdbg",
       "request": "launch",
@@ -36,18 +48,6 @@
       "environment": [],
       "console": "integratedTerminal",
       "preLaunchTask": "build test_trie"
-    },
-    {
-      "name": "debug - Main",
-      "type": "cppvsdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/test_main.exe",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "console": "integratedTerminal",
-      "preLaunchTask": "build test_main"
     },
     {
       "name": "debug - Block",

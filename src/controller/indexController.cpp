@@ -112,7 +112,6 @@ namespace Controller
       }
       trieStockPrices.insertString(payload.stockPriceId, dbPosition);
       std::vector<std::streampos> addresses = trieStockBlock.searchString(payload.stockId, 1, 1);
-      
     }
 
     void deleteStockPrice(std::string stockPriceId, std::string stockId)
