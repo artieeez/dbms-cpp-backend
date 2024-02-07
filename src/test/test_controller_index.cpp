@@ -9,7 +9,8 @@
 
 using namespace Controller::IndexSearch;
 
-void test_controller_index()
+// void test_controller_index()
+int main()
 {
 
   // Test addStock
@@ -130,5 +131,5 @@ void test_controller_index()
 
   // Test resetDb
   resetDb();
-
+  return 0;
 }
