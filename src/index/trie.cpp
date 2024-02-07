@@ -127,14 +127,14 @@ namespace Index
         {
           if (currentNode.value.address != -1)
           {
-            if (startIndex <= counterPointer && counterPointer < endIndex)
-            {
-              addresses.push_back(currentNode.value.address);
-            }
-            else if (counterPointer == endIndex)
-            {
-              return addresses;
-            }
+            // if (startIndex <= counterPointer && counterPointer < endIndex)
+            // {
+            addresses.push_back(currentNode.value.address);
+            // }
+            // else if (counterPointer == endIndex)
+            // {
+            //   return addresses;
+            // }
             counterPointer++;
           }
         }
@@ -159,14 +159,14 @@ namespace Index
     Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
     if (currentNode.value.address != -1)
     {
-      if (startIndex <= *counterPointer && *counterPointer < endIndex)
-      {
-        addressList->push_back(currentNode.value.address);
-      }
-      else if (*counterPointer == endIndex)
-      {
-        return;
-      }
+      // if (startIndex <= *counterPointer && *counterPointer < endIndex)
+      // {
+      addressList->push_back(currentNode.value.address);
+      // }
+      // else if (*counterPointer == endIndex)
+      // {
+      //   return;
+      // }
       (*counterPointer)++;
     }
 
