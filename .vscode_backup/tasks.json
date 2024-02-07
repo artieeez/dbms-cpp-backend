@@ -189,5 +189,43 @@
         "isDefault": true
       }
     },
+    {
+      "type": "shell",
+      "label": "build test_controller_index",
+      "command": "cl.exe",
+      "args": [
+        "/Zi",
+        "/EHsc",
+        "/std:c++20",
+        "/I",
+        "${workspaceFolder}\\src\\model",
+        "/I",
+        "${workspaceFolder}\\src\\database",
+        "/I",
+        "${workspaceFolder}\\src\\index",
+        "/I",
+        "${workspaceFolder}\\src\\controller",
+        "${workspaceFolder}\\src\\database\\context.cpp",
+        "${workspaceFolder}\\src\\index\\blockStorage.cpp",
+        "${workspaceFolder}\\src\\index\\trie.cpp",
+        "${workspaceFolder}\\src\\controller\\indexController.cpp",
+        "${workspaceFolder}\\src\\test\\test_controller_index.cpp",
+        "/Fo:${workspaceFolder}\\build\\obj\\",
+        "/Fd:${workspaceFolder}\\build\\obj\\",
+        "/Fe:${workspaceFolder}\\build\\test_controller_index.exe",
+      ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
   ]
 }

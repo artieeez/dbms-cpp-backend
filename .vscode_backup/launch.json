@@ -60,6 +60,18 @@
       "environment": [],
       "console": "integratedTerminal",
       "preLaunchTask": "build test_block"
+    },
+    {
+      "name": "debug - Controller::Index",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test_controller_index.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "build test_controller_index"
     }
   ]
 }
