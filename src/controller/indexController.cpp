@@ -263,14 +263,19 @@ int loadDb(int pageSize) {
     assert(fileStockPrice.is_open());
 
     Database::Context<std::streampos> loaderDb (Controller::IndexSearch::LOADER_DB_FILE_PATH);
+    Database::Context<int> lineCountDb (Controller::IndexSearch::LINE_COUNT_DB_FILE_PATH);
 
     loaderDb.append(0);
     auto recPos = loaderDb.read(0);
+
+    loaderDb.append(0);
+    auto recPosLineCount = lineCountDb.read(0);
 
     std::cout << recPos.value << std::endl;
 
     fileStockPrice.seekg(recPos.value);
     for (int i = 0; i < pageSize; i++) {
+        recPosLineCount.value++;
         Model::StockPrice sPrice;
         std::string line;
 
@@ -278,7 +283,7 @@ int loadDb(int pageSize) {
         if (fileStockPrice.eof()) {
             recPos.value = fileStockPrice.tellg();
             loaderDb.save(recPos);
-            return i;
+            return 0;
         }
 
         std::getline(fileStockPrice, line);
@@ -301,8 +306,13 @@ int loadDb(int pageSize) {
     std::cout << recPos.value << std::endl;
 
     loaderDb.save(recPos);
+    lineCountDb.save(recPosLineCount);
 
-    return pageSize;
+    // check if is end of file
+    if (fileStockPrice.eof())
+        return 0;
+
+    return recPosLineCount.value;
 }
 
 inline std::string getSymbolFromLine(std::string line) {

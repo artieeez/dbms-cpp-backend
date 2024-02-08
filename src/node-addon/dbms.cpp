@@ -29,6 +29,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     indexController.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, TC::getStock));
     indexController.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, TC::getStockList));
     indexController.Set(Napi::String::New(env, "resetDatabase"), Napi::Function::New(env, TC::resetDatabase));
+    indexController.Set(Napi::String::New(env, "loadDb"), Napi::Function::New(env, TC::loadDb));
 
     // Register linearSearchController
     exports.Set(Napi::String::New(env, "linearSearch"), linearSearchController);
