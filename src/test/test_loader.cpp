@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 #include <cassert>
-#include "linearSearchController.hpp"
+#include "indexController.hpp"
 #include "stockPrice.hpp"
 
 /*
@@ -60,14 +60,13 @@ void test_loader() {
     std::vector<Model::StockPrice> vecStockPrice (vecLines.size());
 
     for (int i = 0; i < vecStockPrice.size(); i++)
-        vecStockPrice.at(i) = Controller::LinearSearch::getStockPriceFromLine(vecLines.at(i));
+        vecStockPrice.at(i) = Controller::IndexSearch::getStockPriceFromLine(vecLines.at(i));
 
-    Controller::LinearSearch::loadDb(10);
+    Controller::IndexSearch::loadDb(0);
+    Controller::IndexSearch::loadDb(10);
 
-    std::vector<Model::StockPrice> sPriceList = Controller::LinearSearch::getStockPriceList(vecStockPrice.at(1).stockId, "null", "null", "null");
+    std::vector<Model::StockPrice> sPriceList = Controller::IndexSearch::getStockPriceList(vecStockPrice.at(1).stockId, 10, 0);
 
-    /*
     for (auto i : sPriceList)
         printStockPrice(i);
-        */
 }
