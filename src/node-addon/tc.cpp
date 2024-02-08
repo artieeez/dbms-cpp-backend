@@ -150,4 +150,25 @@ Napi::Value resetDatabase(const Napi::CallbackInfo &info) {
     return Napi::String::New(env, "success");
 }
 
-} // namespace LC
+// int loadDb(int pageSize)
+Napi::Value loadDb(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Wrong number of arguments. Expected 1")
+            .ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    if (!info[0].IsNumber()) {
+        Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    int pageSize = info[0].As<Napi::Number>().Int32Value();
+    int count = Controller::IndexSearch::loadDb(pageSize);
+
+    return Napi::Number::New(env, count);
+}
+
+} // namespace TC
