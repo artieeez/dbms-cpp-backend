@@ -10,6 +10,7 @@ const std::string STOCK_TRIE_FILE = "stockId_trie.db";
 const std::string STOCK_BLOCK_TRIE_FILE = "stockId_block_trie.db";
 const std::string STOCK_PRICE_TRIE_FILE = "stock_price_trie.db";
 const std::string STOCK_PRICE_BLOCK_FILE = "stock_price_block.db";
+const std::string LINE_COUNT_DB_FILE_PATH = "lineCount.db";
 
 namespace Controller
 {
