@@ -25,7 +25,7 @@ namespace Controller
     {
       Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
       Index::Trie trie(STOCK_TRIE_FILE);
-      std::vector<std::streampos> positions = trie.searchString(stockId, 1, 1);
+      std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
       if (positions.size() > 0)
       {
         std::streampos position = positions[0];
@@ -42,7 +42,7 @@ namespace Controller
     {
       Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
       Index::Trie trie(STOCK_TRIE_FILE);
-      std::vector<std::streampos> positions = trie.searchString(payload.stockId, 1, 1);
+      std::vector<std::streampos> positions = trie.searchString(payload.stockId, 1, 0);
       if (positions.size() > 0)
       {
         std::streampos position = positions[0];
@@ -59,7 +59,7 @@ namespace Controller
     {
       Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
       Index::Trie trie(STOCK_TRIE_FILE);
-      std::vector<std::streampos> positions = trie.searchString(stockId, 1, 1);
+      std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
       if (positions.size() > 0)
       {
         std::streampos position = positions[0];
@@ -98,7 +98,7 @@ namespace Controller
       std::streampos dbPosition = dbContext.append(payload);
 
       // procura o stockId no trie que armazena endereços de blocos
-      std::vector<std::streampos> positions = trieStockBlock.searchString(payload.stockId, 1, 1);
+      std::vector<std::streampos> positions = trieStockBlock.searchString(payload.stockId, 1, 0);
       if (positions.size() > 0)
       {
         // se encontrou, já há um bloco então basta adicionar um item no bloco
@@ -121,9 +121,9 @@ namespace Controller
       Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
 
       // Busca na trie de stockPrices o endereço do item no db
-      std::vector<std::streampos> trieStockPricesAddress = trieStockPrices.searchString(stockPriceId, 1, 1);
+      std::vector<std::streampos> trieStockPricesAddress = trieStockPrices.searchString(stockPriceId, 1, 0);
       // Busca na trie de stockBlock o endereço do bloco que contém o item
-      std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, 1, 1);
+      std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, 1, 0);
 
       // Se encontrou o item na trie de stockPrices
       if (trieStockPricesAddress.size() > 0)
@@ -177,7 +177,7 @@ namespace Controller
       Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
       Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
       // Busca na trie de stockPrices o endereço do item no db
-      std::vector<std::streampos> positions = trieStockPrices.searchString(stockPriceId, 1, 1);
+      std::vector<std::streampos> positions = trieStockPrices.searchString(stockPriceId, 1, 0);
       if (positions.size() > 0)
       {
         std::streampos position = positions[0];
@@ -290,7 +290,7 @@ int loadDb(int pageSize) {
 
         sPrice = getStockPriceFromLine(line);
 
-        std::vector<Model::Stock> sList = Controller::IndexSearch::getStockList(sPrice.stockId, 1, 1);
+        std::vector<Model::Stock> sList = Controller::IndexSearch::getStockList(sPrice.stockId, 1, 0);
 
         if (sList.size() == 0) {
             Model::Stock s;

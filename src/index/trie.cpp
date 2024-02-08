@@ -89,8 +89,8 @@ namespace Index
 
   void Trie::insertString(std::string input, std::streampos address)
   {
-    std::clog << "insert: " << input << " " << filename << "\n";
     std::string inputNormal = normalizeString(input);
+    std::clog << "insert: " << inputNormal << " " << filename << "\n";
     int stringCounter = 1;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
@@ -116,7 +116,6 @@ namespace Index
         {
           createdNode.value.address = address;
         }
-
         dbContext.save(createdNode);
       }
       else
@@ -142,7 +141,7 @@ namespace Index
     int endIndex = startIndex + pageSize;
     int counterPointer = 0;
 
-    std::clog << "search: " << input << " " << filename << " " << pageSize << " " << page << "\n";
+    std::clog << "search: " << inputNormal << " " << filename << " " << pageSize << " " << page << "\n";
     int stringCounter = 1;
     std::vector<std::streampos> addresses;
     std::streampos currentPosition = 0;
@@ -156,12 +155,18 @@ namespace Index
 
       if (currentNode.value.children[childIndex] != -1)
       {
-        if (stringCounter == input.size())
+        // std::clog << "char: " << ch << " " << childIndex << " " << stringCounter << " " << inputNormal.size() << "\n";
+        if (stringCounter == inputNormal.size())
         {
+          // std::clog << "chegou no fim da string: ";
+          // printTrieNode(currentNode);
           if (currentNode.value.address != -1)
           {
+            // std::clog << "tem endereço: " << currentNode.value.address << "\n";
+            // std::clog << startIndex << " " << counterPointer << " " << endIndex << "\n";
             if (startIndex <= counterPointer && counterPointer < endIndex)
             {
+              // std::clog << "Address found: " << currentNode.value.address << "" << counterPointer << " " << startIndex << " " << endIndex << " "<< "\n";
               addresses.push_back(currentNode.value.address);
             }
             else if (counterPointer == endIndex)
@@ -187,6 +192,7 @@ namespace Index
 
   void Trie::recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList, int startIndex, int endIndex, int *counterPointer)
   {
+    // std::clog << "recursiveSearch: " << currentPosition << " " << filename << " " << startIndex << " " << endIndex << " " << *counterPointer << "\n";
     Database::Context<TrieNode> dbContext(filename);
     Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
     if (currentNode.value.address != -1)
@@ -217,12 +223,12 @@ namespace Index
   void Trie::deleteString(std::string input)
   {
     std::string inputNormal = normalizeString(input);
-    std::clog << "delete: " << input << " " << filename << "\n";
+    std::clog << "delete: " << inputNormal << " " << filename << "\n";
     int stringCounter = 1;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
 
-    for (char ch : input)
+    for (char ch : inputNormal)
     {
       int childIndex = mapCharToIndex(ch);
 
@@ -230,7 +236,7 @@ namespace Index
 
       if (currentNode.value.children[childIndex] != -1)
       {
-        if (stringCounter == input.size())
+        if (stringCounter == inputNormal.size())
         {
           currentPosition = currentNode.value.children[childIndex];
           Database::Record<Index::TrieNode> nextNode = dbContext.read(currentPosition);
@@ -254,7 +260,7 @@ namespace Index
       }
       else
       {
-        std::clog << input << " not found" << std::endl;
+        std::clog << inputNormal << " not found" << std::endl;
         return;
       }
       stringCounter++;
