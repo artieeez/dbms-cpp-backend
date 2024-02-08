@@ -259,7 +259,7 @@ namespace Controller
 
 // return the number of lines read.
 int loadDb(int pageSize) {
-    std::ifstream fileStockPrice {"./../raw_data/bovespa_stocks.csv"};
+    std::ifstream fileStockPrice {"bovespa_stocks.csv"};
     assert(fileStockPrice.is_open());
 
     Database::Context<std::streampos> loaderDb (Controller::IndexSearch::LOADER_DB_FILE_PATH);
