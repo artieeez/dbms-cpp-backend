@@ -1,214 +1,185 @@
-#include <string>
-#include <vector>
-#include <queue>
+#include "indexController.hpp"
+#include "blockStorage.hpp"
+#include "context.hpp"
+#include "stock.hpp"
+#include "trie.hpp"
 #include <array>
 #include <cassert>
-#include "context.hpp"
-#include "trie.hpp"
-#include "stock.hpp"
-#include "blockStorage.hpp"
-#include "indexController.hpp"
+#include <queue>
+#include <string>
+#include <vector>
 
-namespace Controller
-{
-  namespace IndexSearch
-  {
-    void addStock(Model::Stock payload)
-    {
-      Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-      Index::Trie trie(STOCK_TRIE_FILE);
-      std::streampos position = dbContext.append(payload);
-      trie.insertString(payload.stockId, position);
-    }
+namespace Controller {
+namespace IndexSearch {
+void addStock(Model::Stock payload) {
+    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Index::Trie trie(STOCK_TRIE_FILE);
+    std::streampos position = dbContext.append(payload);
+    trie.insertString(payload.stockId, position);
+}
 
-    void deleteStock(std::string stockId)
-    {
-      Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-      Index::Trie trie(STOCK_TRIE_FILE);
-      std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
-      if (positions.size() > 0)
-      {
+void deleteStock(std::string stockId) {
+    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Index::Trie trie(STOCK_TRIE_FILE);
+    std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
+    if (positions.size() > 0) {
         std::streampos position = positions[0];
         Database::Record<Model::Stock> stocks = dbContext.read(position);
-        if (stocks.value.stockId == stockId)
-        {
-          dbContext.remove(position);
-          trie.deleteString(stockId);
+        if (stocks.value.stockId == stockId) {
+            dbContext.remove(position);
+            trie.deleteString(stockId);
         }
-      }
     }
+}
 
-    void updateStock(Model::Stock payload)
-    {
-      Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-      Index::Trie trie(STOCK_TRIE_FILE);
-      std::vector<std::streampos> positions = trie.searchString(payload.stockId, 1, 0);
-      if (positions.size() > 0)
-      {
+void updateStock(Model::Stock payload) {
+    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Index::Trie trie(STOCK_TRIE_FILE);
+    std::vector<std::streampos> positions = trie.searchString(payload.stockId, 1, 0);
+    if (positions.size() > 0) {
         std::streampos position = positions[0];
         Database::Record<Model::Stock> stock = dbContext.read(position);
-        if (stock.value.stockId == payload.stockId)
-        {
-          stock.value = payload;
-          dbContext.save(stock);
+        if (stock.value.stockId == payload.stockId) {
+            stock.value = payload;
+            dbContext.save(stock);
         }
-      }
     }
+}
 
-    Model::Stock getStock(std::string stockId)
-    {
-      Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-      Index::Trie trie(STOCK_TRIE_FILE);
-      std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
-      if (positions.size() > 0)
-      {
+Model::Stock getStock(std::string stockId) {
+    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Index::Trie trie(STOCK_TRIE_FILE);
+    std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
+    if (positions.size() > 0) {
         std::streampos position = positions[0];
         Database::Record<Model::Stock> stock = dbContext.read(position);
-        if (stock.value.stockId == stockId)
-        {
-          return stock.value;
+        if (stock.value.stockId == stockId) {
+            return stock.value;
         }
-      }
-      return Model::Stock();
     }
+    return Model::Stock();
+}
 
-    std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int page)
-    {
-      Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-      Index::Trie trie(STOCK_TRIE_FILE);
-      std::vector<std::streampos> positions = trie.searchString(prefix, pageSize, page);
-      std::vector<Model::Stock> stocks;
-      for (std::streampos position : positions)
-      {
+std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int page) {
+    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Index::Trie trie(STOCK_TRIE_FILE);
+    std::vector<std::streampos> positions = trie.searchString(prefix, pageSize, page);
+    std::vector<Model::Stock> stocks;
+    for (std::streampos position : positions) {
         Database::Record<Model::Stock> stock = dbContext.read(position);
         stocks.push_back(stock.value);
-      }
-      return stocks;
     }
+    return stocks;
+}
 
-    ///////////////////STOCKPRICE////////////////////
+///////////////////STOCKPRICE////////////////////
 
-    void addStockPrice(Model::StockPrice payload)
-    {
-      Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
-      Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
-      Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
-      Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
-      // adiciona no banco
-      std::streampos dbPosition = dbContext.append(payload);
+void addStockPrice(Model::StockPrice payload) {
+    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
+    Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
+    Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
+    Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
+    // adiciona no banco
+    std::streampos dbPosition = dbContext.append(payload);
 
-      // procura o stockId no trie que armazena endereços de blocos
-      std::vector<std::streampos> positions = trieStockBlock.searchString(payload.stockId, 1, 0);
-      if (positions.size() > 0)
-      {
+    // procura o stockId no trie que armazena endereços de blocos
+    std::vector<std::streampos> positions = trieStockBlock.searchString(payload.stockId, 1, 0);
+    if (positions.size() > 0) {
         // se encontrou, já há um bloco então basta adicionar um item no bloco
         std::streampos triePosition = positions[0];
         blockStorage.insertBlock(triePosition, dbPosition);
-      }
-      else
-      {
+    } else {
         std::streampos blockPosition = blockStorage.startChain(dbPosition);
         trieStockBlock.insertString(payload.stockId, blockPosition);
-      }
-      trieStockPrices.insertString(payload.stockPriceId, dbPosition);
     }
+    trieStockPrices.insertString(payload.stockPriceId, dbPosition);
+}
 
-    void deleteStockPrice(std::string stockPriceId, std::string stockId)
-    {
-      Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
-      Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
-      Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
-      Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
+void deleteStockPrice(std::string stockPriceId, std::string stockId) {
+    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
+    Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
+    Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
+    Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
 
-      // Busca na trie de stockPrices o endereço do item no db
-      std::vector<std::streampos> trieStockPricesAddress = trieStockPrices.searchString(stockPriceId, 1, 0);
-      // Busca na trie de stockBlock o endereço do bloco que contém o item
-      std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, 1, 0);
+    // Busca na trie de stockPrices o endereço do item no db
+    std::vector<std::streampos> trieStockPricesAddress = trieStockPrices.searchString(stockPriceId, 1, 0);
+    // Busca na trie de stockBlock o endereço do bloco que contém o item
+    std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, 1, 0);
 
-      // Se encontrou o item na trie de stockPrices
-      if (trieStockPricesAddress.size() > 0)
-      {
+    // Se encontrou o item na trie de stockPrices
+    if (trieStockPricesAddress.size() > 0) {
         std::streampos dbAddress = trieStockPricesAddress[0];
         // Se encontrou o bloco na trie de stockBlock
-        if (trieStockBlockAddress.size() > 0)
-        {
-          std::streampos blockAddress = trieStockBlockAddress[0];
-          // Remove o item do bloco e salva o novo endereço do bloco
-          std::streampos startPositionBlock = blockStorage.removeBlockItem(blockAddress, dbAddress);
-          // se o endereco mudou, atualiza na trie
-          if (startPositionBlock != blockAddress)
-          {
-            trieStockBlock.insertString(stockId, startPositionBlock);
-          }
+        if (trieStockBlockAddress.size() > 0) {
+            std::streampos blockAddress = trieStockBlockAddress[0];
+            // Remove o item do bloco e salva o novo endereço do bloco
+            std::streampos startPositionBlock = blockStorage.removeBlockItem(blockAddress, dbAddress);
+            // se o endereco mudou, atualiza na trie
+            if (startPositionBlock != blockAddress) {
+                trieStockBlock.insertString(stockId, startPositionBlock);
+            }
 
-          dbContext.remove(dbAddress);
-          trieStockPrices.deleteString(stockPriceId);
+            dbContext.remove(dbAddress);
+            trieStockPrices.deleteString(stockPriceId);
         }
-      }
     }
+}
 
-    std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSize, int page)
-    {
-      Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
-      Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
-      Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
+std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSize, int page) {
+    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
+    Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
+    Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
 
-      // Busca na trie de stockBlock o endereço do bloco que contém o item
-      std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, pageSize, page);
-      if (trieStockBlockAddress.size() > 0)
-      {
+    // Busca na trie de stockBlock o endereço do bloco que contém o item
+    std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, pageSize, page);
+    if (trieStockBlockAddress.size() > 0) {
         std::streampos blockAddress = trieStockBlockAddress[0];
         // Busca o bloco que contém os endereços no db
         std::vector<std::streampos> dbAddressess = blockStorage.retrieveBlock(blockAddress);
         // Busca os itens no db e salva em stockPrices
         std::vector<Model::StockPrice> stockPrices;
-        for (std::streampos address : dbAddressess)
-        {
-          Database::Record<Model::StockPrice> stock = dbContext.read(address);
-          stockPrices.push_back(stock.value);
+        for (std::streampos address : dbAddressess) {
+            Database::Record<Model::StockPrice> stock = dbContext.read(address);
+            stockPrices.push_back(stock.value);
         }
         return stockPrices;
-      }
-      return std::vector<Model::StockPrice>();
     }
+    return std::vector<Model::StockPrice>();
+}
 
-    Model::StockPrice getStockPrice(std::string stockPriceId)
-    {
-      Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
-      Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
-      // Busca na trie de stockPrices o endereço do item no db
-      std::vector<std::streampos> positions = trieStockPrices.searchString(stockPriceId, 1, 0);
-      if (positions.size() > 0)
-      {
+Model::StockPrice getStockPrice(std::string stockPriceId) {
+    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
+    Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
+    // Busca na trie de stockPrices o endereço do item no db
+    std::vector<std::streampos> positions = trieStockPrices.searchString(stockPriceId, 1, 0);
+    if (positions.size() > 0) {
         std::streampos position = positions[0];
         Database::Record<Model::StockPrice> stockPrice = dbContext.read(position);
-        if (stockPrice.value.stockPriceId == stockPriceId)
-        {
-          return stockPrice.value;
+        if (stockPrice.value.stockPriceId == stockPriceId) {
+            return stockPrice.value;
         }
-      }
-      return Model::StockPrice();
     }
+    return Model::StockPrice();
+}
 
-    void resetDb()
-    {
+void resetDb() {
 
-      Database::Context<Model::StockPrice> dbContextStock(STOCK_PRICE_DB_FILE);
-      Database::Context<Model::Stock> dbContextStockTrie(STOCK_TRIE_FILE);
-      Database::Context<Model::Stock> dbContextStockPrice(STOCK_DB_FILE);
-      Database::Context<Model::Stock> dbContextStockBlock(STOCK_PRICE_BLOCK_FILE);
-      Database::Context<Model::Stock> dbContextStockPriceTrie(STOCK_PRICE_TRIE_FILE);
-      Database::Context<Model::Stock> dbContextStockPriceTrieBlock(STOCK_BLOCK_TRIE_FILE);
+    Database::Context<Model::StockPrice> dbContextStock(STOCK_PRICE_DB_FILE);
+    Database::Context<Model::Stock> dbContextStockTrie(STOCK_TRIE_FILE);
+    Database::Context<Model::Stock> dbContextStockPrice(STOCK_DB_FILE);
+    Database::Context<Model::Stock> dbContextStockBlock(STOCK_PRICE_BLOCK_FILE);
+    Database::Context<Model::Stock> dbContextStockPriceTrie(STOCK_PRICE_TRIE_FILE);
+    Database::Context<Model::Stock> dbContextStockPriceTrieBlock(STOCK_BLOCK_TRIE_FILE);
 
-      dbContextStock.reset();
-      dbContextStockPrice.reset();
-      dbContextStockBlock.reset();
-      dbContextStockPriceTrie.reset();
-      dbContextStockPriceTrieBlock.reset();
-      dbContextStockTrie.reset();
-    }
+    dbContextStock.reset();
+    dbContextStockPrice.reset();
+    dbContextStockBlock.reset();
+    dbContextStockPriceTrie.reset();
+    dbContextStockPriceTrieBlock.reset();
+    dbContextStockTrie.reset();
+}
 
-    void sortStockPriceList(std::vector<Model::StockPrice>& stockPriceList) {
+void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList) {
     std::array<std::queue<Model::StockPrice>, 10> buckets;
 
     // sort by day
@@ -258,24 +229,27 @@ namespace Controller
 }
 
 // return the number of lines read.
-int loadDb(int pageSize) {
-    std::ifstream fileStockPrice {"bovespa_stocks.csv"};
+std::vector<int> loadDb(int pageSize) {
+    std::ifstream fileStockPrice{"bovespa_stocks.csv"};
     assert(fileStockPrice.is_open());
 
-    Database::Context<std::streampos> loaderDb (Controller::IndexSearch::LOADER_DB_FILE_PATH);
-    Database::Context<int> lineCountDb (LINE_COUNT_DB_FILE_PATH);
+    Database::Context<std::streampos> loaderDb(Controller::IndexSearch::LOADER_DB_FILE_PATH);
+    Database::Context<int> stockCountDb(STOCK_COUNT_DB_FILE_PATH);
+    Database::Context<int> stockPriceCountDb(STOCK_PRICE_COUNT_DB_FILE_PATH);
 
     loaderDb.append(0);
     auto recPos = loaderDb.read(0);
 
-    loaderDb.append(0);
-    auto recPosLineCount = lineCountDb.read(0);
+    stockCountDb.append(0);
+    auto recStockCount = stockCountDb.read(0);
+
+    stockPriceCountDb.append(0);
+    auto recStockPriceCount = stockPriceCountDb.read(0);
 
     std::cout << recPos.value << std::endl;
 
     fileStockPrice.seekg(recPos.value);
     for (int i = 0; i < pageSize; i++) {
-        recPosLineCount.value++;
         Model::StockPrice sPrice;
         std::string line;
 
@@ -283,7 +257,7 @@ int loadDb(int pageSize) {
         if (fileStockPrice.eof()) {
             recPos.value = fileStockPrice.tellg();
             loaderDb.save(recPos);
-            return 0;
+            return {0, 0};
         }
 
         std::getline(fileStockPrice, line);
@@ -295,9 +269,11 @@ int loadDb(int pageSize) {
         if (sList.size() == 0) {
             Model::Stock s;
             s.stockId = sPrice.stockId;
+            recStockCount.value++;
             Controller::IndexSearch::addStock(s);
         }
 
+        recStockPriceCount.value++;
         Controller::IndexSearch::addStockPrice(sPrice);
     }
 
@@ -306,18 +282,19 @@ int loadDb(int pageSize) {
     std::cout << recPos.value << std::endl;
 
     loaderDb.save(recPos);
-    lineCountDb.save(recPosLineCount);
+    stockCountDb.save(recStockCount);
+    stockPriceCountDb.save(recStockPriceCount);
 
     // check if is end of file
     if (fileStockPrice.eof())
-        return 0;
+        return {0, 0};
 
-    return recPosLineCount.value;
+    return {recStockCount.value, recStockPriceCount.value};
 }
 
 inline std::string getSymbolFromLine(std::string line) {
-    int i {11};
-    int j {i};
+    int i{11};
+    int j{i};
     while (line.at(j) != ',')
         j++;
 
@@ -330,7 +307,7 @@ inline std::string getDateFromLine(std::string line) {
 
 Model::StockPrice getStockPriceFromLine(std::string line) {
     // string position starts in 11 to skip date
-    int begin {11};
+    int begin{11};
     int end = {begin};
     Model::StockPrice sPrice;
 
@@ -387,5 +364,5 @@ Model::StockPrice getStockPriceFromLine(std::string line) {
     return sPrice;
 }
 
-  }
-}
+} // namespace IndexSearch
+} // namespace Controller

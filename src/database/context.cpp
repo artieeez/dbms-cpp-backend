@@ -1,9 +1,9 @@
-#include <filesystem>
 #include "context.hpp"
+#include "blockStorage.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
-#include "blockStorage.hpp"
 #include "trie.hpp"
+#include <filesystem>
 
 namespace Database {
 
@@ -56,12 +56,24 @@ Record<T> Context<T>::read(std::streampos position) {
 }
 
 template <typename T>
-std::vector<Record<T>> Context<T>::find(std::function<bool(Record<T>)> predicate) {
+std::vector<Record<T>> Context<T>::find(std::function<bool(Record<T>)> predicate, int pageSize, int page) {
     clearIterator();
+    int recordCount = 0;
+    int pageCount = 0;
     std::vector<Record<T>> results;
-    while (next()) {
+    while (next() && (pageSize == 0 || recordCount < pageSize * (page + 1))) {
         if (predicate(curr)) {
-            results.push_back(curr);
+            recordCount++;
+            if (pageSize > 0) {
+                if (recordCount > pageSize * (pageCount + 1)) {
+                    pageCount++;
+                }
+                if (pageCount == page) {
+                    results.push_back(curr);
+                }
+            } else {
+                results.push_back(curr);
+            }
         }
     }
     return results;

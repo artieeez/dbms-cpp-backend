@@ -1,14 +1,13 @@
-#include <string>
-#include <vector>
-#include <queue>
-#include <array>
-#include <fstream>
-#include <cassert>
 #include "linearSearchController.hpp"
 #include "context.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
-
+#include <array>
+#include <cassert>
+#include <fstream>
+#include <queue>
+#include <string>
+#include <vector>
 
 namespace Controller {
 
@@ -58,9 +57,11 @@ Model::Stock getStock(std::string stockId) {
 
 std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSize, std::string orderBy) {
     Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-    std::vector<Database::Record<Model::Stock>> records = dbContext.find([prefix](Database::Record<Model::Stock> record) {
-        return record.value.stockId.find(prefix) != std::string::npos;
-    });
+    std::vector<Database::Record<Model::Stock>> records = dbContext.find(
+        [prefix](Database::Record<Model::Stock> record) {
+            return record.value.stockId.find(prefix) != std::string::npos;
+        },
+        pageSize, page);
 
     // map records to stocks
     std::vector<Model::Stock> result;
@@ -125,7 +126,7 @@ void resetDb() {
     stockPriceDbContext.reset();
 }
 
-void sortStockPriceList(std::vector<Model::StockPrice>& stockPriceList) {
+void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList) {
     std::array<std::queue<Model::StockPrice>, 10> buckets;
 
     // sort by day
@@ -176,10 +177,10 @@ void sortStockPriceList(std::vector<Model::StockPrice>& stockPriceList) {
 
 // return the number of lines read.
 int loadDb(int pageSize) {
-    std::ifstream fileStockPrice {"bovespa_stocks.csv"};
+    std::ifstream fileStockPrice{"bovespa_stocks.csv"};
     assert(fileStockPrice.is_open());
 
-    Database::Context<std::streampos> loaderDb (Controller::LinearSearch::LOADER_DB_FILE_PATH);
+    Database::Context<std::streampos> loaderDb(Controller::LinearSearch::LOADER_DB_FILE_PATH);
 
     loaderDb.append(0);
     auto recPos = loaderDb.read(0);
@@ -223,8 +224,8 @@ int loadDb(int pageSize) {
 }
 
 inline std::string getSymbolFromLine(std::string line) {
-    int i {11};
-    int j {i};
+    int i{11};
+    int j{i};
     while (line.at(j) != ',')
         j++;
 
@@ -237,7 +238,7 @@ inline std::string getDateFromLine(std::string line) {
 
 Model::StockPrice getStockPriceFromLine(std::string line) {
     // string position starts in 11 to skip date
-    int begin {11};
+    int begin{11};
     int end = {begin};
     Model::StockPrice sPrice;
 
@@ -293,7 +294,6 @@ Model::StockPrice getStockPriceFromLine(std::string line) {
 
     return sPrice;
 }
-
 
 } // namespace LinearSearch
 

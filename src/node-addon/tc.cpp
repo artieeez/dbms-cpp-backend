@@ -166,9 +166,14 @@ Napi::Value loadDb(const Napi::CallbackInfo &info) {
     }
 
     int pageSize = info[0].As<Napi::Number>().Int32Value();
-    int count = Controller::IndexSearch::loadDb(pageSize);
+    std::vector<int> countVector = Controller::IndexSearch::loadDb(pageSize);
 
-    return Napi::Number::New(env, count);
+    Napi::Array result = Napi::Array::New(env, countVector.size());
+    for (int i = 0; i < countVector.size(); i++) {
+        result.Set(i, Napi::Number::New(env, countVector[i]));
+    }
+
+    return result;
 }
 
 } // namespace TC
