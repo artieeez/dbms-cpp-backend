@@ -263,7 +263,7 @@ int loadDb(int pageSize) {
     assert(fileStockPrice.is_open());
 
     Database::Context<std::streampos> loaderDb (Controller::IndexSearch::LOADER_DB_FILE_PATH);
-    Database::Context<int> lineCountDb (Controller::IndexSearch::LINE_COUNT_DB_FILE_PATH);
+    Database::Context<int> lineCountDb (LINE_COUNT_DB_FILE_PATH);
 
     loaderDb.append(0);
     auto recPos = loaderDb.read(0);
