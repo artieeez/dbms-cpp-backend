@@ -18,16 +18,8 @@ void deleteStockPrice(std::string stockPriceId);
 void updateStockPrice(Model::StockPrice payload);
 std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::string minDate, std::string maxDate, std::string orderBy);
 
-void resetDb();
-
 // sort a stockPrice list by date
 void sortStockPriceList(std::vector<Model::StockPrice>& stockPriceList);
-
-int loadDb(int pageSize);
-
-inline std::string getSymbolFromLine(std::string line);
-inline std::string getDateFromLine(std::string line);
-Model::StockPrice getStockPriceFromLine(std::string line);
 
 } // namespace LinearSearch
 
