@@ -1,8 +1,8 @@
 #include "context.hpp"
-#include "blockStorage.hpp"
-#include "stock.hpp"
-#include "stockPrice.hpp"
-#include "trie.hpp"
+// #include "blockStorage.hpp"
+// #include "stock.hpp"
+// #include "stockPrice.hpp"
+// #include "trie.hpp"
 #include <filesystem>
 
 namespace Database {
@@ -15,7 +15,7 @@ Context<T>::Context(const std::string &filePath) {
     if (std::filesystem::exists(filePath)) {
         _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::binary);
     } else {
-        _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::app | std::ios::binary);
+        _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
     }
 
     // Check if the file is open
@@ -44,9 +44,16 @@ template <typename T>
 Record<T> Context<T>::read(std::streampos position) {
     _file.seekg(position);
     Record<T> record;
+    record.error = true;
 
     try {
         _file.read(reinterpret_cast<char *>(&record), sizeof(Record<T>));
+        if (!_file) {
+            record.error = true;
+            _file.clear();
+        } else {
+            record.error = false;
+        }
     } catch (std::exception &e) {
         std::cerr << "Error reading file: " << e.what() << std::endl;
         record.error = true;
@@ -88,27 +95,26 @@ std::streampos Context<T>::append(const T &value) {
         _empty.pop_back();
         _file.seekp(position);
     } else {
-        int lastPos = (int)getLastPosition();
-        if (lastPos < 0) { // Empty file
-            position = 0;
-        } else {
-            position = lastPos + (int)sizeof(Record<T>);
-        }
+        position = getFileEnd();
     }
 
     Record<T> record;
     record.value = value;
     record.position = position;
     record.deleted = false;
+    record.error = false;
 
-    _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));
+    save(record);
 
     return position;
 }
 
 template <typename T>
-void Context<T>::save(const Record<T> &record) {
+void Context<T>::save(Record<T> &record) {
     _file.seekp(record.position);
+
+    record.deleted = false;
+    record.error = false;
 
     _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));
 }
@@ -123,16 +129,14 @@ void Context<T>::remove(std::streampos position) {
 }
 
 template <typename T>
-std::streampos Context<T>::getLastPosition() {
-    _file.seekg(0, std::ios::end);
-    std::streampos endPosition = _file.tellg();
+std::streampos Context<T>::getFileEnd() {
+    _file.seekp(0, std::ios_base::end);
+    return _file.tellp();
+}
 
-    if (endPosition == 0 || endPosition < sizeof(Record<T>)) {
-        return -1; // Empty file
-    }
-
-    // Calculate the position of the last record
-    return (int)endPosition - (int)sizeof(Record<T>);
+template <typename T>
+bool Context<T>::isEmpty() {
+    return getFileEnd() == 0;
 }
 
 template <typename T>
@@ -154,7 +158,8 @@ bool Context<T>::next(bool skipDeleted) {
                        ? (int)static_cast<std::streampos>(0)
                        : (int)_currPos + (int)sizeof(Record<T>);
 
-        positionIsValid = _currPos <= getLastPosition();
+        auto fileEnd = getFileEnd();
+        positionIsValid = (_currPos <= fileEnd) && (fileEnd > 0);
 
         if (positionIsValid) {
             curr = read(_currPos);
@@ -179,7 +184,7 @@ std::streampos Context<T>::getCurrPosition() {
 
 template class Database::Context<int>;
 template class Database::Context<std::streampos>;
-template class Database::Context<Model::Stock>;
-template class Database::Context<Model::StockPrice>;
-template class Database::Context<Index::TrieNode>;
-template class Database::Context<Index::Block>;
+// template class Database::Context<Model::Stock>;
+// template class Database::Context<Model::StockPrice>;
+// template class Database::Context<Index::TrieNode>;
+// template class Database::Context<Index::Block>;

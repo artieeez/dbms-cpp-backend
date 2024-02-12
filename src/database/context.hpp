@@ -14,7 +14,7 @@ struct Record {
     T value;
     std::streampos position;
     bool deleted;
-    bool error = false;
+    bool error;
 };
 
 template <typename T>
@@ -38,11 +38,13 @@ public:
 
     std::streampos append(const T &value);
 
-    void save(const Record<T> &record);
+    void save(Record<T> &record);
 
     void remove(std::streampos position);
 
-    std::streampos getLastPosition();
+    std::streampos getFileEnd();
+
+    bool isEmpty();
 
     void reset();
 
