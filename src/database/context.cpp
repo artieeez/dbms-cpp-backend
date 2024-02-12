@@ -1,8 +1,8 @@
 #include "context.hpp"
-// #include "blockStorage.hpp"
-// #include "stock.hpp"
-// #include "stockPrice.hpp"
-// #include "trie.hpp"
+#include "blockStorage.hpp"
+#include "stock.hpp"
+#include "stockPrice.hpp"
+#include "trie.hpp"
 #include <filesystem>
 
 namespace Database {
@@ -184,7 +184,7 @@ std::streampos Context<T>::getCurrPosition() {
 
 template class Database::Context<int>;
 template class Database::Context<std::streampos>;
-// template class Database::Context<Model::Stock>;
-// template class Database::Context<Model::StockPrice>;
-// template class Database::Context<Index::TrieNode>;
-// template class Database::Context<Index::Block>;
+template class Database::Context<Model::Stock>;
+template class Database::Context<Model::StockPrice>;
+template class Database::Context<Index::TrieNode>;
+template class Database::Context<Index::Block>;
