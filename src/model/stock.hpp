@@ -3,7 +3,6 @@
 
 #include <string>
 
-const std::string STOCK_DB_FILE = "stockDb.db";
 namespace Model
 {
 

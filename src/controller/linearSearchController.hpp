@@ -7,10 +7,6 @@
 namespace Controller {
 namespace LinearSearch {
 
-const std::string STOCK_DB_FILE = "stockDb.db";
-const std::string STOCK_PRICE_DB_FILE = "stockPriceDb.db";
-const std::string LOADER_DB_FILE_PATH = "loader.db";
-
 void addStock(Model::Stock payload);
 void deleteStock(std::string stockId);
 void updateStock(Model::Stock payload);

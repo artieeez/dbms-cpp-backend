@@ -9,6 +9,27 @@
 
 namespace Database {
 
+namespace PATH {
+    namespace DB {
+        const std::string STOCK = "db_stock";
+        const std::string STOCK_PRICE = "db_stock_price";
+    }
+    namespace TRIE {
+        const std::string STOCK_ID_TO_STOCK = "trie_stock_id_stock_adress";
+        const std::string STOCK_PRICE_ID_TO_STOCK_PRICE = "trie_stock_price_id_stock_price_adress";
+        const std::string STOCK_ID_TO_STOCK_PRICE_BLOCK = "trie_stock_id_stock_price_block_adress";
+    }
+    namespace BLOCK {
+        const std::string STOCK_ID_TO_STOCK_PRICE = "block_stock_price";
+    }
+
+    namespace LOADER {
+        const std::string POSITION = "loader_position";
+        const std::string STOCK = "loader_stock";
+        const std::string STOCK_PRICE = "loader_stock_price";
+    }
+}
+
 template <typename T>
 struct Record {
     T value;

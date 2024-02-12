@@ -10,7 +10,11 @@ namespace Database {
 template <typename T>
 Context<T>::Context(const std::string &filePath) {
 
-    _filePath = filePath;
+    _filePath = "db/" + filePath + ".db";
+
+    if (!std::filesystem::exists("db")) {
+        std::filesystem::create_directory("db");
+    }
 
     if (std::filesystem::exists(filePath)) {
         _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::binary);

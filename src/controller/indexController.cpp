@@ -12,15 +12,15 @@
 namespace Controller {
 namespace IndexSearch {
 void addStock(Model::Stock payload) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-    Index::Trie trie(STOCK_TRIE_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
+    Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::streampos position = dbContext.append(payload);
     trie.insertString(payload.stockId, position);
 }
 
 void deleteStock(std::string stockId) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-    Index::Trie trie(STOCK_TRIE_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
+    Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
     if (positions.size() > 0) {
         std::streampos position = positions[0];
@@ -33,8 +33,8 @@ void deleteStock(std::string stockId) {
 }
 
 void updateStock(Model::Stock payload) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-    Index::Trie trie(STOCK_TRIE_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
+    Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(payload.stockId, 1, 0);
     if (positions.size() > 0) {
         std::streampos position = positions[0];
@@ -47,8 +47,8 @@ void updateStock(Model::Stock payload) {
 }
 
 Model::Stock getStock(std::string stockId) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-    Index::Trie trie(STOCK_TRIE_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
+    Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
     if (positions.size() > 0) {
         std::streampos position = positions[0];
@@ -61,8 +61,8 @@ Model::Stock getStock(std::string stockId) {
 }
 
 std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int page) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
-    Index::Trie trie(STOCK_TRIE_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
+    Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(prefix, pageSize, page);
     std::vector<Model::Stock> stocks;
     for (std::streampos position : positions) {
@@ -75,10 +75,10 @@ std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int pag
 ///////////////////STOCKPRICE////////////////////
 
 void addStockPrice(Model::StockPrice payload) {
-    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
-    Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
-    Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
-    Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
+    Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
+    Index::BlockStorage blockStorage(Database::PATH::BLOCK::STOCK_ID_TO_STOCK_PRICE);
+    Index::Trie trieStockBlock(Database::PATH::TRIE::STOCK_ID_TO_STOCK_PRICE_BLOCK);
+    Index::Trie trieStockPrices(Database::PATH::TRIE::STOCK_PRICE_ID_TO_STOCK_PRICE);
     // adiciona no banco
     std::streampos dbPosition = dbContext.append(payload);
 
@@ -96,10 +96,10 @@ void addStockPrice(Model::StockPrice payload) {
 }
 
 void deleteStockPrice(std::string stockPriceId, std::string stockId) {
-    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
-    Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
-    Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
-    Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
+    Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
+    Index::Trie trieStockBlock(Database::PATH::TRIE::STOCK_ID_TO_STOCK_PRICE_BLOCK);
+    Index::Trie trieStockPrices(Database::PATH::TRIE::STOCK_PRICE_ID_TO_STOCK_PRICE);
+    Index::BlockStorage blockStorage(Database::PATH::BLOCK::STOCK_ID_TO_STOCK_PRICE);
 
     // Busca na trie de stockPrices o endereço do item no db
     std::vector<std::streampos> trieStockPricesAddress = trieStockPrices.searchString(stockPriceId, 1, 0);
@@ -126,9 +126,9 @@ void deleteStockPrice(std::string stockPriceId, std::string stockId) {
 }
 
 std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSize, int page) {
-    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
-    Index::Trie trieStockBlock(STOCK_BLOCK_TRIE_FILE);
-    Index::BlockStorage blockStorage(STOCK_PRICE_BLOCK_FILE);
+    Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
+    Index::Trie trieStockBlock(Database::PATH::TRIE::STOCK_ID_TO_STOCK_PRICE_BLOCK);
+    Index::BlockStorage blockStorage(Database::PATH::BLOCK::STOCK_ID_TO_STOCK_PRICE);
 
     // Busca na trie de stockBlock o endereço do bloco que contém o item
     std::vector<std::streampos> trieStockBlockAddress = trieStockBlock.searchString(stockId, pageSize, page);
@@ -148,8 +148,8 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSi
 }
 
 Model::StockPrice getStockPrice(std::string stockPriceId) {
-    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
-    Index::Trie trieStockPrices(STOCK_PRICE_TRIE_FILE);
+    Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
+    Index::Trie trieStockPrices(Database::PATH::TRIE::STOCK_PRICE_ID_TO_STOCK_PRICE);
     // Busca na trie de stockPrices o endereço do item no db
     std::vector<std::streampos> positions = trieStockPrices.searchString(stockPriceId, 1, 0);
     if (positions.size() > 0) {
@@ -163,20 +163,25 @@ Model::StockPrice getStockPrice(std::string stockPriceId) {
 }
 
 void resetDb() {
-
-    Database::Context<Model::StockPrice> dbContextStock(STOCK_PRICE_DB_FILE);
-    Database::Context<Model::Stock> dbContextStockTrie(STOCK_TRIE_FILE);
-    Database::Context<Model::Stock> dbContextStockPrice(STOCK_DB_FILE);
-    Database::Context<Model::Stock> dbContextStockBlock(STOCK_PRICE_BLOCK_FILE);
-    Database::Context<Model::Stock> dbContextStockPriceTrie(STOCK_PRICE_TRIE_FILE);
-    Database::Context<Model::Stock> dbContextStockPriceTrieBlock(STOCK_BLOCK_TRIE_FILE);
+    Database::Context<Model::StockPrice> dbContextStock(Database::PATH::DB::STOCK);
+    Database::Context<Model::Stock> dbContextStockPrice(Database::PATH::DB::STOCK_PRICE);
+    Database::Context<Model::Stock> dbContextStockTrie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
+    Database::Context<Model::Stock> dbContextStockPriceTrie(Database::PATH::TRIE::STOCK_PRICE_ID_TO_STOCK_PRICE);
+    Database::Context<Model::Stock> dbContextStockPriceTrieBlock(Database::PATH::TRIE::STOCK_ID_TO_STOCK_PRICE_BLOCK);
+    Database::Context<Model::Stock> dbContextStockBlock(Database::PATH::BLOCK::STOCK_ID_TO_STOCK_PRICE);
+    Database::Context<std::streampos> loaderDb(Database::PATH::LOADER::POSITION);
+    Database::Context<int> stockCountDb(Database::PATH::LOADER::STOCK);
+    Database::Context<int> stockPriceCountDb(Database::PATH::LOADER::STOCK_PRICE);
 
     dbContextStock.reset();
     dbContextStockPrice.reset();
-    dbContextStockBlock.reset();
+    dbContextStockTrie.reset();
     dbContextStockPriceTrie.reset();
     dbContextStockPriceTrieBlock.reset();
-    dbContextStockTrie.reset();
+    dbContextStockBlock.reset();
+    loaderDb.reset();
+    stockCountDb.reset();
+    stockPriceCountDb.reset();
 }
 
 void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList) {
@@ -233,9 +238,9 @@ std::vector<int> loadDb(int pageSize) {
     std::ifstream fileStockPrice{"bovespa_stocks.csv"};
     assert(fileStockPrice.is_open());
 
-    Database::Context<std::streampos> loaderDb(Controller::IndexSearch::LOADER_DB_FILE_PATH);
-    Database::Context<int> stockCountDb(STOCK_COUNT_DB_FILE_PATH);
-    Database::Context<int> stockPriceCountDb(STOCK_PRICE_COUNT_DB_FILE_PATH);
+    Database::Context<std::streampos> loaderDb(Database::PATH::LOADER::POSITION);
+    Database::Context<int> stockCountDb(Database::PATH::LOADER::STOCK);
+    Database::Context<int> stockPriceCountDb(Database::PATH::LOADER::STOCK_PRICE);
 
     if (loaderDb.isEmpty())
         loaderDb.append(0);

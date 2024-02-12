@@ -14,12 +14,12 @@ namespace Controller {
 namespace LinearSearch {
 
 void addStock(Model::Stock payload) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     dbContext.append(payload);
 }
 
 void deleteStock(std::string stockId) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     std::vector<Database::Record<Model::Stock>> stocks = dbContext.find([stockId](Database::Record<Model::Stock> record) {
         return record.value.stockId == stockId;
     });
@@ -30,7 +30,7 @@ void deleteStock(std::string stockId) {
 }
 
 void updateStock(Model::Stock payload) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     std::vector<Database::Record<Model::Stock>> stocks = dbContext.find([payload](Database::Record<Model::Stock> record) {
         return record.value.stockId == payload.stockId;
     });
@@ -43,7 +43,7 @@ void updateStock(Model::Stock payload) {
 }
 
 Model::Stock getStock(std::string stockId) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     std::vector<Database::Record<Model::Stock>> stocks = dbContext.find([stockId](Database::Record<Model::Stock> record) {
         return record.value.stockId == stockId;
     });
@@ -56,7 +56,7 @@ Model::Stock getStock(std::string stockId) {
 }
 
 std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSize, std::string orderBy) {
-    Database::Context<Model::Stock> dbContext(STOCK_DB_FILE);
+    Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     std::vector<Database::Record<Model::Stock>> records = dbContext.find(
         [prefix](Database::Record<Model::Stock> record) {
             return record.value.stockId.find(prefix) != std::string::npos;
@@ -73,12 +73,12 @@ std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSiz
 }
 
 void addStockPrice(Model::StockPrice payload) {
-    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
+    Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     dbContext.append(payload);
 }
 
 void deleteStockPrice(std::string stockPriceId) {
-    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
+    Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     std::vector<Database::Record<Model::StockPrice>> stockPrices = dbContext.find([stockPriceId](Database::Record<Model::StockPrice> record) {
         return record.value.stockPriceId == stockPriceId;
     });
@@ -89,7 +89,7 @@ void deleteStockPrice(std::string stockPriceId) {
 }
 
 void updateStockPrice(Model::StockPrice payload) {
-    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
+    Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     std::vector<Database::Record<Model::StockPrice>> stockPrices = dbContext.find([payload](Database::Record<Model::StockPrice> record) {
         return record.value.stockPriceId == payload.stockPriceId;
     });
@@ -103,7 +103,7 @@ void updateStockPrice(Model::StockPrice payload) {
 
 std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::string minDate, std::string maxDate, std::string orderBy) {
 
-    Database::Context<Model::StockPrice> dbContext(STOCK_PRICE_DB_FILE);
+    Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     std::vector<Database::Record<Model::StockPrice>> records = dbContext.find([stockId](Database::Record<Model::StockPrice> record) {
         return record.value.stockId == stockId;
     });
@@ -120,8 +120,8 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, std::strin
 }
 
 void resetDb() {
-    Database::Context<Model::Stock> stockDbContext(STOCK_DB_FILE);
-    Database::Context<Model::Stock> stockPriceDbContext(STOCK_PRICE_DB_FILE);
+    Database::Context<Model::Stock> stockDbContext(Database::PATH::DB::STOCK);
+    Database::Context<Model::Stock> stockPriceDbContext(Database::PATH::DB::STOCK_PRICE);
     stockDbContext.reset();
     stockPriceDbContext.reset();
 }
@@ -180,7 +180,7 @@ int loadDb(int pageSize) {
     std::ifstream fileStockPrice{"bovespa_stocks.csv"};
     assert(fileStockPrice.is_open());
 
-    Database::Context<std::streampos> loaderDb(Controller::LinearSearch::LOADER_DB_FILE_PATH);
+    Database::Context<std::streampos> loaderDb("tmp");
 
     loaderDb.append(0);
     auto recPos = loaderDb.read(0);

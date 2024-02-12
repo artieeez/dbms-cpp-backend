@@ -6,13 +6,6 @@
 #include "stock.hpp"
 #include "stockPrice.hpp"
 
-const std::string STOCK_TRIE_FILE = "stockId_trie.db";
-const std::string STOCK_BLOCK_TRIE_FILE = "stockId_block_trie.db";
-const std::string STOCK_PRICE_TRIE_FILE = "stock_price_trie.db";
-const std::string STOCK_PRICE_BLOCK_FILE = "stock_price_block.db";
-const std::string STOCK_COUNT_DB_FILE_PATH = "stockCount.db";
-const std::string STOCK_PRICE_COUNT_DB_FILE_PATH = "stockPriceCount.db";
-
 namespace Controller
 {
   namespace IndexSearch

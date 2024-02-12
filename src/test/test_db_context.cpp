@@ -13,7 +13,7 @@ int main()
     std::clog << "Testando o log\n";
     
     // -------- Instantiate the Context with a file path
-    Database::Context<int> dbContext("intDb.db");
+    Database::Context<int> dbContext("int");
 
     // -------- append records to the database
     // for (int i = 0; i < v.size(); i++) {
