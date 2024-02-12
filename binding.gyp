@@ -8,8 +8,10 @@
         "src/index/blockStorage.cpp",
         "src/controller/linearSearchController.cpp",
         "src/controller/indexController.cpp",
+        "src/controller/stateController.cpp",
         "src/node-addon/lc.cpp",
         "src/node-addon/tc.cpp",
+        "src/node-addon/sc.cpp",
         "src/node-addon/dbms.cpp",
       ],
       "include_dirs": [

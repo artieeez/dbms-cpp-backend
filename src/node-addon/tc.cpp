@@ -143,40 +143,6 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
     return result;
 }
 
-// reset the database
-Napi::Value resetDatabase(const Napi::CallbackInfo &info) {
-    Napi::Env env = info.Env();
-    Controller::IndexSearch::resetDb();
-    return Napi::String::New(env, "success");
-}
-
-// int loadDb(int pageSize)
-Napi::Value loadDb(const Napi::CallbackInfo &info) {
-    Napi::Env env = info.Env();
-
-    if (info.Length() < 1) {
-        Napi::TypeError::New(env, "Wrong number of arguments. Expected 1")
-            .ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    if (!info[0].IsNumber()) {
-        Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    int pageSize = info[0].As<Napi::Number>().Int32Value();
-    std::vector<int> countVector = Controller::IndexSearch::loadDb(pageSize);
-
-    Napi::Array result = Napi::Array::New(env, countVector.size());
-    for (int i = 0; i < countVector.size(); i++) {
-        result.Set(i, Napi::Number::New(env, countVector[i]));
-    }
-
-    return result;
-}
-
-
 //stock list methods
 Napi::Value getStockPriceList(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
@@ -216,7 +182,5 @@ Napi::Value getStockPriceList(const Napi::CallbackInfo &info) {
 
     return result;
 }
-
-
 
 } // namespace TC

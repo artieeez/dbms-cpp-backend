@@ -24,11 +24,16 @@ namespace PATH {
     }
 
     namespace LOADER {
-        const std::string POSITION = "loader_position";
-        const std::string STOCK = "loader_stock";
-        const std::string STOCK_PRICE = "loader_stock_price";
+        const std::string STATE = "loader_state";
     }
 }
+
+struct State {
+    std::streampos loaderPosition;
+    int stockCount;
+    int stockPriceCount;
+    bool isFinished;
+};
 
 template <typename T>
 struct Record {

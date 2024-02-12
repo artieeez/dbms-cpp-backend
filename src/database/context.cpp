@@ -187,6 +187,7 @@ std::streampos Context<T>::getCurrPosition() {
 } // namespace Database
 
 template class Database::Context<int>;
+template class Database::Context<Database::State>;
 template class Database::Context<std::streampos>;
 template class Database::Context<Model::Stock>;
 template class Database::Context<Model::StockPrice>;

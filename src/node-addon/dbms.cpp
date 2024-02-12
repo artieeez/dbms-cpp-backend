@@ -9,6 +9,7 @@
 #include <vector>
 #include "lc.hpp"
 #include "tc.hpp"
+#include "sc.hpp"
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
@@ -19,7 +20,6 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     linearSearchController.Set(Napi::String::New(env, "updateStock"), Napi::Function::New(env, LC::updateStock));
     linearSearchController.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, LC::getStock));
     linearSearchController.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, LC::getStockList));
-    linearSearchController.Set(Napi::String::New(env, "resetDatabase"), Napi::Function::New(env, LC::resetDatabase));
 
     // Register indexController methods
     Napi::Object indexController = Napi::Object::New(env);
@@ -28,13 +28,19 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     indexController.Set(Napi::String::New(env, "updateStock"), Napi::Function::New(env, TC::updateStock));
     indexController.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, TC::getStock));
     indexController.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, TC::getStockList));
-    indexController.Set(Napi::String::New(env, "resetDatabase"), Napi::Function::New(env, TC::resetDatabase));
-    indexController.Set(Napi::String::New(env, "loadDb"), Napi::Function::New(env, TC::loadDb));
     indexController.Set(Napi::String::New(env, "getStockPriceList"), Napi::Function::New(env, TC::getStockPriceList));
+
+    // Register stateController methods
+    Napi::Object stateController = Napi::Object::New(env);
+    stateController.Set(Napi::String::New(env, "getDatabaseState"), Napi::Function::New(env, SC::getDatabaseState));
+    stateController.Set(Napi::String::New(env, "resetDatabase"), Napi::Function::New(env, SC::resetDatabase));
+    stateController.Set(Napi::String::New(env, "loadDb"), Napi::Function::New(env, SC::loadDb));
+    
 
     // Register linearSearchController
     exports.Set(Napi::String::New(env, "linearSearch"), linearSearchController);
     exports.Set(Napi::String::New(env, "indexController"), indexController);
+    exports.Set(Napi::String::New(env, "stateController"), stateController);
 
     return exports;
 }

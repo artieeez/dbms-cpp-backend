@@ -10,8 +10,6 @@ namespace Controller
 {
   namespace IndexSearch
   {
-    const std::string LOADER_DB_FILE_PATH = "loader.db";
-
     void addStock(Model::Stock payload);
     void deleteStock(std::string stockId);
     void updateStock(Model::Stock payload);
@@ -23,16 +21,8 @@ namespace Controller
     std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSize, int page);
     Model::StockPrice getStockPrice(std::string stockPriceId);
 
-    void resetDb();
-
     // sort a stockPrice list by date
     void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList);
-
-    std::vector<int> loadDb(int pageSize);
-
-    inline std::string getSymbolFromLine(std::string line);
-    inline std::string getDateFromLine(std::string line);
-    Model::StockPrice getStockPriceFromLine(std::string line);
   }
 }
 
