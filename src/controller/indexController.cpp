@@ -237,13 +237,17 @@ std::vector<int> loadDb(int pageSize) {
     Database::Context<int> stockCountDb(STOCK_COUNT_DB_FILE_PATH);
     Database::Context<int> stockPriceCountDb(STOCK_PRICE_COUNT_DB_FILE_PATH);
 
-    loaderDb.append(0);
+    if (loaderDb.isEmpty())
+        loaderDb.append(0);
+
+    if (stockCountDb.isEmpty())
+        stockCountDb.append(0);
+
+    if (stockPriceCountDb.isEmpty())
+        stockPriceCountDb.append(0);
+
     auto recPos = loaderDb.read(0);
-
-    stockCountDb.append(0);
     auto recStockCount = stockCountDb.read(0);
-
-    stockPriceCountDb.append(0);
     auto recStockPriceCount = stockPriceCountDb.read(0);
 
     std::cout << recPos.value << std::endl;
