@@ -6,6 +6,7 @@
 #include "context.hpp"
 
 constexpr int MAX_CHILDREN = 36;
+constexpr int MAX_STRING_SIZE = 20;
 
 namespace Index
 {
@@ -33,9 +34,9 @@ namespace Index
   public:
     Trie(const std::string &filePath);
     ~Trie();
-    void insertString(std::string companyName, std::streampos  address);
-    std::vector<std::streampos> searchString(std::string companyName, int pageSize, int page);
-    void deleteString(std::string companyName);
+    void insertString(char input[MAX_STRING_SIZE], std::streampos  address);
+    std::vector<std::streampos> searchString(char input[MAX_STRING_SIZE], int pageSize, int page);
+    void deleteString(char input[MAX_STRING_SIZE]);
     void printTrieNode(Database::Record<Index::TrieNode> currentNode);
     void recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList,  int startIndex, int endIndex, int* counterPointer);
   };

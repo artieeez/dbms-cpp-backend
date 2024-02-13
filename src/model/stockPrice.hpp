@@ -1,14 +1,15 @@
 #ifndef STOCKPRICE_HPP
 #define STOCKPRICE_HPP
-
-#include <string>
+constexpr int MAX_SIZE_SP = 20;
+constexpr int MAX_SIZE_STOCK = 10;
+constexpr int MAX_SIZE_DATE = 15;
 
 namespace Model {
 
 struct StockPrice {
-    char stockPriceId [30];
-    char stockId [30];
-    char date [30];
+    char stockPriceId [MAX_SIZE_SP];
+    char stockId [MAX_SIZE_STOCK];
+    char date [MAX_SIZE_DATE];
     float adj;
     float close;
     float high;

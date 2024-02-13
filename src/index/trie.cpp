@@ -36,20 +36,21 @@ void printStringList(std::vector<std::streampos> addresses)
   }
 }
 
-std::string normalizeString(const std::string &str)
+std::string normalizeString(const char input[MAX_STRING_SIZE])
 {
+  std::string str(input); // Converte char array para std::string
   std::string normalizedString;
 
   for (char c : str)
   {
     if (std::isalnum(c))
-    { // Se for um caractere alfanumérico
+    {
       if (std::islower(c))
-      {                                      // Se for minúsculo
-        normalizedString += std::toupper(c); // Torna maiúsculo
+      {
+        normalizedString += std::toupper(c);
       }
       else
-      { // Se já for maiúsculo ou um dígito
+      {
         normalizedString += c;
       }
     }
@@ -90,7 +91,7 @@ namespace Index
     Database::Context<TrieNode> dbContext(filename);
   }
 
-  void Trie::insertString(std::string input, std::streampos address)
+  void Trie::insertString(char input[MAX_STRING_SIZE], std::streampos address)
   {
     std::string inputNormal = normalizeString(input);
     std::clog << "insert: " << inputNormal << " " << filename << "\n";
@@ -137,7 +138,7 @@ namespace Index
     }
   }
 
-  std::vector<std::streampos> Trie::searchString(std::string input, int pageSize, int page)
+  std::vector<std::streampos> Trie::searchString(char input[MAX_STRING_SIZE], int pageSize, int page)
   {
     std::string inputNormal = normalizeString(input);
     int startIndex = page <= 0 ? page : (page - 1) * pageSize;
@@ -146,7 +147,7 @@ namespace Index
 
     mainLogger.pushScope("Trie::searchString");
     mainLogger.log("filename: " + filename);
-    mainLogger.log("input: " + input);
+    mainLogger.log("input: " + std::string(input));
     mainLogger.log("pageSize: " + std::to_string(pageSize));
     mainLogger.log("page: " + std::to_string(page));
     mainLogger.log("inputNormal: " + inputNormal);
@@ -247,7 +248,7 @@ namespace Index
     }
   }
 
-  void Trie::deleteString(std::string input)
+  void Trie::deleteString(char input[MAX_STRING_SIZE])
   {
     std::string inputNormal = normalizeString(input);
     std::clog << "delete: " << inputNormal << " " << filename << "\n";
