@@ -64,14 +64,33 @@ Model::Stock getStock(std::string stockId) {
 }
 
 std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int page) {
+    mainLogger.pushScope("getStockList");
+    mainLogger.log("prefix: " + prefix);
+    mainLogger.log("pageSize: " + std::to_string(pageSize));
+    mainLogger.log("page: " + std::to_string(page));
+
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(prefix, pageSize, page);
     std::vector<Model::Stock> stocks;
+
     for (std::streampos position : positions) {
         Database::Record<Model::Stock> stock = dbContext.read(position);
         stocks.push_back(stock.value);
     }
+
+    //log stocks
+
+    mainLogger.pushScope("getStockList - stocks response");
+    for (auto stock : stocks) {
+        mainLogger.log("stockId: " + stock.stockId);
+    }
+    if (stocks.size() == 0) {
+        mainLogger.log("No stocks found");
+    }
+    mainLogger.popScope();
+
+    mainLogger.popScope();
     return stocks;
 }
 

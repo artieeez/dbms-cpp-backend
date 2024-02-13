@@ -4,6 +4,9 @@
 #include "stockPrice.hpp"
 #include "trie.hpp"
 #include <filesystem>
+#include "logger.hpp"
+
+extern Logger mainLogger;
 
 namespace Database {
 
@@ -49,6 +52,8 @@ Context<T>::~Context() {
 
 template <typename T>
 Record<T> Context<T>::read(std::streampos position) {
+    mainLogger.pushScope("Context::read - " + _filePath + " - " + std::to_string(position));
+
     _file.seekg(position);
     Record<T> record;
     record.error = true;
@@ -57,8 +62,10 @@ Record<T> Context<T>::read(std::streampos position) {
         _file.read(reinterpret_cast<char *>(&record), sizeof(Record<T>));
         if (!_file) {
             record.error = true;
+            mainLogger.log("Error reading file");
             _file.clear();
         } else {
+            mainLogger.log("Record read successfully");
             record.error = false;
         }
     } catch (std::exception &e) {
@@ -66,6 +73,7 @@ Record<T> Context<T>::read(std::streampos position) {
         record.error = true;
     }
 
+    mainLogger.popScope();
     return record;
 }
 
