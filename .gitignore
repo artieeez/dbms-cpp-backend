@@ -47,6 +47,8 @@ db
 
 build
 
+cache
+
 CMakeFiles
 
 node_modules

@@ -10,10 +10,13 @@ namespace Database {
 template <typename T>
 Context<T>::Context(const std::string &filePath) {
 
-    _filePath = "db/" + filePath + ".db";
+    _filePath = "cache/db/" + filePath + ".db";
 
-    if (!std::filesystem::exists("db")) {
-        std::filesystem::create_directory("db");
+    if (!std::filesystem::exists("cache")) {
+        std::filesystem::create_directory("cache");
+        std::filesystem::create_directory("cache/db");
+    } else if (!std::filesystem::exists("cache/db")) {
+        std::filesystem::create_directory("cache/db");
     }
 
     if (std::filesystem::exists(_filePath)) {

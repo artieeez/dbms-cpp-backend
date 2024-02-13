@@ -2,15 +2,16 @@
 #include <iostream>
 #include <vector>
 //#include "trie.hpp"
+#include "logger.hpp"
 #include "context.hpp"
+#include <string>
 
 std::vector<int> v = {43, 5, 2, 1, 87};
 
 int main()
 {
-    std::ofstream logFile("log.txt");
-    std::streambuf *oldClog = std::clog.rdbuf(logFile.rdbuf());
-    std::clog << "Testando o log\n";
+    Logger logger("test_db_context");
+    logger.pushScope("MAIN");
     
     // -------- Instantiate the Context with a file path
     Database::Context<int> dbContext("int");
@@ -27,6 +28,9 @@ int main()
         record = dbContext.read((int)position - sizeof(int));
     }
 
+    logger.log("Record value: " + std::to_string(record.value));
+    logger.log("Record position: " + std::to_string(record.position));
+
     // Update Record
     record.value = 2332;
 
@@ -41,16 +45,23 @@ int main()
 
     // -------- Log the records and positions using the dbContext iterator
     dbContext.clearIterator();
+    logger.pushScope("Iterating through the database");
     while (dbContext.next()) {
+        logger.log("Pos: " + std::to_string(dbContext.getCurrPosition()) + " Node .position: " + std::to_string(dbContext.curr.position) + " Val: " + std::to_string(dbContext.curr.value));
         std::cout << "Pos: " << std::setw(2) << std::right << dbContext.getCurrPosition()
                   << "Node .position: " << std::setw(2) << std::right << dbContext.curr.position
                   << " Val: " << std::setw(2) << std::right << dbContext.curr.value << std::endl;
     };
+    logger.popScope();
+
+    logger.pushScope("Some function");
+    logger.log("Address is invalid", true);
+    logger.popScope();
+
+    logger.log("Final log");
 
     // -------- Reset the dbContext
     // dbContext.reset();
 
-    // // Restaura std::clog para seu buffer original quando terminar
-    std::clog.rdbuf(oldClog);
     return 0;
 }
