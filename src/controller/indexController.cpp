@@ -165,8 +165,12 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSi
         std::vector<std::streampos> dbAddressess = blockStorage.retrieveBlock(blockAddress);
         // Busca os itens no db e salva em stockPrices
         std::vector<Model::StockPrice> stockPrices;
-        for (std::streampos address : dbAddressess) {
-            Database::Record<Model::StockPrice> stock = dbContext.read(address);
+        int start = page * pageSize;
+        int end = std::min((page + 1) * pageSize, static_cast<int>(dbAddressess.size()));
+        for (int i = start; i < end; i++)
+        {
+            std::streampos dbAddress = dbAddressess[i];
+            Database::Record<Model::StockPrice> stock = dbContext.read(dbAddress);
             stockPrices.push_back(stock.value);
         }
 
