@@ -21,7 +21,7 @@ void addStock(Model::Stock payload) {
     trie.insertString(payload.stockId, position);
 }
 
-void deleteStock(std::string stockId) {
+void deleteStock(char stockId[MAX_SIZE_STOCK]) {
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
@@ -49,7 +49,7 @@ void updateStock(Model::Stock payload) {
     }
 }
 
-Model::Stock getStock(std::string stockId) {
+Model::Stock getStock(char stockId[MAX_SIZE_STOCK]) {
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
@@ -63,9 +63,9 @@ Model::Stock getStock(std::string stockId) {
     return Model::Stock();
 }
 
-std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int page) {
+std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_SP], int pageSize, int page) {
     mainLogger.pushScope("getStockList");
-    mainLogger.log("prefix: " + prefix);
+    mainLogger.log("prefix: " + std::string(prefix));
     mainLogger.log("pageSize: " + std::to_string(pageSize));
     mainLogger.log("page: " + std::to_string(page));
 
@@ -77,9 +77,9 @@ std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int pag
     for (auto position : positions) {
         mainLogger.log("position: " + std::to_string(position));
         auto stock = dbContext.read(position);
-        mainLogger.log("stockId: " + stock.value.stockId);
+        mainLogger.log("stockId: " + std::string(stock.value.stockId));
         stocks.push_back(stock.value);
-        mainLogger.log("pushed stockId: " + stock.value.stockId);
+        mainLogger.log("pushed stockId: " + std::string(stock.value.stockId));
     }
 
     mainLogger.log("stocks.size(): " + std::to_string(stocks.size()));
@@ -88,7 +88,7 @@ std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int pag
 
     mainLogger.pushScope("getStockList - stocks response");
     for (auto stock : stocks) {
-        mainLogger.log("stockId: " + stock.stockId);
+        mainLogger.log("stockId: " + std::string(stock.stockId));
     }
     if (stocks.size() == 0) {
         mainLogger.log("No stocks found");
@@ -122,7 +122,7 @@ void addStockPrice(Model::StockPrice payload) {
     trieStockPrices.insertString(payload.stockPriceId, dbPosition);
 }
 
-void deleteStockPrice(std::string stockPriceId, std::string stockId) {
+void deleteStockPrice(char stockPriceId[MAX_SIZE_SP], char stockId[MAX_SIZE_STOCK]) {
     Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     Index::Trie trieStockBlock(Database::PATH::TRIE::STOCK_ID_TO_STOCK_PRICE_BLOCK);
     Index::Trie trieStockPrices(Database::PATH::TRIE::STOCK_PRICE_ID_TO_STOCK_PRICE);
@@ -152,9 +152,9 @@ void deleteStockPrice(std::string stockPriceId, std::string stockId) {
     }
 }
 
-std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSize, int page) {
+std::vector<Model::StockPrice> getStockPriceList(char stockId[MAX_SIZE_STOCK], int pageSize, int page) {
     mainLogger.pushScope("getStockPriceList");
-    mainLogger.log("stockId: " + stockId);
+    mainLogger.log("stockId: " + std::string(stockId));
     mainLogger.log("pageSize: " + std::to_string(pageSize));
     mainLogger.log("page: " + std::to_string(page));
 
@@ -186,7 +186,7 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSi
     return std::vector<Model::StockPrice>();
 }
 
-Model::StockPrice getStockPrice(std::string stockPriceId) {
+Model::StockPrice getStockPrice(char stockPriceId[MAX_SIZE_SP]) {
     Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     Index::Trie trieStockPrices(Database::PATH::TRIE::STOCK_PRICE_ID_TO_STOCK_PRICE);
     // Busca na trie de stockPrices o endereço do item no db
@@ -206,8 +206,10 @@ void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList) {
 
     // sort by day
     for (int i = 0; i < 2; i++) {
-        for (auto sPrice : stockPriceList)
-            buckets.at(sPrice.date.at(9 - i) - '0').push(sPrice);
+        for (auto sPrice : stockPriceList){
+            std::string date(sPrice.date);
+            buckets.at(date.at(9 - i) - '0').push(sPrice);
+        }
 
         int p = 0;
         for (int j = 0; j < 10; j++) {
@@ -221,8 +223,10 @@ void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList) {
 
     // sort by month
     for (int i = 0; i < 2; i++) {
-        for (auto sPrice : stockPriceList)
-            buckets.at(sPrice.date.at(6 - i) - '0').push(sPrice);
+        for (auto sPrice : stockPriceList){
+            std::string date(sPrice.date);
+            buckets.at(date.at(6 - i) - '0').push(sPrice);
+        }
 
         int p = 0; // position in vector
         for (int j = 0; j < 10; j++) {
@@ -236,8 +240,10 @@ void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList) {
 
     // sort by year
     for (int i = 0; i < 4; i++) {
-        for (auto sPrice : stockPriceList)
-            buckets.at(sPrice.date.at(3 - i) - '0').push(sPrice);
+        for (auto sPrice : stockPriceList){
+            std::string date(sPrice.date);
+            buckets.at(date.at(3 - i) - '0').push(sPrice);
+        }
 
         int p = 0; // position in vector
         for (int j = 0; j < 10; j++) {
