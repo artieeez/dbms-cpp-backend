@@ -1,5 +1,6 @@
 #include "context.hpp"
 #include "indexController.hpp"
+#include "stateController.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
 #include <iomanip> // std::setw
@@ -130,6 +131,6 @@ void test_controller_index()
   }
 
   // Test resetDb
-  resetDb();
+  // Controller::State::resetDb();
   // return 0;
 }
