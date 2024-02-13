@@ -60,6 +60,8 @@ public:
 
     Record<T> read(std::streampos position);
 
+    void read(std::streampos position, Record<T> &record);
+
     std::vector<Record<T>> find(std::function<bool(Record<T>)> predicate, int pageSize = 0, int page = 0);
 
     std::streampos append(const T &value);

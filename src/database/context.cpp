@@ -78,6 +78,16 @@ Record<T> Context<T>::read(std::streampos position) {
 }
 
 template <typename T>
+void Context<T>::read(std::streampos position, Record<T> &record) {
+    mainLogger.pushScope("Context::read - " + _filePath + " - " + std::to_string(position));
+
+    _file.seekg(position);
+    _file.read(reinterpret_cast<char *>(&record), sizeof(Record<T>));
+
+    mainLogger.popScope();
+}
+
+template <typename T>
 std::vector<Record<T>> Context<T>::find(std::function<bool(Record<T>)> predicate, int pageSize, int page) {
     clearIterator();
     int recordCount = 0;

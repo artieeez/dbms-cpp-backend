@@ -1,6 +1,7 @@
 #include "indexController.hpp"
 #include "blockStorage.hpp"
 #include "context.hpp"
+#include "logger.hpp"
 #include "stock.hpp"
 #include "trie.hpp"
 #include <array>
@@ -8,7 +9,6 @@
 #include <queue>
 #include <string>
 #include <vector>
-#include "logger.hpp"
 
 extern Logger mainLogger;
 
@@ -71,11 +71,12 @@ std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int pag
 
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
-    std::vector<std::streampos> positions = trie.searchString(prefix, pageSize, page);
+    auto positions = trie.searchString(prefix, pageSize, page);
     std::vector<Model::Stock> stocks;
 
-    for (std::streampos position : positions) {
-        Database::Record<Model::Stock> stock = dbContext.read(position);
+    for (auto position : positions) {
+        mainLogger.log("position: " + std::to_string(position));
+        auto stock = dbContext.read(position);
         mainLogger.log("stockId: " + stock.value.stockId);
         stocks.push_back(stock.value);
         mainLogger.log("pushed stockId: " + stock.value.stockId);
@@ -171,8 +172,7 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSi
         std::vector<Model::StockPrice> stockPrices;
         int start = page * pageSize;
         int end = std::min((page + 1) * pageSize, static_cast<int>(dbAddressess.size()));
-        for (int i = start; i < end; i++)
-        {
+        for (int i = start; i < end; i++) {
             std::streampos dbAddress = dbAddressess[i];
             Database::Record<Model::StockPrice> stock = dbContext.read(dbAddress);
             stockPrices.push_back(stock.value);
