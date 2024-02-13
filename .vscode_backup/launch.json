@@ -72,6 +72,6 @@
       "environment": [],
       "console": "integratedTerminal",
       "preLaunchTask": "build test_controller_index"
-    }
+    },
   ]
 }

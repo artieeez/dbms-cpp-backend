@@ -22,14 +22,17 @@
         "/EHsc",
         "/std:c++20",
         "/I",
+        "${workspaceFolder}\\src\\logger",
+        "/I",
         "${workspaceFolder}\\src\\model",
         "/I",
         "${workspaceFolder}\\src\\database",
+        "${workspaceFolder}\\src\\logger\\logger.cpp",
         "${workspaceFolder}\\src\\database\\context.cpp",
-        "${workspaceFolder}\\src\\test\\test_block.cpp",
+        "${workspaceFolder}\\src\\test\\test_db_context.cpp",
         "/Fo:${workspaceFolder}\\build\\obj\\",
         "/Fd:${workspaceFolder}\\build\\obj\\",
-        "/Fe:${workspaceFolder}\\build\\test_controller_index.exe"
+        "/Fe:${workspaceFolder}\\build\\test_db_context.exe",
       ],
       "problemMatcher": [
         "$msCompile"
@@ -65,7 +68,7 @@
         "${workspaceFolder}\\src\\test\\test_controller_linear.cpp",
         "/Fo:${workspaceFolder}\\build\\obj\\",
         "/Fd:${workspaceFolder}\\build\\obj\\",
-        "/Fe:${workspaceFolder}\\build\\test_controller_linear.exe"
+        "/Fe:${workspaceFolder}\\build\\test_controller_linear.exe",
       ],
       "problemMatcher": [
         "$msCompile"
@@ -99,7 +102,7 @@
         "${workspaceFolder}\\src\\test\\test_trie.cpp",
         "/Fo:${workspaceFolder}\\build\\obj\\",
         "/Fd:${workspaceFolder}\\build\\obj\\",
-        "/Fe:${workspaceFolder}\\build\\test_trie.exe"
+        "/Fe:${workspaceFolder}\\build\\test_trie.exe",
       ],
       "problemMatcher": [
         "$msCompile"
@@ -127,7 +130,7 @@
         "${workspaceFolder}\\src\\main.cpp",
         "/Fo:${workspaceFolder}\\build\\obj\\",
         "/Fd:${workspaceFolder}\\build\\obj\\",
-        "/Fe:${workspaceFolder}\\test_main.exe"
+        "/Fe:${workspaceFolder}\\test_main.exe",
       ],
       "problemMatcher": [
         "$msCompile"
@@ -161,7 +164,7 @@
         "${workspaceFolder}\\src\\test\\test_block.cpp",
         "/Fo:${workspaceFolder}\\build\\obj\\",
         "/Fd:${workspaceFolder}\\build\\obj\\",
-        "/Fe:${workspaceFolder}\\build\\test_block.exe"
+        "/Fe:${workspaceFolder}\\build\\test_block.exe",
       ],
       "problemMatcher": [
         "$msCompile"
@@ -182,7 +185,7 @@
       "command": "cmake",
       "args": [
         "--build",
-        "${workspaceFolder}/build"
+        "${workspaceFolder}/build",
       ],
       "group": {
         "kind": "build",
@@ -212,7 +215,7 @@
         "${workspaceFolder}\\src\\test\\test_controller_index.cpp",
         "/Fo:${workspaceFolder}\\build\\obj\\",
         "/Fd:${workspaceFolder}\\build\\obj\\",
-        "/Fe:${workspaceFolder}\\build\\test_controller_index.exe"
+        "/Fe:${workspaceFolder}\\build\\test_controller_index.exe",
       ],
       "problemMatcher": [
         "$msCompile"
