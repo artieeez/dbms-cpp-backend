@@ -75,7 +75,7 @@ namespace Controller
             return Model::Stock();
         }
 
-        std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_SP], int pageSize, int page)
+        std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_STOCK], int pageSize, int page)
         {
             mainLogger.pushScope("getStockList");
             mainLogger.log("prefix: " + std::string(prefix));

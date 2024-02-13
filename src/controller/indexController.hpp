@@ -14,7 +14,7 @@ namespace Controller
     void deleteStock(char stockId[MAX_SIZE_STOCK]);
     void updateStock(Model::Stock payload);
     Model::Stock getStock(char stockId[MAX_SIZE_STOCK]);
-    std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_SP], int pageSize, int page);
+    std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_STOCK], int pageSize, int page);
 
     void addStockPrice(Model::StockPrice payload);
     void deleteStockPrice(char stockPriceId[MAX_SIZE_SP], char stockId[MAX_SIZE_STOCK]);

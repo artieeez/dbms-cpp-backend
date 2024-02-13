@@ -61,7 +61,7 @@ namespace Controller
             return Model::Stock();
         }
 
-        std::vector<Model::Stock> getStockList(std::string prefix, int page, int pageSize, std::string orderBy)
+        std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_STOCK], int page, int pageSize, std::string orderBy)
         {
             std::string prefixStr(prefix);
             Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
@@ -88,11 +88,11 @@ namespace Controller
             dbContext.append(payload);
         }
 
-        void deleteStockPrice(std::string stockPriceId)
+        void deleteStockPrice(char stockPriceId[MAX_SIZE_SP])
         {
             Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
             std::vector<Database::Record<Model::StockPrice>> stockPrices = dbContext.find([stockPriceId](Database::Record<Model::StockPrice> record)
-                                                                                          { return record.value.stockPriceId == stockPriceId; });
+                                                                                          { return strcmp(record.value.stockPriceId, stockPriceId) == 0; });
 
             if (stockPrices.size() > 0)
             {
@@ -104,7 +104,7 @@ namespace Controller
         {
             Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
             std::vector<Database::Record<Model::StockPrice>> stockPrices = dbContext.find([payload](Database::Record<Model::StockPrice> record)
-                                                                                          { return record.value.stockPriceId == payload.stockPriceId; });
+                                                                                          { return strcmp(record.value.stockPriceId, payload.stockPriceId) == 0; });
 
             if (stockPrices.size() > 0)
             {
@@ -119,7 +119,7 @@ namespace Controller
 
             Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
             std::vector<Database::Record<Model::StockPrice>> records = dbContext.find([stockId](Database::Record<Model::StockPrice> record)
-                                                                                      { return record.value.stockId == stockId; });
+                                                                                      { return strcmp(record.value.stockId, stockId) == 0; });
 
             // map records to stock prices
             std::vector<Model::StockPrice> result;
