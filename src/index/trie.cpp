@@ -201,6 +201,18 @@ namespace Index
 
     recursiveSearch(currentPosition, &addresses, startIndex, endIndex, &counterPointer);
 
+    // log adresses found
+    mainLogger.pushScope("Trie::searchString - addresses found");
+    for (auto address : addresses)
+    {
+      mainLogger.log("address: " + std::to_string(address));
+    }
+    if (addresses.size() == 0)
+    {
+      mainLogger.log("No addresses found");
+    }
+    mainLogger.popScope();
+
     mainLogger.popScope();
     return addresses;
   }
