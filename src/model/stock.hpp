@@ -8,10 +8,10 @@ namespace Model
 
     struct Stock
     {
-        std::string stockId;
-        std::string companyId;
-        std::string min_date;
-        std::string max_date;
+        char stockId [30];
+        char companyId [30];
+        char min_date [30];
+        char max_date [30];
     };
 
 } // namespace Model
