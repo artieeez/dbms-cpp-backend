@@ -3,30 +3,18 @@
 #include "logger.hpp"
 #include <string>
 
+extern Logger mainLogger;
+
 void test_loader() {
 
-    Logger logger("test_loader");
-    logger.pushScope("MAIN");
+    mainLogger.pushScope("test_loader");
 
-    logger.pushScope("getDatabaseState()");
     Database::State dbState = Controller::State::getDatabaseState();
-    logger.log("stockCount: " + std::to_string(dbState.stockCount));
-    logger.log("stockPriceCount: " + std::to_string(dbState.stockPriceCount));
-    logger.log("isFinished: " + std::to_string(dbState.isFinished));
-    logger.log("loaderPosition: " + std::to_string(dbState.loaderPosition));
-    logger.popScope();
 
     // loadDb
-    logger.pushScope("loadDb()");
-    logger.log("loading 100 records");
     Controller::State::loadDb(100);
-    logger.popScope();
 
-    logger.pushScope("getDatabaseState()");
     dbState = Controller::State::getDatabaseState();
-    logger.log("stockCount: " + std::to_string(dbState.stockCount));
-    logger.log("stockPriceCount: " + std::to_string(dbState.stockPriceCount));
-    logger.log("isFinished: " + std::to_string(dbState.isFinished));
-    logger.log("loaderPosition: " + std::to_string(dbState.loaderPosition));
-    logger.popScope();
+
+    mainLogger.popScope();
 }

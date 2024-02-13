@@ -30,7 +30,11 @@ Logger::~Logger() {
 void Logger::_log(const std::string &message, const LogType &logType) {
     std::string indentation = "";
     for (int i = 0; i < _scope.size(); i++) {
-        indentation += "    ";
+        if (logType == SCOPE && i > _scope.size() - 2) {
+            indentation += "--- ";
+        } else {
+            indentation += "    ";
+        }
     }
 
     std::string timestamp = __TIME__ + std::string(" ") + __DATE__ + std::string(":");
@@ -65,3 +69,5 @@ void Logger::popScope() {
         _log("Error: No scope to pop", ERROR);
     }
 }
+
+Logger mainLogger("main");

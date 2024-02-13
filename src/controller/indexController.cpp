@@ -8,6 +8,9 @@
 #include <queue>
 #include <string>
 #include <vector>
+#include "logger.hpp"
+
+extern Logger mainLogger;
 
 namespace Controller {
 namespace IndexSearch {
@@ -126,6 +129,11 @@ void deleteStockPrice(std::string stockPriceId, std::string stockId) {
 }
 
 std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSize, int page) {
+    mainLogger.pushScope("getStockPriceList");
+    mainLogger.log("stockId: " + stockId);
+    mainLogger.log("pageSize: " + std::to_string(pageSize));
+    mainLogger.log("page: " + std::to_string(page));
+
     Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     Index::Trie trieStockBlock(Database::PATH::TRIE::STOCK_ID_TO_STOCK_PRICE_BLOCK);
     Index::BlockStorage blockStorage(Database::PATH::BLOCK::STOCK_ID_TO_STOCK_PRICE);
@@ -142,8 +150,12 @@ std::vector<Model::StockPrice> getStockPriceList(std::string stockId, int pageSi
             Database::Record<Model::StockPrice> stock = dbContext.read(address);
             stockPrices.push_back(stock.value);
         }
+
+        mainLogger.popScope();
         return stockPrices;
     }
+
+    mainLogger.popScope();
     return std::vector<Model::StockPrice>();
 }
 

@@ -2,21 +2,26 @@
 #include "blockStorage.hpp"
 #include "context.hpp"
 #include "indexController.hpp"
+#include "logger.hpp"
 #include "stock.hpp"
 #include "trie.hpp"
 #include <array>
 #include <cassert>
+#include <filesystem>
 #include <queue>
 #include <string>
 #include <vector>
 
+extern Logger mainLogger;
 namespace Controller {
 namespace State {
 
 Database::State getDatabaseState() {
+    mainLogger.pushScope("getDatabaseState");
     Database::Context<Database::State> stateContext(Database::PATH::LOADER::STATE);
 
     if (stateContext.isEmpty()) {
+        mainLogger.log("stateContext is empty. Creating a new one.");
         Database::State dbStateEntity;
         dbStateEntity.isFinished = false;
         dbStateEntity.loaderPosition = 0;
@@ -27,10 +32,18 @@ Database::State getDatabaseState() {
 
     auto stateRecord = stateContext.read(0);
 
+    mainLogger.log("stockCount: " + std::to_string(stateRecord.value.stockCount));
+    mainLogger.log("stockPriceCount: " + std::to_string(stateRecord.value.stockPriceCount));
+    mainLogger.log("isFinished: " + std::to_string(stateRecord.value.isFinished));
+    mainLogger.log("loaderPosition: " + std::to_string(stateRecord.value.loaderPosition));
+
+    mainLogger.popScope();
     return stateRecord.value;
 }
 
 void resetDb() {
+    mainLogger.pushScope("resetDb");
+
     Database::Context<Model::StockPrice> dbContextStock(Database::PATH::DB::STOCK);
     Database::Context<Model::Stock> dbContextStockPrice(Database::PATH::DB::STOCK_PRICE);
     Database::Context<Model::Stock> dbContextStockTrie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
@@ -46,6 +59,9 @@ void resetDb() {
     dbContextStockPriceTrieBlock.reset();
     dbContextStockBlock.reset();
     dbState.reset();
+
+    mainLogger.log("Database reseted successfully");
+    mainLogger.popScope();
 }
 
 inline std::string getSymbolFromLine(std::string line) {
@@ -62,6 +78,9 @@ inline std::string getDateFromLine(std::string line) {
 }
 
 Model::StockPrice getStockPriceFromLine(std::string line) {
+    mainLogger.pushScope("getStockPriceFromLine");
+    mainLogger.log("line: " + line);
+
     // string position starts in 11 to skip date
     int begin{11};
     int end = {begin};
@@ -107,27 +126,33 @@ Model::StockPrice getStockPriceFromLine(std::string line) {
 
     sPrice.volume = std::stof(line.substr(end + 1, line.size() - end - 1));
 
-    /*
-    std::cout << "symbol: " << sPrice.stockId << std::endl;
-    std::cout << "adj: " << sPrice.adj << std::endl;
-    std::cout << "close: " << sPrice.close << std::endl;
-    std::cout << "high: " << sPrice.high << std::endl;
-    std::cout << "low: " << sPrice.low << std::endl;
-    std::cout << "open: " << sPrice.open << std::endl;
-    std::cout << "volume: " << sPrice.volume << std::endl;
-    */
+    mainLogger.log("symbol: " + sPrice.stockId);
+    mainLogger.log("adj: " + std::to_string(sPrice.adj));
+    mainLogger.log("close: " + std::to_string(sPrice.close));
+    mainLogger.log("high: " + std::to_string(sPrice.high));
+    mainLogger.log("low: " + std::to_string(sPrice.low));
+    mainLogger.log("open: " + std::to_string(sPrice.open));
+    mainLogger.log("volume: " + std::to_string(sPrice.volume));
+
+    mainLogger.popScope();
 
     return sPrice;
 }
 
 // return the number of lines read.
 Database::State loadDb(int pageSize) {
+    mainLogger.pushScope("loadDb");
+    mainLogger.log("loading " + std::to_string(pageSize) + " records");
+    auto path = std::filesystem::absolute("bovespa_stocks.csv");
+    mainLogger.log("file path: " + path.string());
+
     std::ifstream fileStockPrice{"bovespa_stocks.csv"};
     assert(fileStockPrice.is_open());
 
     Database::Context<Database::State> stateContext(Database::PATH::LOADER::STATE);
 
     if (stateContext.isEmpty()) {
+        mainLogger.log("stateContext is empty. Creating a new one.");
         Database::State dbStateEntity;
         dbStateEntity.isFinished = false;
         dbStateEntity.loaderPosition = 0;
@@ -170,13 +195,15 @@ Database::State loadDb(int pageSize) {
 
     stateRecord.value.loaderPosition = fileStockPrice.tellg();
 
-    std::cout << stateRecord.value.loaderPosition << std::endl;
+    mainLogger.log("loaderPosition: " + std::to_string(stateRecord.value.loaderPosition));
 
     if (fileStockPrice.eof()) {
         stateRecord.value.isFinished = true;
     }
 
     stateContext.save(stateRecord);
+
+    mainLogger.popScope();
 
     return stateRecord.value;
 }

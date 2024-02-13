@@ -9,6 +9,9 @@
 #include <string>
 #include "context.hpp"
 #include "trie.hpp"
+#include "logger.hpp"
+
+extern Logger mainLogger;
 
 bool hasChildren(std::streampos positions[MAX_CHILDREN])
 {
@@ -141,7 +144,13 @@ namespace Index
     int endIndex = startIndex + pageSize;
     int counterPointer = 0;
 
-    std::clog << "search: " << inputNormal << " " << filename << " " << pageSize << " " << page << "\n";
+    mainLogger.pushScope("Trie::searchString");
+    mainLogger.log("filename: " + filename);
+    mainLogger.log("input: " + input);
+    mainLogger.log("pageSize: " + std::to_string(pageSize));
+    mainLogger.log("page: " + std::to_string(page));
+    mainLogger.log("inputNormal: " + inputNormal);
+
     int stringCounter = 1;
     std::vector<std::streampos> addresses;
     std::streampos currentPosition = 0;
@@ -171,6 +180,8 @@ namespace Index
             }
             else if (counterPointer == endIndex)
             {
+
+              mainLogger.popScope();
               return addresses;
             }
             counterPointer++;
@@ -180,13 +191,17 @@ namespace Index
       }
       else
       {
-        std::clog << "String not found" << std::endl;
+        mainLogger.log("String not found");
+
+        mainLogger.popScope();
         return addresses;
       }
       stringCounter++;
     }
 
     recursiveSearch(currentPosition, &addresses, startIndex, endIndex, &counterPointer);
+
+    mainLogger.popScope();
     return addresses;
   }
 
