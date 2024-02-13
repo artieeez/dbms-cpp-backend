@@ -123,6 +123,8 @@ std::streampos Context<T>::append(const T &value) {
         position = getFileEnd();
     }
 
+    mainLogger.log("Appending to " + _filePath + " at position " + std::to_string(position));
+
     Record<T> record;
     record.value = value;
     record.position = position;
