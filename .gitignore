@@ -41,6 +41,10 @@
 
 env
 
+db
+
+*.txt
+
 build
 
 CMakeFiles

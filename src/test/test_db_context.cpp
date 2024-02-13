@@ -21,8 +21,11 @@ int main()
     // }
 
     // Read a record from the database
-    std::streampos position = dbContext.getLastPosition();
-    Database::Record<int> record = dbContext.read(position);
+    std::streampos position = dbContext.getFileEnd();
+    Database::Record<int> record;
+    if (position > sizeof(int)) {
+        record = dbContext.read((int)position - sizeof(int));
+    }
 
     // Update Record
     record.value = 2332;

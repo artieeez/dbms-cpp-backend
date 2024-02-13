@@ -1,8 +1,8 @@
 #include "context.hpp"
-#include "blockStorage.hpp"
-#include "stock.hpp"
-#include "stockPrice.hpp"
-#include "trie.hpp"
+// #include "blockStorage.hpp"
+// #include "stock.hpp"
+// #include "stockPrice.hpp"
+// #include "trie.hpp"
 #include <filesystem>
 
 namespace Database {
@@ -16,15 +16,15 @@ Context<T>::Context(const std::string &filePath) {
         std::filesystem::create_directory("db");
     }
 
-    if (std::filesystem::exists(filePath)) {
-        _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::binary);
+    if (std::filesystem::exists(_filePath)) {
+        _file = std::fstream(_filePath, std::ios::in | std::ios::out | std::ios::binary);
     } else {
-        _file = std::fstream(filePath, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
+        _file = std::fstream(_filePath, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
     }
 
     // Check if the file is open
     if (!_file.is_open()) {
-        std::cerr << "Error opening or creating file: " << filePath << std::endl;
+        std::cerr << "Error opening or creating file: " << _filePath << std::endl;
         // Handle the error as needed
     }
 
@@ -187,9 +187,9 @@ std::streampos Context<T>::getCurrPosition() {
 } // namespace Database
 
 template class Database::Context<int>;
-template class Database::Context<Database::State>;
-template class Database::Context<std::streampos>;
-template class Database::Context<Model::Stock>;
-template class Database::Context<Model::StockPrice>;
-template class Database::Context<Index::TrieNode>;
-template class Database::Context<Index::Block>;
+// template class Database::Context<Database::State>;
+// template class Database::Context<std::streampos>;
+// template class Database::Context<Model::Stock>;
+// template class Database::Context<Model::StockPrice>;
+// template class Database::Context<Index::TrieNode>;
+// template class Database::Context<Index::Block>;
