@@ -143,11 +143,4 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
     return result;
 }
 
-// reset the database
-Napi::Value resetDatabase(const Napi::CallbackInfo &info) {
-    Napi::Env env = info.Env();
-    Controller::LinearSearch::resetDb();
-    return Napi::String::New(env, "success");
-}
-
 } // namespace LC

@@ -3,6 +3,7 @@
     {
       "target_name": "dbms",
       "sources": [
+        "src/logger/logger.cpp",
         "src/database/context.cpp",
         "src/index/trie.cpp",
         "src/index/blockStorage.cpp",
@@ -16,6 +17,7 @@
       ],
       "include_dirs": [
         "node_modules/node-addon-api",
+        "src/logger",
         "src/model",
         "src/database",
         "src/index",
