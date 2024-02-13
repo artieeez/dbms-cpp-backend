@@ -76,8 +76,12 @@ std::vector<Model::Stock> getStockList(std::string prefix, int pageSize, int pag
 
     for (std::streampos position : positions) {
         Database::Record<Model::Stock> stock = dbContext.read(position);
+        mainLogger.log("stockId: " + stock.value.stockId);
         stocks.push_back(stock.value);
+        mainLogger.log("pushed stockId: " + stock.value.stockId);
     }
+
+    mainLogger.log("stocks.size(): " + std::to_string(stocks.size()));
 
     //log stocks
 

@@ -9,8 +9,8 @@
 
 using namespace Controller::IndexSearch;
 
-// void test_controller_index()
-int main()
+void test_controller_index()
+// int main()
 {
 
   std::ofstream logFile("log.txt");
@@ -171,5 +171,5 @@ int main()
   // Test resetDb
 
   std::clog.rdbuf(oldClog);
-  return 0;
+  // return 0;
 }

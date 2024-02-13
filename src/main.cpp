@@ -10,7 +10,7 @@ int main() {
     mainLogger.log("calling test_loader()");
     test_loader();
 
-    mainLogger.log("calling test_controller_index()");
+    // mainLogger.log("calling test_controller_index()");
     // test_controller_index();
 
     mainLogger.popScope();
