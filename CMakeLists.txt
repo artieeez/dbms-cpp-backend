@@ -14,6 +14,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/controller/indexController.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/controller/stateController.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/test/test_loader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/test/test_controller_linear.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/test/test_controller_index.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
