@@ -15,13 +15,16 @@ extern Logger mainLogger;
 namespace Controller {
 namespace IndexSearch {
 void addStock(Model::Stock payload) {
+    mainLogger.pushScope("Controller::IndexSearch::addStock");
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::streampos position = dbContext.append(payload);
     trie.insertString(payload.stockId, position);
+    mainLogger.popScope();
 }
 
 void deleteStock(char stockId[MAX_SIZE_STOCK]) {
+    mainLogger.pushScope("Controller::IndexSearch::deleteStock");
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
@@ -31,11 +34,18 @@ void deleteStock(char stockId[MAX_SIZE_STOCK]) {
         if (strcmp(stocks.value.stockId, stockId) == 0) {
             dbContext.remove(position);
             trie.deleteString(stockId);
+            mainLogger.log("Stock " + std::string(stockId) + " deleted");
+        } else {
+            mainLogger.log("Stock " + std::string(stockId) + " not found", LogType::ERROR);
         }
+    } else {
+        mainLogger.log("Stock " + std::string(stockId) + " not found", LogType::ERROR);
     }
+    mainLogger.popScope();
 }
 
 void updateStock(Model::Stock payload) {
+    mainLogger.pushScope("Controller::IndexSearch::updateStock");
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(payload.stockId, 1, 0);
@@ -45,11 +55,18 @@ void updateStock(Model::Stock payload) {
         if (strcmp(stock.value.stockId, payload.stockId) == 0) {
             stock.value = payload;
             dbContext.save(stock);
+            mainLogger.log("Stock " + std::string(payload.stockId) + " updated");
+        } else {
+            mainLogger.log("Stock " + std::string(payload.stockId) + " not found", LogType::ERROR);
         }
+    } else {
+        mainLogger.log("Stock " + std::string(payload.stockId) + " not found", LogType::ERROR);
     }
+    mainLogger.popScope();
 }
 
 Model::Stock getStock(char stockId[MAX_SIZE_STOCK]) {
+    mainLogger.pushScope("Controller::IndexSearch::getStock");
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     Index::Trie trie(Database::PATH::TRIE::STOCK_ID_TO_STOCK);
     std::vector<std::streampos> positions = trie.searchString(stockId, 1, 0);
@@ -57,9 +74,12 @@ Model::Stock getStock(char stockId[MAX_SIZE_STOCK]) {
         std::streampos position = positions[0];
         Database::Record<Model::Stock> stock = dbContext.read(position);
         if (strcmp(stock.value.stockId, stockId) == 0) {
+            mainLogger.log("Found stock: " + std::string(stock.value.stockId));
             return stock.value;
         }
     }
+    mainLogger.log("Stock " + std::string(stockId) + " not found", LogType::ERROR);
+    mainLogger.popScope();
     return Model::Stock();
 }
 
@@ -75,26 +95,16 @@ std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_STOCK], int pageNumb
     std::vector<Model::Stock> stocks;
 
     for (auto position : positions) {
-        mainLogger.log("position: " + std::to_string(position));
         auto stock = dbContext.read(position);
-        mainLogger.log("stockId: " + std::string(stock.value.stockId));
         stocks.push_back(stock.value);
-        mainLogger.log("pushed stockId: " + std::string(stock.value.stockId));
     }
-
-    mainLogger.log("stocks.size(): " + std::to_string(stocks.size()));
 
     // log stocks
-
-    mainLogger.pushScope("getStockList - stocks response");
-    for (auto stock : stocks) {
-        mainLogger.log("stockId: " + std::string(stock.stockId));
-    }
     if (stocks.size() == 0) {
         mainLogger.log("No stocks found");
+    } else {
+        mainLogger.log("Found " + std::to_string(stocks.size()) + " stocks");
     }
-    mainLogger.popScope();
-
     mainLogger.popScope();
     return stocks;
 }
@@ -102,6 +112,7 @@ std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_STOCK], int pageNumb
 ///////////////////STOCKPRICE////////////////////
 
 void addStockPrice(Model::StockPrice payload) {
+    mainLogger.pushScope("Controller::IndexSearch::addStockPrice");
     Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     Index::BlockStorage blockStorage(Database::PATH::BLOCK::STOCK_ID_TO_STOCK_PRICE);
     Index::Trie trieStockBlock(Database::PATH::TRIE::STOCK_ID_TO_STOCK_PRICE_BLOCK);
@@ -120,9 +131,11 @@ void addStockPrice(Model::StockPrice payload) {
         trieStockBlock.insertString(payload.stockId, blockPosition);
     }
     trieStockPrices.insertString(payload.stockPriceId, dbPosition);
+    mainLogger.popScope();
 }
 
 void deleteStockPrice(char stockPriceId[MAX_SIZE_SP], char stockId[MAX_SIZE_STOCK]) {
+    mainLogger.pushScope("Controller::IndexSearch::deleteStockPrice");
     Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     Index::Trie trieStockBlock(Database::PATH::TRIE::STOCK_ID_TO_STOCK_PRICE_BLOCK);
     Index::Trie trieStockPrices(Database::PATH::TRIE::STOCK_PRICE_ID_TO_STOCK_PRICE);
@@ -148,8 +161,14 @@ void deleteStockPrice(char stockPriceId[MAX_SIZE_SP], char stockId[MAX_SIZE_STOC
 
             dbContext.remove(dbAddress);
             trieStockPrices.deleteString(stockPriceId);
+            mainLogger.log("StockPrice " + std::string(stockPriceId) + " deleted");
+            mainLogger.popScope();
+            return;
         }
     }
+
+    mainLogger.log("StockPrice " + std::string(stockPriceId) + " not found", LogType::ERROR);
+    mainLogger.popScope();
 }
 
 void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList) {
@@ -208,7 +227,7 @@ void sortStockPriceList(std::vector<Model::StockPrice> &stockPriceList) {
 }
 
 std::vector<Model::StockPrice> getStockPriceList(char stockId[MAX_SIZE_STOCK], int pageNumber, int pageSize) {
-    mainLogger.pushScope("getStockPriceList");
+    mainLogger.pushScope("Controller::IndexSearch::getStockPriceList");
     mainLogger.log("stockId: " + std::string(stockId));
     mainLogger.log("page: " + std::to_string(pageNumber));
     mainLogger.log("pageSize: " + std::to_string(pageSize));
@@ -235,10 +254,12 @@ std::vector<Model::StockPrice> getStockPriceList(char stockId[MAX_SIZE_STOCK], i
 
         // sortStockPriceList(stockPrices);
 
+        mainLogger.log("Found " + std::to_string(stockPrices.size()) + " stock prices");
         mainLogger.popScope();
         return stockPrices;
     }
 
+    mainLogger.log("StockPrice " + std::string(stockId) + " not found", LogType::ERROR);
     mainLogger.popScope();
     return std::vector<Model::StockPrice>();
 }
