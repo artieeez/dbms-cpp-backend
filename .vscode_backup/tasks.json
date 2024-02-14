@@ -15,6 +15,42 @@
   "tasks": [
     {
       "type": "shell",
+      "label": "build main",
+      "command": "cl.exe",
+      "args": [
+        "/Zi",
+        "/EHsc",
+        "/std:c++20",
+        "/I",
+        "${workspaceFolder}\\src\\logger",
+        "/I",
+        "${workspaceFolder}\\src\\model",
+        "/I",
+        "${workspaceFolder}\\src\\database",
+        "/I",
+        "${workspaceFolder}\\src\\index",
+        "${workspaceFolder}\\src\\logger\\logger.cpp",
+        "${workspaceFolder}\\src\\database\\context.cpp",
+        "${workspaceFolder}\\src\\main.cpp",
+        "/Fo:${workspaceFolder}\\build\\obj\\",
+        "/Fd:${workspaceFolder}\\build\\obj\\",
+        "/Fe:${workspaceFolder}\\build\\main.exe",
+      ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
       "label": "build test_db_context",
       "command": "cl.exe",
       "args": [

@@ -14,6 +14,18 @@
       "preLaunchTask": "cmake-build"
     },
     {
+      "name": "Main - Tasks Json",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/main.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "build main"
+    },
+    {
       "name": "debug - Database::Context",
       "type": "cppvsdbg",
       "request": "launch",
