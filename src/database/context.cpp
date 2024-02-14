@@ -93,7 +93,7 @@ std::vector<Record<T>> Context<T>::find(std::function<bool(Record<T>)> predicate
     int recordCount = 0;
     int pageCount = 0;
     std::vector<Record<T>> results;
-    while (next() && (pageSize == 0 || recordCount < pageSize * (page + 1))) {
+    while (next(true) && (pageSize == 0 || recordCount < pageSize * (page + 1))) {
         if (predicate(curr)) {
             recordCount++;
             if (pageSize > 0) {
