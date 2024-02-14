@@ -35,8 +35,8 @@ Napi::Value getStock(const Napi::CallbackInfo &info) {
     Napi::Object result = Napi::Object::New(env);
     result.Set(Napi::String::New(env, "stockId"), Napi::String::New(env, stock.stockId));
     result.Set(Napi::String::New(env, "companyId"), Napi::String::New(env, stock.companyId));
-    result.Set(Napi::String::New(env, "min_date"), Napi::String::New(env, stock.min_date));
-    result.Set(Napi::String::New(env, "max_date"), Napi::String::New(env, stock.max_date));
+    result.Set(Napi::String::New(env, "minDate"), Napi::String::New(env, stock.min_date));
+    result.Set(Napi::String::New(env, "maxDate"), Napi::String::New(env, stock.max_date));
 
     mainLogger.popScope();
     return result;
@@ -71,8 +71,8 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
         Napi::Object stock = Napi::Object::New(env);
         stock.Set(Napi::String::New(env, "stockId"), Napi::String::New(env, stocks[i].stockId));
         stock.Set(Napi::String::New(env, "companyId"), Napi::String::New(env, stocks[i].companyId));
-        stock.Set(Napi::String::New(env, "min_date"), Napi::String::New(env, stocks[i].min_date));
-        stock.Set(Napi::String::New(env, "max_date"), Napi::String::New(env, stocks[i].max_date));
+        stock.Set(Napi::String::New(env, "minDate"), Napi::String::New(env, stocks[i].min_date));
+        stock.Set(Napi::String::New(env, "maxDate"), Napi::String::New(env, stocks[i].max_date));
         result.Set(i, stock);
     }
 
