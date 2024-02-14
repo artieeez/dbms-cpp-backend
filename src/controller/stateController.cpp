@@ -86,9 +86,10 @@ Model::StockPrice getStockPriceFromLine(std::string line) {
     int end = {begin};
     Model::StockPrice sPrice;
 
-    sPrice.date = getDateFromLine(line);
-    sPrice.stockId = getSymbolFromLine(line);
-    sPrice.stockPriceId = sPrice.stockId + sPrice.date;
+    strcpy(sPrice.date, getDateFromLine(line).c_str());
+    strcpy(sPrice.stockId, getSymbolFromLine(line).c_str());
+    strcpy(sPrice.stockPriceId, sPrice.stockId);
+    strcat(sPrice.stockPriceId, sPrice.date);
 
     // skip symbol
     while (line.at(end) != ',')
@@ -126,7 +127,12 @@ Model::StockPrice getStockPriceFromLine(std::string line) {
 
     sPrice.volume = std::stof(line.substr(end + 1, line.size() - end - 1));
 
-    mainLogger.log("symbol: " + sPrice.stockId);
+    std::string stockIdStr(sPrice.stockId);
+    std::string stockDateStr(sPrice.date);
+    std::string stockPriceIdStr(sPrice.stockPriceId);
+    mainLogger.log("stockId: " + stockIdStr);
+    mainLogger.log("stockDate: " + stockDateStr);
+    mainLogger.log("stockPriceId: " + stockPriceIdStr);
     mainLogger.log("adj: " + std::to_string(sPrice.adj));
     mainLogger.log("close: " + std::to_string(sPrice.close));
     mainLogger.log("high: " + std::to_string(sPrice.high));
@@ -184,7 +190,7 @@ Database::State loadDb(int pageSize) {
 
         if (sList.size() == 0) {
             Model::Stock s;
-            s.stockId = sPrice.stockId;
+            strcpy(s.stockId, sPrice.stockId);
             stateRecord.value.stockCount++;
             Controller::IndexSearch::addStock(s);
         }
