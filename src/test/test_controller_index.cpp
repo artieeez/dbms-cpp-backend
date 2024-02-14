@@ -45,7 +45,7 @@ void test_controller_index()
 
   std::cout << "\n==============getStockList==============" << std::endl;
   char teste[MAX_SIZE_STOCK] = "a";
-  std::vector<Model::Stock> stocks = getStockList(teste, 3, 0);
+  std::vector<Model::Stock> stocks = getStockList(teste, 0, 3);
   for (Model::Stock s : stocks)
   {
     std::cout << "Stock: " << s.stockId << " " << std::endl;

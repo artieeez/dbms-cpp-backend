@@ -172,7 +172,7 @@ Database::State loadDb(int pageSize) {
 
         sPrice = getStockPriceFromLine(line);
 
-        std::vector<Model::Stock> sList = Controller::IndexSearch::getStockList(sPrice.stockId, 1, 0);
+        std::vector<Model::Stock> sList = Controller::IndexSearch::getStockList(sPrice.stockId, 0, 1);
 
         if (sList.size() == 0) {
             Model::Stock s;
