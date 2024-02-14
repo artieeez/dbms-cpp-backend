@@ -15,9 +15,13 @@ enum LogType {
 
 class Logger {
   private:
-    std::string _filePath;
-    std::fstream _file;
+    std::string _filePath1;
+    std::string _filePath2;
+    std::fstream _file1;
+    std::fstream _file2;
     std::vector<std::string> _scope;
+    // each scope has a log count
+    std::vector<int> _logCount;
 
     void _log(const std::string &message, const LogType &logType);
 
