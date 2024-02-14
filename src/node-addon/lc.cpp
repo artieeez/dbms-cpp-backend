@@ -9,79 +9,6 @@
 #include <vector>
 
 namespace LC {
-
-Napi::Value addStock(const Napi::CallbackInfo &info) {
-    Napi::Env env = info.Env();
-
-    if (info.Length() < 4) {
-        Napi::TypeError::New(env, "Wrong number of arguments. Expected 4")
-            .ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    if (!info[0].IsString() || !info[1].IsString() || !info[2].IsString() ||
-        !info[3].IsString()) {
-        Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    Model::Stock stock;
-    stock.stockId = info[0].As<Napi::String>().Utf8Value();
-    stock.companyId = info[1].As<Napi::String>().Utf8Value();
-    stock.min_date = info[2].As<Napi::String>().Utf8Value();
-    stock.max_date = info[3].As<Napi::String>().Utf8Value();
-
-    Controller::LinearSearch::addStock(stock);
-
-    return Napi::String::New(env, "success");
-}
-
-Napi::Value deleteStock(const Napi::CallbackInfo &info) {
-    Napi::Env env = info.Env();
-
-    if (info.Length() < 1) {
-        Napi::TypeError::New(env, "Wrong number of arguments. Expected 1")
-            .ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    if (!info[0].IsString()) {
-        Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    std::string stockId = info[0].As<Napi::String>().Utf8Value();
-    Controller::LinearSearch::deleteStock(stockId);
-
-    return Napi::String::New(env, "success");
-}
-
-Napi::Value updateStock(const Napi::CallbackInfo &info) {
-    Napi::Env env = info.Env();
-
-    if (info.Length() < 4) {
-        Napi::TypeError::New(env, "Wrong number of arguments. Expected 4")
-            .ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    if (!info[0].IsString() || !info[1].IsString() || !info[2].IsString() ||
-        !info[3].IsString()) {
-        Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    Model::Stock stock;
-    stock.stockId = info[0].As<Napi::String>().Utf8Value();
-    stock.companyId = info[1].As<Napi::String>().Utf8Value();
-    stock.min_date = info[2].As<Napi::String>().Utf8Value();
-    stock.max_date = info[3].As<Napi::String>().Utf8Value();
-
-    Controller::LinearSearch::updateStock(stock);
-
-    return Napi::String::New(env, "success");
-}
-
 Napi::Value getStock(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
@@ -96,7 +23,8 @@ Napi::Value getStock(const Napi::CallbackInfo &info) {
         return env.Null();
     }
 
-    std::string stockId = info[0].As<Napi::String>().Utf8Value();
+    char stockId[MAX_SIZE_STOCK];
+    strcpy_s(stockId, info[0].As<Napi::String>().Utf8Value().c_str());
     Model::Stock stock = Controller::LinearSearch::getStock(stockId);
 
     Napi::Object result = Napi::Object::New(env);
@@ -111,24 +39,23 @@ Napi::Value getStock(const Napi::CallbackInfo &info) {
 Napi::Value getStockList(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
-    if (info.Length() < 4) {
+    if (info.Length() < 3) {
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 4")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
 
-    if (!info[0].IsString() || !info[1].IsNumber() || !info[2].IsNumber() ||
-        !info[3].IsString()) {
+    if (!info[0].IsString() || !info[1].IsNumber() || !info[2].IsNumber()) {
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
 
-    std::string prefix = info[0].As<Napi::String>().Utf8Value();
-    int page = info[1].As<Napi::Number>().Int32Value();
+    char stockId[MAX_SIZE_STOCK] = {0};
+    strcpy_s(stockId, info[0].As<Napi::String>().Utf8Value().c_str());
+    int pageNumber = info[1].As<Napi::Number>().Int32Value();
     int pageSize = info[2].As<Napi::Number>().Int32Value();
-    std::string orderBy = info[3].As<Napi::String>().Utf8Value();
 
-    std::vector<Model::Stock> stocks = Controller::LinearSearch::getStockList(prefix, page, pageSize, orderBy);
+    std::vector<Model::Stock> stocks = Controller::LinearSearch::getStockList(stockId, pageNumber, pageSize);
 
     Napi::Array result = Napi::Array::New(env, stocks.size());
     for (int i = 0; i < stocks.size(); i++) {
@@ -141,6 +68,43 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
     }
 
     return result;
+}
+
+Napi::Value getStockPriceList(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    if (info.Length() < 3) {
+        Napi::TypeError::New(env, "Wrong number of arguments. Expected 3")
+            .ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    if (!info[0].IsString() || !info[1].IsNumber() || !info[2].IsNumber()) {
+        Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    char stockId[MAX_SIZE_STOCK] = {0};
+    strcpy_s(stockId, info[0].As<Napi::String>().Utf8Value().c_str());
+    int pageNumber = info[1].As<Napi::Number>().Int32Value();
+    int pageSize = info[2].As<Napi::Number>().Int32Value();
+
+    std::vector<Model::StockPrice> stockPriceList = Controller::LinearSearch::getStockPriceList(stockId, pageNumber, pageSize);
+
+    Napi::Array result = Napi::Array::New(env, stockPriceList.size());
+    for (int i = 0; i < stockPriceList.size(); i++) {
+        Napi::Object stockPrice = Napi::Object::New(env);
+        stockPrice.Set(Napi::String::New(env, "stockId"),Napi::String::New(env, stockPriceList[i].stockId));
+        stockPrice.Set(Napi::String::New(env, "stockPriceId"),Napi::String::New(env, stockPriceList[i].stockPriceId));
+        stockPrice.Set(Napi::String::New(env, "date"),Napi::String::New(env, stockPriceList[i].date));
+        stockPrice.Set(Napi::String::New(env, "adj"),Napi::Number::New(env, stockPriceList[i].adj));
+        stockPrice.Set(Napi::String::New(env, "close"),Napi::Number::New(env, stockPriceList[i].close));
+        stockPrice.Set(Napi::String::New(env, "high"),Napi::Number::New(env, stockPriceList[i].high));
+        stockPrice.Set(Napi::String::New(env, "low"),Napi::Number::New(env, stockPriceList[i].low));
+        stockPrice.Set(Napi::String::New(env, "open"),Napi::Number::New(env, stockPriceList[i].open));
+        stockPrice.Set(Napi::String::New(env, "volume"),Napi::Number::New(env, stockPriceList[i].volume));
+        result.Set(i, stockPrice);
+    }
 }
 
 } // namespace LC

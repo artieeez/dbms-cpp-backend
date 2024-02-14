@@ -14,33 +14,31 @@
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
     // Register linearSearchController methods
-    Napi::Object linearSearchController = Napi::Object::New(env);
-    linearSearchController.Set(Napi::String::New(env, "addStock"), Napi::Function::New(env, LC::addStock));
-    linearSearchController.Set(Napi::String::New(env, "deleteStock"), Napi::Function::New(env, LC::deleteStock));
-    linearSearchController.Set(Napi::String::New(env, "updateStock"), Napi::Function::New(env, LC::updateStock));
-    linearSearchController.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, LC::getStock));
-    linearSearchController.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, LC::getStockList));
+    Napi::Object linear = Napi::Object::New(env);
+    linear.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, LC::getStock));
+    linear.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, LC::getStockList));
+    linear.Set(Napi::String::New(env, "getStockPriceList"), Napi::Function::New(env, LC::getStockPriceList));
 
     // Register indexController methods
-    Napi::Object indexController = Napi::Object::New(env);
-    indexController.Set(Napi::String::New(env, "addStock"), Napi::Function::New(env, TC::addStock));
-    indexController.Set(Napi::String::New(env, "deleteStock"), Napi::Function::New(env, TC::deleteStock));
-    indexController.Set(Napi::String::New(env, "updateStock"), Napi::Function::New(env, TC::updateStock));
-    indexController.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, TC::getStock));
-    indexController.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, TC::getStockList));
-    indexController.Set(Napi::String::New(env, "getStockPriceList"), Napi::Function::New(env, TC::getStockPriceList));
+    Napi::Object trie = Napi::Object::New(env);
+    trie.Set(Napi::String::New(env, "addStock"), Napi::Function::New(env, TC::addStock));
+    trie.Set(Napi::String::New(env, "deleteStock"), Napi::Function::New(env, TC::deleteStock));
+    trie.Set(Napi::String::New(env, "updateStock"), Napi::Function::New(env, TC::updateStock));
+    trie.Set(Napi::String::New(env, "getStock"), Napi::Function::New(env, TC::getStock));
+    trie.Set(Napi::String::New(env, "getStockList"), Napi::Function::New(env, TC::getStockList));
+    trie.Set(Napi::String::New(env, "addStockPrice"), Napi::Function::New(env, TC::addStockPrice));
+    trie.Set(Napi::String::New(env, "deleteStockPrice"), Napi::Function::New(env, TC::deleteStockPrice));
+    trie.Set(Napi::String::New(env, "getStockPriceList"), Napi::Function::New(env, TC::getStockPriceList));
 
     // Register stateController methods
-    Napi::Object stateController = Napi::Object::New(env);
-    stateController.Set(Napi::String::New(env, "getDatabaseState"), Napi::Function::New(env, SC::getDatabaseState));
-    stateController.Set(Napi::String::New(env, "resetDatabase"), Napi::Function::New(env, SC::resetDatabase));
-    stateController.Set(Napi::String::New(env, "loadDb"), Napi::Function::New(env, SC::loadDb));
+    Napi::Object state = Napi::Object::New(env);
+    state.Set(Napi::String::New(env, "getDatabaseState"), Napi::Function::New(env, SC::getDatabaseState));
+    state.Set(Napi::String::New(env, "resetDatabase"), Napi::Function::New(env, SC::resetDatabase));
+    state.Set(Napi::String::New(env, "loadDb"), Napi::Function::New(env, SC::loadDb));
     
-
-    // Register linearSearchController
-    exports.Set(Napi::String::New(env, "linearSearch"), linearSearchController);
-    exports.Set(Napi::String::New(env, "indexController"), indexController);
-    exports.Set(Napi::String::New(env, "stateController"), stateController);
+    exports.Set(Napi::String::New(env, "linear"), linear);
+    exports.Set(Napi::String::New(env, "trie"), trie);
+    exports.Set(Napi::String::New(env, "state"), state);
 
     return exports;
 }

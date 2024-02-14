@@ -13,27 +13,25 @@ namespace TC {
 Napi::Value addStock(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
-    if (info.Length() < 4) {
+    if (info.Length() < 1) {
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 4")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
 
-    if (!info[0].IsString() || !info[1].IsString() || !info[2].IsString() ||
-        !info[3].IsString()) {
+    if (!info[0].IsObject()) {
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
 
     Model::Stock stock;
-    stock.stockId = info[0].As<Napi::String>().Utf8Value();
-    stock.companyId = info[1].As<Napi::String>().Utf8Value();
-    stock.min_date = info[2].As<Napi::String>().Utf8Value();
-    stock.max_date = info[3].As<Napi::String>().Utf8Value();
+    Napi::Object payload = info[0].As<Napi::Object>();
+    strcpy_s(stock.stockId, payload.Get("stockId").As<Napi::String>().Utf8Value().c_str());
+    strcpy_s(stock.companyId, payload.Get("companyId").As<Napi::String>().Utf8Value().c_str());
+    strcpy_s(stock.min_date, payload.Get("min_date").As<Napi::String>().Utf8Value().c_str());
+    strcpy_s(stock.max_date, payload.Get("max_date").As<Napi::String>().Utf8Value().c_str());
 
     Controller::IndexSearch::addStock(stock);
-
-    return Napi::String::New(env, "success");
 }
 
 Napi::Value deleteStock(const Napi::CallbackInfo &info) {
@@ -50,7 +48,8 @@ Napi::Value deleteStock(const Napi::CallbackInfo &info) {
         return env.Null();
     }
 
-    std::string stockId = info[0].As<Napi::String>().Utf8Value();
+    char stockId[MAX_SIZE_STOCK];
+    strcpy_s(stockId, info[0].As<Napi::String>().Utf8Value().c_str());
     Controller::IndexSearch::deleteStock(stockId);
 
     return Napi::String::New(env, "success");
@@ -72,10 +71,10 @@ Napi::Value updateStock(const Napi::CallbackInfo &info) {
     }
 
     Model::Stock stock;
-    stock.stockId = info[0].As<Napi::String>().Utf8Value();
-    stock.companyId = info[1].As<Napi::String>().Utf8Value();
-    stock.min_date = info[2].As<Napi::String>().Utf8Value();
-    stock.max_date = info[3].As<Napi::String>().Utf8Value();
+    strcpy_s(stock.stockId, info[0].As<Napi::String>().Utf8Value().c_str());
+    strcpy_s(stock.companyId, info[1].As<Napi::String>().Utf8Value().c_str());
+    strcpy_s(stock.min_date, info[2].As<Napi::String>().Utf8Value().c_str());
+    strcpy_s(stock.max_date, info[3].As<Napi::String>().Utf8Value().c_str());
 
     Controller::IndexSearch::updateStock(stock);
 
@@ -96,7 +95,8 @@ Napi::Value getStock(const Napi::CallbackInfo &info) {
         return env.Null();
     }
 
-    std::string stockId = info[0].As<Napi::String>().Utf8Value();
+    char stockId[MAX_SIZE_STOCK];
+    strcpy_s(stockId, info[0].As<Napi::String>().Utf8Value().c_str());
     Model::Stock stock = Controller::IndexSearch::getStock(stockId);
 
     Napi::Object result = Napi::Object::New(env);
@@ -123,12 +123,13 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
         return env.Null();
     }
 
-    std::string prefix = info[0].As<Napi::String>().Utf8Value();
+    char stockId[MAX_SIZE_STOCK];
+    strcpy_s(stockId, info[0].As<Napi::String>().Utf8Value().c_str());
     int page = info[1].As<Napi::Number>().Int32Value();
     int pageSize = info[2].As<Napi::Number>().Int32Value();
     std::string orderBy = info[3].As<Napi::String>().Utf8Value();
 
-    std::vector<Model::Stock> stocks = Controller::IndexSearch::getStockList(prefix, page, pageSize);
+    std::vector<Model::Stock> stocks = Controller::IndexSearch::getStockList(stockId, page, pageSize);
 
     Napi::Array result = Napi::Array::New(env, stocks.size());
     for (int i = 0; i < stocks.size(); i++) {
@@ -143,7 +144,61 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
     return result;
 }
 
-//stock list methods
+Napi::Value addStockPrice(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    if (info.Length() < 1) {
+        Napi::TypeError::New(env, "Wrong number of arguments. Expected 1")
+            .ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    if (!info[0].IsObject()) {
+        Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    // serialize Napi::Object to Model::StockPrice
+    Napi::Object payload = info[0].As<Napi::Object>();
+    Model::StockPrice stockPrice;
+    strcpy_s(stockPrice.stockPriceId, payload.Get("stockPriceId").As<Napi::String>().Utf8Value().c_str());
+    strcpy_s(stockPrice.stockId, payload.Get("stockId").As<Napi::String>().Utf8Value().c_str());
+    strcpy_s(stockPrice.date, payload.Get("date").As<Napi::String>().Utf8Value().c_str());
+    stockPrice.adj = payload.Get("adj").As<Napi::Number>().DoubleValue();
+    stockPrice.close = payload.Get("close").As<Napi::Number>().DoubleValue();
+    stockPrice.high = payload.Get("high").As<Napi::Number>().DoubleValue();
+    stockPrice.low = payload.Get("low").As<Napi::Number>().DoubleValue();
+    stockPrice.open = payload.Get("open").As<Napi::Number>().DoubleValue();
+    stockPrice.volume = payload.Get("volume").As<Napi::Number>().DoubleValue();
+
+    Controller::IndexSearch::addStockPrice(stockPrice);
+
+    return Napi::String::New(env, "success");
+}
+
+Napi::Value deleteStockPrice(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    if (info.Length() < 2) {
+        Napi::TypeError::New(env, "Wrong number of arguments. Expected 2")
+            .ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    if (!info[0].IsString() || !info[1].IsString()) {
+        Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    char stockPriceId[MAX_SIZE_SP];
+    strcpy_s(stockPriceId, info[0].As<Napi::String>().Utf8Value().c_str());
+    char stockId[MAX_SIZE_STOCK];
+    strcpy_s(stockId, info[1].As<Napi::String>().Utf8Value().c_str());
+    Controller::IndexSearch::deleteStockPrice(stockPriceId, stockId);
+
+    return Napi::String::New(env, "success");
+}
+
 Napi::Value getStockPriceList(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
@@ -158,7 +213,8 @@ Napi::Value getStockPriceList(const Napi::CallbackInfo &info) {
         return env.Null();
     }
 
-    std::string stockId = info[0].As<Napi::String>().Utf8Value();
+    char stockId[MAX_SIZE_STOCK];
+    strcpy_s(stockId, info[0].As<Napi::String>().Utf8Value().c_str());
     int page = info[1].As<Napi::Number>().Int32Value();
     int pageSize = info[2].As<Napi::Number>().Int32Value();
 
