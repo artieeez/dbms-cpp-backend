@@ -48,7 +48,7 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
 
     if (info.Length() < 3) {
         mainLogger.log("Wrong number of arguments. Expected 3", LogType::ERROR);
-        Napi::TypeError::New(env, "Wrong number of arguments. Expected 4")
+        Napi::TypeError::New(env, "Wrong number of arguments. Expected 3")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
