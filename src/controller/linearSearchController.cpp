@@ -37,8 +37,8 @@ std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_STOCK], int pageNumb
     std::string prefixStr(prefix);
     Database::Context<Model::Stock> dbContext(Database::PATH::DB::STOCK);
     std::vector<Database::Record<Model::Stock>> records = dbContext.find(
-        [prefixStr](Database::Record<Model::Stock> record) {
-            return strncmp(record.value.stockId, prefixStr.c_str(), MAX_SIZE_STOCK) == 0;
+        [prefixStr, prefix](Database::Record<Model::Stock> record) {
+            return strncmp(record.value.stockId, prefix, strlen(prefix)) == 0;
         },
         pageSize, pageNumber);
 
@@ -122,7 +122,7 @@ std::vector<Model::StockPrice> getStockPriceList(char stockId[MAX_SIZE_STOCK], i
     Database::Context<Model::StockPrice> dbContext(Database::PATH::DB::STOCK_PRICE);
     std::vector<Database::Record<Model::StockPrice>> records = dbContext.find(
         [stockId](Database::Record<Model::StockPrice> record) {
-            return strcmp(record.value.stockId, stockId) == 0;
+            return strncmp(record.value.stockId, stockId, strlen(stockId)) == 0;
         },
         pageSize, pageNumber);
 

@@ -186,7 +186,7 @@ bool Context<T>::next(bool skipDeleted) {
                        : (int)_currPos + (int)sizeof(Record<T>);
 
         auto fileEnd = getFileEnd();
-        positionIsValid = (_currPos <= fileEnd) && (fileEnd > 0);
+        positionIsValid = (_currPos <= ((int)fileEnd - (int)sizeof(Record<T>))) && (fileEnd > 0);
 
         if (positionIsValid) {
             curr = read(_currPos);
