@@ -17,7 +17,7 @@ namespace Controller {
 namespace State {
 
 Database::State getDatabaseState() {
-    mainLogger.pushScope("getDatabaseState");
+    mainLogger.pushScope("Controller::State::getDatabaseState");
     Database::Context<Database::State> stateContext(Database::PATH::LOADER::STATE);
 
     if (stateContext.isEmpty()) {
@@ -42,7 +42,7 @@ Database::State getDatabaseState() {
 }
 
 void resetDb() {
-    mainLogger.pushScope("resetDb");
+    mainLogger.pushScope("Controller::State::resetDb");
 
     Database::Context<Model::StockPrice> dbContextStock(Database::PATH::DB::STOCK);
     Database::Context<Model::Stock> dbContextStockPrice(Database::PATH::DB::STOCK_PRICE);
@@ -78,9 +78,6 @@ inline std::string getDateFromLine(std::string line) {
 }
 
 Model::StockPrice getStockPriceFromLine(std::string line) {
-    mainLogger.pushScope("getStockPriceFromLine");
-    mainLogger.log("line: " + line);
-
     // string position starts in 11 to skip date
     int begin{11};
     int end = {begin};
@@ -130,24 +127,13 @@ Model::StockPrice getStockPriceFromLine(std::string line) {
     std::string stockIdStr(sPrice.stockId);
     std::string stockDateStr(sPrice.date);
     std::string stockPriceIdStr(sPrice.stockPriceId);
-    mainLogger.log("stockId: " + stockIdStr);
-    mainLogger.log("stockDate: " + stockDateStr);
-    mainLogger.log("stockPriceId: " + stockPriceIdStr);
-    mainLogger.log("adj: " + std::to_string(sPrice.adj));
-    mainLogger.log("close: " + std::to_string(sPrice.close));
-    mainLogger.log("high: " + std::to_string(sPrice.high));
-    mainLogger.log("low: " + std::to_string(sPrice.low));
-    mainLogger.log("open: " + std::to_string(sPrice.open));
-    mainLogger.log("volume: " + std::to_string(sPrice.volume));
-
-    mainLogger.popScope();
 
     return sPrice;
 }
 
 // return the number of lines read.
 Database::State loadDb(int pageSize) {
-    mainLogger.pushScope("loadDb");
+    mainLogger.pushScope("Controller::State::loadDb");
     mainLogger.log("loading " + std::to_string(pageSize) + " records");
     auto path = std::filesystem::absolute("bovespa_stocks.csv");
     mainLogger.log("file path: " + path.string());
