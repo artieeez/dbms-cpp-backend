@@ -1,5 +1,6 @@
 #include "context.hpp"
 #include "indexController.hpp"
+#include "logger.hpp"
 #include "napi.h"
 #include "stock.hpp"
 #include <fstream>
@@ -8,18 +9,23 @@
 #include <node_api.h>
 #include <vector>
 
+extern Logger mainLogger;
+
 namespace TC {
 
 Napi::Value addStock(const Napi::CallbackInfo &info) {
+    mainLogger.pushScope("addStock");
     Napi::Env env = info.Env();
 
     if (info.Length() < 1) {
+        mainLogger.log("Wrong number of arguments. Expected 4", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 4")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
 
     if (!info[0].IsObject()) {
+        mainLogger.log("Wrong arguments", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
@@ -31,19 +37,23 @@ Napi::Value addStock(const Napi::CallbackInfo &info) {
     strcpy_s(stock.min_date, payload.Get("min_date").As<Napi::String>().Utf8Value().c_str());
     strcpy_s(stock.max_date, payload.Get("max_date").As<Napi::String>().Utf8Value().c_str());
 
+    mainLogger.popScope();
     Controller::IndexSearch::addStock(stock);
 }
 
 Napi::Value deleteStock(const Napi::CallbackInfo &info) {
+    mainLogger.pushScope("deleteStock");
     Napi::Env env = info.Env();
 
     if (info.Length() < 1) {
+        mainLogger.log("Wrong number of arguments. Expected 1", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 1")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
 
     if (!info[0].IsString()) {
+        mainLogger.log("Wrong arguments", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
@@ -52,13 +62,16 @@ Napi::Value deleteStock(const Napi::CallbackInfo &info) {
     strcpy_s(stockId, info[0].As<Napi::String>().Utf8Value().c_str());
     Controller::IndexSearch::deleteStock(stockId);
 
+    mainLogger.popScope();
     return Napi::String::New(env, "success");
 }
 
 Napi::Value updateStock(const Napi::CallbackInfo &info) {
+    mainLogger.pushScope("updateStock");
     Napi::Env env = info.Env();
 
     if (info.Length() < 4) {
+        mainLogger.log("Wrong number of arguments. Expected 4", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 4")
             .ThrowAsJavaScriptException();
         return env.Null();
@@ -66,6 +79,7 @@ Napi::Value updateStock(const Napi::CallbackInfo &info) {
 
     if (!info[0].IsString() || !info[1].IsString() || !info[2].IsString() ||
         !info[3].IsString()) {
+        mainLogger.log("Wrong arguments", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
@@ -78,19 +92,23 @@ Napi::Value updateStock(const Napi::CallbackInfo &info) {
 
     Controller::IndexSearch::updateStock(stock);
 
+    mainLogger.popScope();
     return Napi::String::New(env, "success");
 }
 
 Napi::Value getStock(const Napi::CallbackInfo &info) {
+    mainLogger.pushScope("getStock");
     Napi::Env env = info.Env();
 
     if (info.Length() < 1) {
+        mainLogger.log("Wrong number of arguments. Expected 1", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 1")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
 
     if (!info[0].IsString()) {
+        mainLogger.log("Wrong arguments", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
@@ -105,13 +123,16 @@ Napi::Value getStock(const Napi::CallbackInfo &info) {
     result.Set(Napi::String::New(env, "min_date"), Napi::String::New(env, stock.min_date));
     result.Set(Napi::String::New(env, "max_date"), Napi::String::New(env, stock.max_date));
 
+    mainLogger.popScope();
     return result;
 }
 
 Napi::Value getStockList(const Napi::CallbackInfo &info) {
+    mainLogger.pushScope("getStockList");
     Napi::Env env = info.Env();
 
     if (info.Length() < 4) {
+        mainLogger.log("Wrong number of arguments. Expected 4", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 4")
             .ThrowAsJavaScriptException();
         return env.Null();
@@ -119,6 +140,7 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
 
     if (!info[0].IsString() || !info[1].IsNumber() || !info[2].IsNumber() ||
         !info[3].IsString()) {
+        mainLogger.log("Wrong arguments", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
@@ -141,19 +163,23 @@ Napi::Value getStockList(const Napi::CallbackInfo &info) {
         result.Set(i, stock);
     }
 
+    mainLogger.popScope();
     return result;
 }
 
 Napi::Value addStockPrice(const Napi::CallbackInfo &info) {
+    mainLogger.pushScope("addStockPrice");
     Napi::Env env = info.Env();
 
     if (info.Length() < 1) {
+        mainLogger.log("Wrong number of arguments. Expected 1", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 1")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
 
     if (!info[0].IsObject()) {
+        mainLogger.log("Wrong arguments", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
@@ -173,19 +199,23 @@ Napi::Value addStockPrice(const Napi::CallbackInfo &info) {
 
     Controller::IndexSearch::addStockPrice(stockPrice);
 
+    mainLogger.popScope();
     return Napi::String::New(env, "success");
 }
 
 Napi::Value deleteStockPrice(const Napi::CallbackInfo &info) {
+    mainLogger.pushScope("deleteStockPrice");
     Napi::Env env = info.Env();
 
     if (info.Length() < 2) {
+        mainLogger.log("Wrong number of arguments. Expected 2", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 2")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
 
     if (!info[0].IsString() || !info[1].IsString()) {
+        mainLogger.log("Wrong arguments", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
@@ -196,19 +226,23 @@ Napi::Value deleteStockPrice(const Napi::CallbackInfo &info) {
     strcpy_s(stockId, info[1].As<Napi::String>().Utf8Value().c_str());
     Controller::IndexSearch::deleteStockPrice(stockPriceId, stockId);
 
+    mainLogger.popScope();
     return Napi::String::New(env, "success");
 }
 
 Napi::Value getStockPriceList(const Napi::CallbackInfo &info) {
+    mainLogger.pushScope("getStockPriceList");
     Napi::Env env = info.Env();
 
     if (info.Length() < 3) {
+        mainLogger.log("Wrong number of arguments. Expected 3", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong number of arguments. Expected 3")
             .ThrowAsJavaScriptException();
         return env.Null();
     }
 
     if (!info[0].IsString() || !info[1].IsNumber() || !info[2].IsNumber()) {
+        mainLogger.log("Wrong arguments", LogType::ERROR);
         Napi::TypeError::New(env, "Wrong arguments").ThrowAsJavaScriptException();
         return env.Null();
     }
@@ -236,6 +270,7 @@ Napi::Value getStockPriceList(const Napi::CallbackInfo &info) {
         result.Set(i, stockPrice);
     }
 
+    mainLogger.popScope();
     return result;
 }
 
