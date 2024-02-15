@@ -2,11 +2,13 @@
 #include <filesystem>
 
 Logger::Logger(const std::string &filePath) {
+
+    _logCount = 0;
+
     _filePath1 = "cache/log/" + filePath + "1.log";
     _filePath2 = "cache/log/" + filePath + "2.log";
     _filePath3 = "cache/log/" + filePath + "3.log";
     _filePath5 = "cache/log/" + filePath + "5.log";
-    _filePath8 = "cache/log/" + filePath + "8.log";
 
     if (!std::filesystem::exists("cache")) {
         std::filesystem::create_directory("cache");
@@ -19,7 +21,6 @@ Logger::Logger(const std::string &filePath) {
     _file2 = std::fstream(_filePath2, std::ios::out | std::ios::app);
     _file3 = std::fstream(_filePath3, std::ios::out | std::ios::app);
     _file5 = std::fstream(_filePath5, std::ios::out | std::ios::app);
-    _file8 = std::fstream(_filePath8, std::ios::out | std::ios::app);
 
     // Check if the file is open
     if (!_file1.is_open()) {
@@ -32,15 +33,29 @@ Logger::Logger(const std::string &filePath) {
         // Handle the error as needed
     }
 
+    if (!_file3.is_open()) {
+        std::cerr << "Error opening or creating file: " << _filePath3 << std::endl;
+        // Handle the error as needed
+    }
+
+    if (!_file5.is_open()) {
+        std::cerr << "Error opening or creating file: " << _filePath5 << std::endl;
+        // Handle the error as needed
+    }
+
     _file1 << std::endl;
     _file2 << std::endl;
     _file1 << "Log class instantiated at: " << __TIME__ << " " << __DATE__ << std::endl;
     _file2 << "Log class instantiated at: " << __TIME__ << " " << __DATE__ << std::endl;
+    _file3 << "Log class instantiated at: " << __TIME__ << " " << __DATE__ << std::endl;
+    _file5 << "Log class instantiated at: " << __TIME__ << " " << __DATE__ << std::endl;
 }
 
 Logger::~Logger() {
     _file1.close();
     _file2.close();
+    _file3.close();
+    _file5.close();
 }
 
 void Logger::_log(const std::string &message, const LogType &logType) {
@@ -87,10 +102,11 @@ void Logger::_log(const std::string &message, const LogType &logType) {
     if (scopeSize <= 3) {
         _file3 << result << std::endl;
     }
-    if (scopeSize <= 5) {
+    if (_logCount < 100) {
         _file5 << result << std::endl;
     }
-    _file8 << result << std::endl;
+
+    _logCount++;
 }
 
 void Logger::log(const std::string &message, bool error) {
