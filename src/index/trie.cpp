@@ -26,16 +26,6 @@ bool hasChildren(std::streampos positions[MAX_CHILDREN])
   return count > 0;
 }
 
-void printStringList(std::vector<std::streampos> addresses)
-{
-  std::clog << "Address list:"
-            << "\n";
-  for (std::streampos a : addresses)
-  {
-    std::clog << a << "\n";
-  }
-}
-
 std::string normalizeString(const char input[MAX_STRING_SIZE])
 {
   std::string str(input); // Converte char array para std::string
@@ -100,8 +90,8 @@ namespace Index
 
   void Trie::insertString(char input[MAX_STRING_SIZE], std::streampos address)
   {
+    mainLogger.pushScope("Trie::insertString" + std::string(input) + " " + std::to_string(address) + " " + filename);
     std::string inputNormal = normalizeString(input);
-    std::clog << "insert: " << inputNormal << " " << filename << "\n";
     int stringCounter = 1;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
@@ -143,6 +133,7 @@ namespace Index
       dbContext.save(currentNode);
       stringCounter++;
     }
+    mainLogger.popScope();
   }
 
   std::vector<std::streampos> Trie::searchString(char input[MAX_STRING_SIZE], int pageSize, int page)
@@ -151,13 +142,8 @@ namespace Index
     int startIndex = page <= 0 ? page : (page - 1) * pageSize;
     int endIndex = startIndex + pageSize;
     int counterPointer = 0;
+    mainLogger.pushScope("Trie::searchString " + std::string(input) + " " + filename + " " + std::to_string(pageSize) + " " + std::to_string(page) + " " + std::to_string(startIndex) + " " + std::to_string(endIndex) + " " + std::to_string(counterPointer));
 
-    mainLogger.pushScope("Trie::searchString");
-    mainLogger.log("filename: " + filename);
-    mainLogger.log("input: " + std::string(input));
-    mainLogger.log("pageSize: " + std::to_string(pageSize));
-    mainLogger.log("page: " + std::to_string(page));
-    mainLogger.log("inputNormal: " + inputNormal);
 
     int stringCounter = 1;
     std::vector<std::streampos> addresses;
@@ -172,18 +158,12 @@ namespace Index
 
       if (currentNode.value.children[childIndex] != -1)
       {
-        // std::clog << "char: " << ch << " " << childIndex << " " << stringCounter << " " << inputNormal.size() << "\n";
         if (stringCounter == inputNormal.size())
         {
-          // std::clog << "chegou no fim da string: ";
-          // printTrieNode(currentNode);
           if (currentNode.value.address != -1)
           {
-            // std::clog << "tem endereço: " << currentNode.value.address << "\n";
-            // std::clog << startIndex << " " << counterPointer << " " << endIndex << "\n";
             if (startIndex <= counterPointer && counterPointer < endIndex)
             {
-              // std::clog << "Address found: " << currentNode.value.address << "" << counterPointer << " " << startIndex << " " << endIndex << " "<< "\n";
               addresses.push_back(currentNode.value.address);
             }
             else if (counterPointer == endIndex)
@@ -199,15 +179,16 @@ namespace Index
       }
       else
       {
-        mainLogger.log("String not found");
-
+        mainLogger.log("String not found", true);
         mainLogger.popScope();
         return addresses;
       }
       stringCounter++;
     }
 
+    mainLogger.pushScope("Trie::searchString - recursiveSearch");
     recursiveSearch(currentPosition, &addresses, startIndex, endIndex, &counterPointer);
+    mainLogger.popScope();
 
     // log adresses found
     mainLogger.pushScope("Trie::searchString - addresses found");
@@ -227,7 +208,6 @@ namespace Index
 
   void Trie::recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList, int startIndex, int endIndex, int *counterPointer)
   {
-    // std::clog << "recursiveSearch: " << currentPosition << " " << filename << " " << startIndex << " " << endIndex << " " << *counterPointer << "\n";
     Database::Context<TrieNode> dbContext(filename);
     Database::Record<Index::TrieNode> currentNode = dbContext.read(currentPosition);
     if (currentNode.value.address != -1)
@@ -257,8 +237,8 @@ namespace Index
 
   void Trie::deleteString(char input[MAX_STRING_SIZE])
   {
+    mainLogger.pushScope("Trie::deleteString " + std::string(input) + " " + filename);
     std::string inputNormal = normalizeString(input);
-    std::clog << "delete: " << inputNormal << " " << filename << "\n";
     int stringCounter = 1;
     std::streampos currentPosition = 0;
     Database::Context<TrieNode> dbContext(filename);
@@ -295,25 +275,13 @@ namespace Index
       }
       else
       {
-        std::clog << inputNormal << " not found" << std::endl;
+        mainLogger.log("Normalized string not found: " + std::string(inputNormal), true);
+        mainLogger.popScope();
         return;
       }
       stringCounter++;
     }
-  }
 
-  void Trie::printTrieNode(Database::Record<Index::TrieNode> currentNode)
-  {
-
-    std::clog << "Node address: " << currentNode.value.address << "\n";
-    std::clog << "Node parent: " << currentNode.value.parentAdress << "\n";
-    std::clog << "Node is leave: " << currentNode.value.isLeave << "\n";
-    for (int i = 0; i < MAX_CHILDREN; ++i)
-    {
-      if (currentNode.value.children[i] != -1)
-        std::clog << "\nChild " << i << ": " << currentNode.value.children[i] << "\n";
-    }
-    std::clog << "=============================================================="
-              << "\n";
+    mainLogger.popScope();
   }
 };

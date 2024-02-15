@@ -30,6 +30,7 @@ namespace Index
   private:
     std::fstream file;
     const std::string filename;
+    void recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList,  int startIndex, int endIndex, int* counterPointer);
 
   public:
     Trie(const std::string &filePath);
@@ -37,8 +38,6 @@ namespace Index
     void insertString(char input[MAX_STRING_SIZE], std::streampos  address);
     std::vector<std::streampos> searchString(char input[MAX_STRING_SIZE], int pageSize, int page);
     void deleteString(char input[MAX_STRING_SIZE]);
-    void printTrieNode(Database::Record<Index::TrieNode> currentNode);
-    void recursiveSearch(std::streampos currentPosition, std::vector<std::streampos> *addressList,  int startIndex, int endIndex, int* counterPointer);
   };
 
 } // namespace Index

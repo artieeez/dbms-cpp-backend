@@ -45,6 +45,8 @@ Logger::Logger(const std::string &filePath) {
 
     _file1 << std::endl;
     _file2 << std::endl;
+    _file3 << std::endl;
+    _file5 << std::endl;
     _file1 << "Log class instantiated at: " << __TIME__ << " " << __DATE__ << std::endl;
     _file2 << "Log class instantiated at: " << __TIME__ << " " << __DATE__ << std::endl;
     _file3 << "Log class instantiated at: " << __TIME__ << " " << __DATE__ << std::endl;
@@ -93,16 +95,16 @@ void Logger::_log(const std::string &message, const LogType &logType) {
     }
     result += message;
 
-    if (scopeSize <= 1) {
-        _file1 << result << std::endl;
-    }
-    if (scopeSize <= 2) {
-        _file2 << result << std::endl;
-    }
+    // if (scopeSize <= 1) {
+    //     _file1 << result << std::endl;
+    // }
+    // if (scopeSize <= 2) {
+    //     _file2 << result << std::endl;
+    // }
     if (scopeSize <= 3) {
         _file3 << result << std::endl;
     }
-    if (_logCount < 100) {
+    if (_logCount < 500) {
         _file5 << result << std::endl;
     }
 

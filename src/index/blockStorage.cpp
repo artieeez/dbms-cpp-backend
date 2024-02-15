@@ -50,7 +50,6 @@ namespace Index
             newBlock.nextBlock = -1;
             std::streampos newBlockPosition = _context.append(newBlock);
             currRecord.value.nextBlock = newBlockPosition;
-            std::cout << "insertBlock - Blocks - " << currRecord.value.address << "-" << currRecord.value.nextBlock << std::endl;
             _context.save(currRecord);
         }
 

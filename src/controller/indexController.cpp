@@ -84,7 +84,7 @@ Model::Stock getStock(char stockId[MAX_SIZE_STOCK]) {
 }
 
 std::vector<Model::Stock> getStockList(char prefix[MAX_SIZE_STOCK], int pageNumber, int pageSize) {
-    mainLogger.pushScope("getStockList");
+    mainLogger.pushScope("Controller::IndexSearch::getStockList");
     mainLogger.log("prefix: " + std::string(prefix));
     mainLogger.log("pageNumber: " + std::to_string(pageNumber));
     mainLogger.log("pageSize: " + std::to_string(pageSize));
