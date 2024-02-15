@@ -79,12 +79,19 @@ namespace Index
 {
   /////////////////////////////////////////////////////////////////////
 
-  Trie::Trie(const std::string &filePath) : filename(filePath)
-  {
+  Trie::Trie(const std::string &filePath) : filename(filePath) {
+    mainLogger.pushScope("Trie::Trie");
     Database::Context<TrieNode> dbContext(filename);
     TrieNode parentNode;
-    std::streampos first = dbContext.append(parentNode);
-  }
+
+    if (dbContext.isEmpty()) {
+        mainLogger.log("Creating new trie root node: " + filename);
+        dbContext.append(parentNode);
+    } else {
+        mainLogger.log("Trie root node already exists. Skipping root node creation: " + filename);
+    }
+    mainLogger.popScope();
+}
 
   Trie::~Trie()
   {

@@ -35,14 +35,14 @@ Context<T>::Context(const std::string &filePath) {
     }
 
     _empty = std::vector<std::streampos>();
-    // // Linear search file for empty records
-    // clearIterator();
-    // while (next()) {
-    //     if (curr.deleted) {
-    //         _empty.push_back(_currPos);
-    //         // _empty.push_back(curr.position);
-    //     }
-    // };
+    // Linear search file for empty records
+    clearIterator();
+    while (next(false)) {
+        if (curr.deleted) {
+            _empty.push_back(_currPos);
+            // _empty.push_back(curr.position);
+        }
+    };
 }
 
 template <typename T>
@@ -140,7 +140,6 @@ template <typename T>
 void Context<T>::save(Record<T> &record) {
     _file.seekp(record.position);
 
-    record.deleted = false;
     record.error = false;
 
     _file.write(reinterpret_cast<const char *>(&record), sizeof(Record<T>));

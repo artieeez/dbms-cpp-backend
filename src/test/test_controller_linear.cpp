@@ -1,6 +1,6 @@
 #include "context.hpp"
-#include "linearSearchController.hpp"
 #include "indexController.hpp"
+#include "linearSearchController.hpp"
 #include "logger.hpp"
 #include "stock.hpp"
 #include "stockPrice.hpp"
@@ -15,41 +15,44 @@ void test_controller_linear() {
     mainLogger.pushScope("test_controller_linear");
 
     std::vector<Model::Stock> stocks;
-    std::vector<Model::StockPrice> stockPrices;
 
     char stockId[MAX_SIZE_STOCK] = "MMXM3";
     stocks = Controller::LinearSearch::getStockList(stockId, 0, 10);
+    Database::Context<Model::Stock> stockContext(Database::PATH::DB::STOCK);
+    Model::Stock stock;
+    strcpy(stock.stockId, stockId);
+    strcpy(stock.max_date, "2026-01-01");
 
-    for (auto stock : stocks) {
-        std::cout << stock.stockId << std::endl;
-    }
+    stockContext.clearIterator();
+    mainLogger.pushScope("Stocks search 1");
+    while(stockContext.next()) {
+        auto position = stockContext.curr.position;
+        auto stockId = std::string(stockContext.curr.value.stockId);
+        auto stockMaxDate = std::string(stockContext.curr.value.max_date);
+        auto isDeleted = stockContext.curr.deleted;
+        mainLogger.log("Stock: " + stockId + " - MaxDate: " + stockMaxDate + " - Deleted: " + std::to_string(isDeleted) + " - Position: " + std::to_string(position));
+    };
+    mainLogger.popScope();
 
     if (stocks.size() == 0) {
-        std::cout << "No stock found\n" << std::endl;
+        mainLogger.log("Stock not found: " + std::string(stockId), true);
     } else {
-        std::cout << "Stock found\n" << std::endl;
+        stock = stocks[0];
+        mainLogger.log("Stock found: " + std::string(stock.stockId));
+        Controller::IndexSearch::deleteStock(stockId);
+        mainLogger.log("Stock deleted: " + std::string(stock.stockId));
     }
 
-    stockPrices = Controller::LinearSearch::getStockPriceList(stockId, 0, 10);
-    // stockPrices = Controller::IndexSearch::getStockPriceList(stockId, 0, 10);
+    // mainLogger.log("Update stock after delete, so it get inserted again");
+    // Controller::IndexSearch::addStock(stock);
 
-    std::cout << "page 1" << std::endl;
-    for (auto stockPrice : stockPrices) {
-        std::cout << stockPrice.stockId << " - date: " << stockPrice.date << std::endl;
+    stocks = Controller::LinearSearch::getStockList(stockId, 0, 10);
+    mainLogger.log("Stocks after delete:");
+    for (auto stock : stocks) {
+        mainLogger.log("Stock: " + std::string(stock.stockId));
+        mainLogger.log("Stock MaxDate: " + std::string(stock.max_date));
     }
 
-    std::cout << "page 2" << std::endl;
-    stockPrices = Controller::LinearSearch::getStockPriceList(stockId, 1, 10);
-    // stockPrices = Controller::IndexSearch::getStockPriceList(stockId, 1, 10);
-    for (auto stockPrice : stockPrices) {
-        std::cout << stockPrice.stockId << " - date: " << stockPrice.date << std::endl;
-    }
-
-    if (stockPrices.size() == 0) {
-        std::cout << "No stock price found\n" << std::endl;
-    } else {
-        std::cout << "Stock price found\n" << std::endl;
-    }
 
     mainLogger.popScope();
 }

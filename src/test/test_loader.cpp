@@ -12,7 +12,7 @@ void test_loader() {
     Database::State dbState = Controller::State::getDatabaseState();
 
     // loadDb
-    Controller::State::loadDb(100);
+    Controller::State::loadDb(250);
 
     dbState = Controller::State::getDatabaseState();
 
